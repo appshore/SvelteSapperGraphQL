@@ -1,0 +1,27 @@
+import sirv from 'sirv'
+import polka from 'polka'
+import compression from 'compression'
+
+import * as sapper from '../__sapper__/server'
+
+import AppStore from './store'
+import settings from './settings'
+
+const { PORT, NODE_ENV } = process.env
+
+console.log( settings)
+
+
+polka()
+  .use(
+    compression({ threshold: 0 }),
+    sirv('static', { dev : NODE_ENV === 'development' }),
+    sapper.middleware({
+      store: () => new AppStore({settings})
+    })
+  )
+  .listen(PORT, err => {
+    if (err) {
+      console.log('error', err)
+    }
+  })

@@ -1,0 +1,20 @@
+{
+	"background_color": "#ffffff",
+	"theme_color": "#aa1e1e",
+	"name": "Sapeur",
+	"short_name": "Sapeur",
+	"display": "minimal-ui",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "background1.jpg",
+			"sizes": "1440x743",
+			"type": "image/jpg"
+		},
+		{
+			"src": "svelte-logo-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}

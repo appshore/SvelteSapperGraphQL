@@ -1,0 +1,83 @@
+<svelte:head>
+	<title>{$settings.company} - Login</title>
+</svelte:head>
+
+<div class="container">
+	<br /> <!-- because title is inside the box -->
+	<div class="z-depth-2 row row-top center">
+		<h4 class="teal-text">Login to {$settings.company}</h4>
+		<form class="col s12" on:submit="handleSubmit(event)">
+			<div class=" row">
+				<div class="input-field col s12">
+					<input class="validate" type="email" required="true" bind:value="form.email" id="email" />
+					<label for="email" class="{form.email ? 'active' : ''}">Email</label>
+					<span class="helper-text" data-error="Enter a valid email address"></span>
+				</div>
+
+				<div class="input-field col s12">
+					<input class="validate" type="password" required="true" bind:value="form.password" id="password" minlength="8" />
+					<label for="password" class="{form.password ? 'active' : ''}">Password</label>
+					<span class="helper-text" data-error="8 characters minimum"></span>
+					<div class="right">
+						<a href="/customers/resetpassword">Forgot password?</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<button type="submit" class="col s12 btn btn-large waves-effect">Login</button>
+			</div>
+
+			<div class="row">
+				New to {$settings.company}? <a href="/customers/signup" class="orange-text">Sign up</a>
+			</div>
+
+		</form>
+	</div>
+</div>
+
+<script>
+	export default {
+		onupdate({ changed, current, previous }) {
+			console.log('Login onupdate', 'changed', changed, 'current', current, 'previous', previous)
+		},
+		onstate({ changed, current, previous }) {
+			console.log('Login onstate', 'changed', changed, 'current', current, 'previous', previous)
+		},
+		data() {
+			return {
+				form: {
+					email: 'test@test.com',
+					password: 'test1234'
+				}
+			}
+		},
+		methods: {
+			handleSubmit(evt) {
+				evt.preventDefault()
+
+				let formData = this.get().form
+				console.log("login submit", formData, this.store)
+
+				this.store.login(formData)
+					.then(res => {
+						if (res.error) {
+							throw res.error
+						} else {
+							console.log('login/handleSubmit', res, this.get(), this.store.get())
+						}
+					})
+					.catch(err => {
+						console.error('login/handleSubmit catch', err)
+					})
+			}
+		}
+	}
+</script>
+
+<style>
+	.row-top {
+		max-width: 500px;
+		padding: 10px;
+	}
+</style>

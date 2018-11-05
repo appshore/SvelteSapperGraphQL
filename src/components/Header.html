@@ -1,0 +1,73 @@
+<nav class="white" role="navigation">
+	<div class="nav-wrapper container">
+		<a id="logo-container" href="/" class="brand-logo">
+			<img src="{$settings.logo}" alt="{$settings.company}"/>
+		</a>
+
+		<!-- Large screen menu -->
+		<ul class="right hide-on-med-and-down">
+			<li class='{path === "/products" ? "active" : ""}'><a href="products">Products</a></li>
+			<li class='{path === "/services" ? "active" : ""}'><a href="services">Services</a></li>
+			<li class='{path === "/blog" ? "active" : ""}'><a href="blog">Blog</a></li>
+			<li class='{path === "/support" ? "active" : ""}'><a href="support">Support</a></li>
+			<li class='{path === "/forum" ? "active" : ""}'><a href="forum">Forum</a></li>
+			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
+			<li class='{path === "/customers/login" ? "active" : ""}'>
+				<a href="customers/login" class="teal-text">Login</a>
+			</li>
+			<li class='{path === "/customers/signup" ? "active" : ""}'>
+				<a href="customers/signup" class="orange-text">Sign Up</a>
+			</li>
+		</ul>
+
+		<!-- Small screen menu  -->
+		<ul id="nav-mobile" class="sidenav sidenav-close">
+			<li class="center-align">
+				<a href="/"><img src="{$settings.logo}" class="sidenav-logo" alt="{$settings.company}"/></a>
+			</li>
+			<li>
+				<div class="divider" />
+			</li>
+			<li><a href="/">Home</a></li>
+			<li><a href="products">Products</a></li>
+			<li><a href="services">Services</a></li>
+			<li><a href="blog">Blog</a></li>
+			<li><a href="support">Support</a></li>
+			<li><a href="forum">Forum</a></li>
+			<li><a href="company/about">About</a></li>
+			<li><a href="customers/login" class="teal-text">Login</a></li>
+			<li><a href="customers/signup" class="orange-text">Sign Up</a></li>
+		</ul>
+		<a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+	</div>
+</nav>
+
+<script>
+	export default {
+		oncreate() {
+			console.log('Header oncreate', this.options, this.root, this.get(), this.store.get())
+			typeof M !== 'undefined' && M.Sidenav.init(document.querySelectorAll('.sidenav'))
+		},
+		onupdate({ changed, current, previous }) {
+			// console.log('Header onupdate', 'changed', changed, 'current', current, 'previous', previous)
+		},
+		onstate({ changed, current, previous }) {
+			// console.log('Header onstate', 'changed', changed, 'current', current, 'previous', previous)
+		}
+	}
+</script>
+
+<style>
+	nav ul a,
+	nav .brand-logo {
+		color: #444;
+	}
+
+	.sidenav-logo {
+		vertical-align: middle;
+	}
+
+	.sidenav-trigger {
+		color: #26a69a;
+	}
+</style>
