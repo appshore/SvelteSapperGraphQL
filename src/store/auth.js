@@ -1,55 +1,90 @@
-import { post } from '../lib/fetch'
-
 export const login = async (store, credentials) => {
-  console.log('store/auth/login', credentials)
+  let firebase = window.firebase
 
-  return await post('auth/login', credentials).then(res => {
-    if (res.user) {
-      store.set({
-        isAuth: true,
-        user: res.user
-      })
-    }
-    return res
-  })
-}
+  console.log('store/auth/login', credentials, firebase)
 
-export const logout = async store => {
-  console.log('store/auth/logout')
+  try {
+    let logIn = await firebase
+      .auth()
+      .signInWithEmailAndPassword(credentials.email, credentials.password)
 
-  return await post('auth/logout').then(res => {
+    let { displayName, email, photoURL, emailVerified, uid } = firebase.auth().currentUser
+    store.set({
+      isAuth: Boolean(logIn),
+      user: {
+        displayName,
+        email,
+        photoURL,
+        emailVerified,
+        uid
+      }
+    })
+    console.log('store/auth/login signin', store.get())
+  } catch (error) {
     store.set({
       isAuth: false,
       user: null
     })
-    return res
+    console.log('store/auth/login error ', error)
+  }
+  return true
+}
+
+export const logout = async store => {
+  let firebase = window.firebase
+
+  let logOut = await firebase
+    .auth()
+    .signOut()
+    .catch(error => {
+      console.error('store/auth/logout error ', error)
+    })
+
+  store.set({
+    isAuth: false,
+    user: null
   })
+  // console.log('store/auth/logout signout', store.get())
+  return true
 }
 
 export const resetpassword = async (store, email) => {
-  console.log('store/auth/resetpassword', email)
+  let firebase = window.firebase
 
-  return await post('auth/resetpassword', email).then(res => {
-    if (res.user) {
-      store.set({
-        isAuth: false,
-        user: null
-      })
-    }
-    return res
-  })
+  console.log('store/auth/resetpassword', email)
 }
 
 export const signup = async (store, user) => {
-  console.log('store/auth/signup', user)
+  let firebase = window.firebase
 
-  return await post('auth/signup', user).then(res => {
-    if (res.user) {
-      store.set({
-        isAuth: true,
-        user: res.user
-      })
-    }
-    return res
-  })
+  console.log('store/auth/signup', user, firebase)
+
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+
+    await firebase.auth().currentUser.updateProfile({
+      displayName: `${user.displayName}`
+      // photoURL: 'https://example.com/jane-q-user/profile.jpg'
+    })
+
+    await firebase.auth().currentUser.sendEmailVerification()
+
+    let { displayName, email, photoURL, emailVerified, uid } = firebase.auth().currentUser
+    store.set({
+      isAuth: Boolean(email),
+      user: {
+        displayName,
+        email,
+        photoURL,
+        emailVerified,
+        uid
+      }
+    })
+  } catch (error) {
+    console.log('store/auth/signup error ', error)
+  }
+
+  console.log('store/auth/signup signup', store.get())
+
+  return true
 }

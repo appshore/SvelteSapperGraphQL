@@ -1,16 +1,22 @@
 <svelte:head>
-	<title>{$settings.company} - Login</title>
+	<title>{$CFG.BRAND} - Sign Up</title>
 </svelte:head>
 
 <div class="container">
 	<br /> <!-- because title is inside the box -->
 	<div class="z-depth-2 row row-top center">
-		<h4 class="teal-text">Login to {$settings.company}</h4>
+		<h4 class="teal-text">Sign Up to {$CFG.BRAND}</h4>
 		<form class="col s12" on:submit="handleSubmit(event)">
-			<div class=" row">
+			<div class="row">
+				<div class="input-field col s12">
+					<input class="validate" type="text" required="true" bind:value="form.displayName" id="displayName" />
+					<label for="displayName" class="{form.displayName ? 'active' : ''}">Name (will be displayed)</label>
+					<span class="helper-text" data-error="4 characters minimum"></span>
+				</div>
+
 				<div class="input-field col s12">
 					<input class="validate" type="email" required="true" bind:value="form.email" id="email" />
-					<label for="email" class="{form.email ? 'active' : ''}">Email</label>
+					<label for="email" class="{form.email ? 'active' : ''}">Email (will stay private)</label>
 					<span class="helper-text" data-error="Enter a valid email address"></span>
 				</div>
 
@@ -18,35 +24,40 @@
 					<input class="validate" type="password" required="true" bind:value="form.password" id="password" minlength="8" />
 					<label for="password" class="{form.password ? 'active' : ''}">Password</label>
 					<span class="helper-text" data-error="8 characters minimum"></span>
-					<div class="right">
-						<a href="/customers/resetpassword">Forgot password?</a>
-					</div>
 				</div>
 			</div>
 
 			<div class="row">
-				<button type="submit" class="col s12 btn btn-large waves-effect">Login</button>
+				By clicking Sign Up, I agree to {$CFG.BRAND}'s<br />
+				<a href="company/tos" target="_tos">Terms of service</a> and <a href="company/privacy" target="_privacy">Privacy
+					policy</a>.
 			</div>
 
 			<div class="row">
-				New to {$settings.company}? <a href="/customers/signup" class="orange-text">Sign up</a>
+				<button type="submit" class="col s12 btn btn-large waves-effect">Sign Up</button>
+			</div>
+
+			<div class="row">
+				Already signed up? <a href="/users/login" class="orange-text">Login</a>
 			</div>
 
 		</form>
 	</div>
 </div>
 
+
 <script>
 	export default {
 		onupdate({ changed, current, previous }) {
-			console.log('Login onupdate', 'changed', changed, 'current', current, 'previous', previous)
+			console.log('Signup onupdate', 'changed', changed, 'current', current, 'previous', previous)
 		},
 		onstate({ changed, current, previous }) {
-			console.log('Login onstate', 'changed', changed, 'current', current, 'previous', previous)
+			console.log('Signup onstate', 'changed', changed, 'current', current, 'previous', previous)
 		},
 		data() {
 			return {
 				form: {
+					displayName: 'Test ',
 					email: 'test@test.com',
 					password: 'test1234'
 				}
@@ -57,19 +68,20 @@
 				evt.preventDefault()
 
 				let formData = this.get().form
-				console.log("login submit", formData, this.store)
+				console.log("signup submit", formData, this.store.get())
 
-				this.store.login(formData)
+				this.store.signup(formData)
 					.then(res => {
 						if (res.error) {
 							throw res.error
 						} else {
-							console.log('login/handleSubmit', res, this.get(), this.store.get())
+							console.log('signup/handleSubmit', res, this.get(), this.store.get())
 						}
 					})
 					.catch(err => {
-						console.error('login/handleSubmit catch', err)
+						console.error('signup/handleSubmit catch', err)
 					})
+				goto('/')
 			}
 		}
 	}

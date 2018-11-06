@@ -23,16 +23,16 @@
 
 	<!-- This contains the contents of the <svelte:head> component, if the current page has one -->
 	%sapper.head%
-	
+
 </head>
 
 <body id='sapper'>
-	
+
 	<!-- The application will be rendered inside this element, because `app/client.js` references it -->
 	<!-- <div id='sapper'>%sapper.html%</div> -->
 	<!-- div removed and id moved to body tag because it is needed for sticky footer -->
 	<!-- %sapper.html% -->
-	
+
 	<!-- Sapper creates a <script> tag containing `app/client.js` and anything else it needs to hydrate the app and
 	     initialise the router -->
 	%sapper.scripts%

@@ -1,7 +1,7 @@
 <nav class="white" role="navigation">
 	<div class="nav-wrapper container">
 		<a id="logo-container" href="/" class="brand-logo">
-			<img src="{$settings.logo}" alt="{$settings.company}"/>
+			<img src="{$CFG.LOGO}" alt="{$CFG.BRAND}" />
 		</a>
 
 		<!-- Large screen menu -->
@@ -12,18 +12,25 @@
 			<li class='{path === "/support" ? "active" : ""}'><a href="support">Support</a></li>
 			<li class='{path === "/forum" ? "active" : ""}'><a href="forum">Forum</a></li>
 			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
-			<li class='{path === "/customers/login" ? "active" : ""}'>
-				<a href="customers/login" class="teal-text">Login</a>
+			{#if $user && $isAuth}
+			<li class='indigo-text'>Hello {$user.displayName}</li>
+			<li class='{path === "/users/logout" ? "active" : ""}'>
+				<a href="users/logout" class="teal-text">Logout</a>
 			</li>
-			<li class='{path === "/customers/signup" ? "active" : ""}'>
-				<a href="customers/signup" class="orange-text">Sign Up</a>
+			{:else}
+			<li class='{path === "/users/login" ? "active" : ""}'>
+				<a href="users/login" class="teal-text">Login</a>
 			</li>
+			<li class='{path === "/users/signup" ? "active" : ""}'>
+				<a href="users/signup" class="orange-text">Sign Up</a>
+			</li>
+			{/if}
 		</ul>
 
 		<!-- Small screen menu  -->
 		<ul id="nav-mobile" class="sidenav sidenav-close">
 			<li class="center-align">
-				<a href="/"><img src="{$settings.logo}" class="sidenav-logo" alt="{$settings.company}"/></a>
+				<a href="/"><img src="{$CFG.LOGO}" class="sidenav-logo" alt="{$CFG.BRAND}" /></a>
 			</li>
 			<li>
 				<div class="divider" />
@@ -35,8 +42,8 @@
 			<li><a href="support">Support</a></li>
 			<li><a href="forum">Forum</a></li>
 			<li><a href="company/about">About</a></li>
-			<li><a href="customers/login" class="teal-text">Login</a></li>
-			<li><a href="customers/signup" class="orange-text">Sign Up</a></li>
+			<li><a href="users/login" class="teal-text">Login</a></li>
+			<li><a href="users/signup" class="orange-text">Sign Up</a></li>
 		</ul>
 		<a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 	</div>
@@ -45,7 +52,7 @@
 <script>
 	export default {
 		oncreate() {
-			console.log('Header oncreate', this.options, this.root, this.get(), this.store.get())
+			// console.log('Header oncreate', this.options, this.root, this.get(), this.store.get())
 			typeof M !== 'undefined' && M.Sidenav.init(document.querySelectorAll('.sidenav'))
 		},
 		onupdate({ changed, current, previous }) {

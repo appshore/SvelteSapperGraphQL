@@ -1,0 +1,19 @@
+<script>
+	export default {
+		preload() {
+			this.store.logout()
+				.then(res => {
+					if (res.error) {
+						throw res.error
+					} else {
+						// console.log('logout/preload', res, this.store.get())
+					}
+				})
+				.catch(err => {
+					console.error('logout/preload catch', err)
+				})
+
+			this.redirect(301, '/')
+		}
+	}
+</script>
