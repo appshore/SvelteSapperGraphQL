@@ -1,54 +1,63 @@
 <svelte:head>
-	<title>{post.title}</title>
+	<title>{blog.title}</title>
 </svelte:head>
 
 <div class="container">
-	<a href="/blog"><h4 class="teal-text">Blog</h4></a> 
+	<a href="/blog">
+		<h4 class="teal-text">Blog</h4>
+	</a>
 
-	<h5>{post.title}</h5>
+	<h5>{blog.title}</h5>
 
 	<div class='content'>
-		{@html post.html}
+		{@html blog.content}
 	</div>
 </div>
 
 <style>
 	/*
-		By default, CSS is locally scoped to the component,
-		and any unused styles are dead-code-eliminated.
-		In this page, Svelte can't know which elements are
-		going to appear inside the {{{post.html}}} block,
-		so we have to use the :global(...) modifier to target
-		all elements inside .content
-	*/
+				By default, CSS is locally scoped to the component,
+				and any unused styles are dead-code-eliminated.
+				In this page, Svelte can't know which elements are
+				going to appear inside the {{{post.html}}} block,
+				so we have to use the :global(...) modifier to target
+				all elements inside .content
+			*/
 
 	.content :global(pre) {
-		background-color: #f9f9f9;
-		box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
-		padding: 0.5em;
-		border-radius: 2px;
-		overflow-x: auto;
+	  background-color: #f9f9f9;
+	  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
+	  padding: 0.5em;
+	  border-radius: 2px;
+	  overflow-x: auto;
 	}
 
 	.content :global(pre) :global(code) {
-		background-color: transparent;
-		padding: 0;
+	  background-color: transparent;
+	  padding: 0;
 	}
 </style>
 
 <script>
 	export default {
 		async preload({ params, query }) {
-			// the `slug` parameter is available because
-			// this file is called [slug].html
-			const res = await this.fetch(`blog/${params.slug}.json`)
-			const data = await res.json()
+			let firestore = this.store.get().firestore
 
-			if (res.status === 200) {
-				return { post: data }
-			} else {
-				this.error(res.status, data.message)
-			}
+			console.log('params ', params)
+
+			let blogs = await firestore
+				.collection("blogs")
+				.where("slug", "==", params.slug)
+				.get()
+				.then( querySnapshot => {
+					return querySnapshot.docs.map(doc => {
+						return doc.data()
+					})
+				})
+
+				console.log('blog', blogs[0])
+			let blog = blogs[0]
+			return {blog}
 		}
-	};
+	}
 </script>

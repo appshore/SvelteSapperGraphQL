@@ -1,5 +1,6 @@
 import { firebase } from '@firebase/app'
 import '@firebase/auth'
+import '@firebase/firestore'
 
 const setUserState = (store, user) => {
   if (user) {
@@ -34,6 +35,19 @@ export const initFirebase = async (store) => {
     messagingSenderId: '578965121739',
   })
 
+  // Initialize Cloud Firestore through Firebase
+  let firestore = firebase.firestore()
+
+  // Disable deprecated features
+  firestore.settings({
+    timestampsInSnapshots: true,
+  })
+
+  store.set({
+    firestore,
+  })
+
+  // set user if auth
   setUserState(store, firebase.auth().currentUser)
 
   // event handler on firebase auth state
