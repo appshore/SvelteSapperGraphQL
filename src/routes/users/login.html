@@ -3,7 +3,8 @@
 </svelte:head>
 
 <div class="container">
-	<br /> <!-- because title is inside the box -->
+	<br />
+	<!-- because title is inside the box -->
 	<div class="z-depth-2 row row-top center">
 		<h4 class="teal-text">Login to {$CFG.BRAND}</h4>
 		<form class="col s12" on:submit="handleSubmit(event)">
@@ -37,6 +38,8 @@
 </div>
 
 <script>
+	import * as sapper from '../../../__sapper__/client'
+
 	export default {
 		// onupdate({ changed, current, previous }) {
 		// 	console.log('Login onupdate', 'changed', changed, 'current', current, 'previous', previous)
@@ -70,7 +73,7 @@
 					.catch(err => {
 						console.error('login/handleSubmit catch', err)
 					})
-				goto('/')
+				sapper.goto('/')
 			}
 		}
 	}
@@ -78,7 +81,7 @@
 
 <style>
 	.row-top {
-		max-width: 500px;
-		padding: 10px;
+	  max-width: 500px;
+	  padding: 10px;
 	}
 </style>

@@ -12,12 +12,11 @@
 			<li class='{path === "/support" ? "active" : ""}'><a href="support">Support</a></li>
 			<li class='{path === "/forum" ? "active" : ""}'><a href="forum">Forum</a></li>
 			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
-			{#if $user && $isAuth}
-			<li class='indigo-text'>Hello {$user.displayName}</li>
-			<li class='{path === "/users/logout" ? "active" : ""}'>
-				<a href="users/logout" class="teal-text">Logout</a>
+			<!-- {#if $user && $isAuth} -->
+			<li>
+				<UserDropDown label='{$user ? $user.displayName : ""}' />
 			</li>
-			{:else}
+			{#if $isAuth == false}
 			<li class='{path === "/users/login" ? "active" : ""}'>
 				<a href="users/login" class="teal-text">Login</a>
 			</li>
@@ -42,8 +41,17 @@
 			<li><a href="support">Support</a></li>
 			<li><a href="forum">Forum</a></li>
 			<li><a href="company/about">About</a></li>
+			{#if $user && $isAuth}
+			<li class="divider"></li>
+			<li><a href="#!" class="indigo-text">Logged in as {$user.displayName}</a></li>
+			<li><a href="users/profile">Profile</a></li>
+			<li><a href="users/prefs">Preferences</a></li>
+			<li class="divider"></li>
+			<li><a href="users/logout" class="orange-text">Logout</a></li>
+			{:else}
 			<li><a href="users/login" class="teal-text">Login</a></li>
 			<li><a href="users/signup" class="orange-text">Sign Up</a></li>
+			{/if}
 		</ul>
 		<a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 	</div>
@@ -51,15 +59,13 @@
 
 <script>
 	export default {
+		components: {
+			UserDropDown: '../components/UserDropDown.html'
+		},
+
 		oncreate() {
 			// console.log('Header oncreate', this.options, this.root, this.get(), this.store.get())
-			typeof M !== 'undefined' && M.Sidenav.init(document.querySelectorAll('.sidenav'))
-		},
-		onupdate({ changed, current, previous }) {
-			// console.log('Header onupdate', 'changed', changed, 'current', current, 'previous', previous)
-		},
-		onstate({ changed, current, previous }) {
-			// console.log('Header onstate', 'changed', changed, 'current', current, 'previous', previous)
+			typeof M !== "undefined" && M.Sidenav.init(document.querySelectorAll(".sidenav"))
 		}
 	}
 </script>
@@ -67,14 +73,18 @@
 <style>
 	nav ul a,
 	nav .brand-logo {
-		color: #444;
+	  color: #455a64;
+	}
+
+	nav ul a {
+	  font-size: 1rem;
 	}
 
 	.sidenav-logo {
-		vertical-align: middle;
+	  vertical-align: middle;
 	}
 
 	.sidenav-trigger {
-		color: #26a69a;
+	  color: #26a69a;
 	}
 </style>

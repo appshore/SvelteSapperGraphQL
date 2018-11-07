@@ -1,7 +1,7 @@
 import { Store } from 'svelte/store'
 import * as auth from './auth'
 
-class AppStore extends Store{
+class AppStore extends Store {
   login(credentials) {
     return auth.login(this, credentials)
   }

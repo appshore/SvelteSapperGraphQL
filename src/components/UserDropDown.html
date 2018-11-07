@@ -1,0 +1,34 @@
+<!-- 
+		tags with classes dropdown-content and dropdown-trigger must be outside #if block 
+		to allow Dropdown.init even if they are not to be seen at start
+-->
+<ul id="dd-user" class="dropdown-content">
+	{#if $isAuth}
+	<li><a href="users/profile">Profile</a></li>
+	<li><a href="users/prefs">Preferences</a></li>
+	<li class="divider"></li>
+	<li><a href="users/logout" class="orange-text">Logout</a></li>
+	{/if}
+</ul>
+
+<a class="dropdown-trigger indigo-text" href="#!" data-target="dd-user">{label}</a>
+
+<script>
+	export default {
+		oncreate() {
+			// console.log('UserDropDown oncreate', this.options, this.root, this.get(), this.store.get())
+			typeof M !== "undefined" && M.Dropdown.init(document.querySelectorAll(".dropdown-trigger"), {
+					hover: true,
+					coverTrigger: false,
+					constrainWidth: false
+				})
+		}
+	}
+</script>
+
+<style>
+	ul a {
+	  color: #455a64;
+	  font-size: 1rem;
+	}
+</style>
