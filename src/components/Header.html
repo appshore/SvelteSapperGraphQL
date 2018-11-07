@@ -12,10 +12,10 @@
 			<li class='{path === "/support" ? "active" : ""}'><a href="support">Support</a></li>
 			<li class='{path === "/forum" ? "active" : ""}'><a href="forum">Forum</a></li>
 			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
-			<!-- {#if $user && $isAuth} -->
-			<li>
-				<UserDropDown label='{$user ? $user.displayName : ""}' />
-			</li>
+
+			<!-- must be outside #if block to avoid style issue in the dropdown -->
+			<UserDropDown label='{$user ? $user.displayName : ""}' />
+
 			{#if $isAuth == false}
 			<li class='{path === "/users/login" ? "active" : ""}'>
 				<a href="users/login" class="teal-text">Login</a>
