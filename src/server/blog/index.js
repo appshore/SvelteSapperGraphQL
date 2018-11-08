@@ -4,15 +4,17 @@ const contents = JSON.stringify(
   blogs.map(blog => {
     return {
       title: blog.title,
-      slug: blog.slug
+      slug: blog.slug,
     }
-  })
+  }),
 )
 
-export function get(req, res) {
+const blog = (req, res) => {
   res.writeHead(200, {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   })
 
   res.end(contents)
 }
+
+export default blog

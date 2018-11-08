@@ -40,17 +40,15 @@
 
 <script>
 	export default {
-		async preload({ params, query }) {
-			// the `slug` parameter is available because
-			// this file is called [slug].html
-			const res = await this.fetch(`blog/${params.slug}.json`)
-			const data = await res.json()
-
-			if (res.status === 200) {
-				return { blog: data }
-			} else {
-				this.error(res.status, data.message)
-			}
+		preload({ params, query }) {
+			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog/${params.slug}`, {
+				method: 'GET',
+				credentials: 'same-origin',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				}
+			}).then(res => res.json()).then(blog => { return { blog } })
 		}
 	}
 </script>

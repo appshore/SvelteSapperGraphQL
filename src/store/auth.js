@@ -10,7 +10,7 @@ const check = async store => {
       throw 'no token'
     }
 
-    let res = await fetch('auth/check', {
+    let res = await fetch(`/${CFG.API_VERSION}/auth/check`, {
       method: 'GET',
       credentials: 'same-origin',
       headers: {
@@ -51,7 +51,7 @@ export const login = async (store, credentials) => {
   console.log('store/auth/login', credentials)
 
   try {
-    let res = await fetch('login', {
+    let res = await fetch(`/${CFG.API_VERSION}/auth/login`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -84,7 +84,7 @@ export const login = async (store, credentials) => {
 
 export const logout = async store => {
   try {
-    await fetch('logout', {
+    await fetch(`/${CFG.API_VERSION}/auth/logout`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -113,7 +113,7 @@ export const signup = async (store, user) => {
   console.log('store/auth/signup', user)
 
   try {
-    let res = await fetch('signup', {
+    let res = await fetch(`/${CFG.API_VERSION}/auth/signup`, {
       method: 'POST',
       credentials: 'same-origin',
       headers: {

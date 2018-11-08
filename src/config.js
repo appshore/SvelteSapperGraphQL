@@ -5,7 +5,7 @@ import pjson from '../package.json'
 // Global Static parameters
 const config = {
   APP_NAME: '_APS',
-  API_VERSION: `api/${pjson.version.split('-')[0]}`,
+  API_VERSION: 'api', // `api/${pjson.version.split('-')[0]}`,
   APP_VERSION: pjson.version,
   BRAND: 'Svelte Web Solutions',
   COMPANY: 'AppShore Inc.',

@@ -23,9 +23,14 @@
 <script>
 	export default {
 		preload({ params, query }) {
-			return this.fetch(`blog.json`).then(r => r.json()).then(blogs => {
-				return { blogs }
-			})
+			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
+				method: 'GET',
+				credentials: 'same-origin',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				}
+			}).then(res => res.json()).then(blogs => { return { blogs } })
 		}
 	}
 </script>

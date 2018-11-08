@@ -14,7 +14,7 @@ import AppStore from './store'
 import CFG from './config'
 import CFGSRV from './config.server'
 
-import { routes } from './routes'
+import routes from './server/routes'
 
 const { PORT, NODE_ENV } = process.env
 
@@ -57,10 +57,10 @@ mongoose.connect(
   mongoOptions
 )
 
-// import routes
-app.use('/', routes)
+// api routes
+app.use(`/${CFG.API_VERSION}`, routes)
 
-// sapper framework
+// sapper framework with its own routes
 app.use(
   sapper.middleware({
     store: () => new AppStore({ CFG }),

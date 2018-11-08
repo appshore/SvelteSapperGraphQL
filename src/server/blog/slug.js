@@ -5,7 +5,7 @@ blogs.forEach(blog => {
   lookup.set(blog.slug, JSON.stringify(blog))
 })
 
-export function get(req, res, next) {
+const slug = (req, res) => {
   // the `slug` parameter is available because
   // this file is called [slug].json.js
   const { slug } = req.params
@@ -28,3 +28,5 @@ export function get(req, res, next) {
     )
   }
 }
+
+export default slug
