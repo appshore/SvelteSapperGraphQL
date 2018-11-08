@@ -18,7 +18,7 @@
 
 			{#if Boolean($isAuth) === false}
 			<li class='{path === "/users/login" ? "active" : ""}'>
-				<a href="users/login" class="teal-text">Login</a>
+				<a href="users/login" class="blue-text">Login</a>
 			</li>
 			<li class='{path === "/users/signup" ? "active" : ""}'>
 				<a href="users/signup" class="orange-text">Sign Up</a>
@@ -43,13 +43,17 @@
 			<li><a href="company/about">About</a></li>
 			{#if $user && $isAuth}
 			<li class="divider"></li>
-			<li><a href="#!" class="indigo-text">Logged in as {$user.username}</a></li>
+			<li>
+				<a href="#!" class="indigo-text">
+					{$user.username}
+				</a>
+			</li>
 			<li><a href="users/profile">Profile</a></li>
 			<li><a href="users/prefs">Preferences</a></li>
 			<li class="divider"></li>
-			<li><a href="users/logout" class="orange-text">Logout</a></li>
+			<li><a href="users/logout" class="teal-text">Logout</a></li>
 			{:else}
-			<li><a href="users/login" class="teal-text">Login</a></li>
+			<li><a href="users/login" class="blue-text">Login</a></li>
 			<li><a href="users/signup" class="orange-text">Sign Up</a></li>
 			{/if}
 		</ul>

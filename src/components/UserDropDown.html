@@ -7,14 +7,14 @@
 	<li><a href="users/logout" class="orange-text">Logout</a></li>
 </ul>
 
-<a class="dropdown-trigger indigo-text" href="#!" data-target="dd-user">{label}</a>
+<a class="dropdown-trigger teal-text" href="#!" data-target="dd-user"><i class="material-icons right">arrow_drop_down</i>{label}</a>
 </li>
 {/if}
 
 <script>
 	export default {
 		onupdate({ changed, current, previous }) {
-			console.log('UserDropDown onupdate', 'changed', changed, 'current', current, 'previous', previous)
+			// console.log('UserDropDown onupdate', 'changed', changed, 'current', current, 'previous', previous)
 			current.$isAuth && typeof M !== "undefined" && M.Dropdown.init(document.querySelectorAll(".dropdown-trigger"), {
 					hover: true,
 					coverTrigger: false,
