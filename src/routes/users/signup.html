@@ -9,8 +9,8 @@
 		<form class="col s12" on:submit="handleSubmit(event)">
 			<div class="row">
 				<div class="input-field col s12">
-					<input class="validate" type="text" required="true" bind:value="form.displayName" id="displayName" />
-					<label for="displayName" class="{form.displayName ? 'active' : ''}">Name (will be displayed)</label>
+					<input class="validate" type="text" required="true" bind:value="form.username" id="username" />
+					<label for="username" class="{form.username ? 'active' : ''}">Name (will be displayed)</label>
 					<span class="helper-text" data-error="4 characters minimum"></span>
 				</div>
 
@@ -59,7 +59,7 @@
 		data() {
 			return {
 				form: {
-					displayName: 'Test ',
+					username: 'Test ',
 					email: 'test@test.com',
 					password: 'test1234'
 				}

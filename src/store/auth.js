@@ -1,37 +1,97 @@
-import { firebase } from '@firebase/app'
-import '@firebase/auth'
+import Cookie from 'js-cookie'
 
-export const login = async (store, credentials) => {
-  console.log('store/auth/login', credentials, firebase)
+import CFG from '../config'
+
+const check = async store => {
+  console.log('store/auth/check')
 
   try {
-    let logIn = await firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password)
+    if (Boolean(Cookie.get('token')) === false) {
+      throw 'no token'
+    }
 
-    let { displayName, email, photoURL, emailVerified, uid } = firebase.auth().currentUser
-    store.set({
-      isAuth: Boolean(logIn),
-      user: {
-        displayName,
-        email,
-        photoURL,
-        emailVerified,
-        uid,
+    let res = await fetch('users/check', {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
+    }).then(res => res.json())
+
+    if (res.error) {
+      throw res.error
+    }
+    Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
+
+    store.set({
+      isAuth: true,
+      user: res.user,
     })
-    console.log('store/auth/login signin', store.get())
+    console.log('store/auth/check auth', store.get())
+    return true
+  } catch (error) {
+    store.set({
+      isAuth: false,
+      user: null,
+    })
+    console.log('store/auth/check error ', error)
+    return false
+  }
+}
+
+export const periodicCheckAuth = store => {
+  check(store)
+  setInterval(() => {
+    check(store)
+  }, CFG.AUTH_CHECK)
+}
+
+export const login = async (store, credentials) => {
+  console.log('store/auth/login', credentials)
+
+  try {
+    let res = await fetch('users/login', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    }).then(res => res.json())
+
+    if (res.error) {
+      throw res.error
+    }
+    Cookie.set('token', res.token, { path: '/', maxAge: CFG.COOKIE_TIMEOUT })
+
+    store.set({
+      isAuth: true,
+      user: res.user,
+    })
+    console.log('store/auth/login loggedIn', res.user, store.get())
+    return true
   } catch (error) {
     store.set({
       isAuth: false,
       user: null,
     })
     console.log('store/auth/login error ', error)
+    return false
   }
-  return true
 }
 
-export const logout = async (store) => {
+export const logout = async store => {
   try {
-    await firebase.auth().signOut()
+    let res = await fetch('users/logout', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
 
     store.set({
       isAuth: false,
@@ -48,28 +108,28 @@ export const resetpassword = async (store, email) => {
 }
 
 export const signup = async (store, user) => {
-  console.log('store/auth/signup', user, firebase)
+  console.log('store/auth/signup', user)
 
   try {
-    await firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
-
-    await firebase.auth().currentUser.updateProfile({
-      displayName: `${user.displayName}`,
-      // photoURL: 'https://example.com/jane-q-user/profile.jpg'
-    })
-
-    await firebase.auth().currentUser.sendEmailVerification()
-
-    let { displayName, email, photoURL, emailVerified, uid } = firebase.auth().currentUser
-    store.set({
-      isAuth: Boolean(email),
-      user: {
-        displayName,
-        email,
-        photoURL,
-        emailVerified,
-        uid,
+    let res = await fetch('users/signup', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify(user),
+    }).then(res => res.json())
+
+    if (res.error) {
+      throw res.error
+    }
+    // console.log('signup afterSubmit', 'success', res, this.state, this.props)
+    Cookie.set('token', res.token, { path: '/', maxAge: CFG.COOKIE_TIMEOUT })
+
+    store.set({
+      isAuth: true,
+      user: res.user,
     })
   } catch (error) {
     console.log('store/auth/signup error ', error)

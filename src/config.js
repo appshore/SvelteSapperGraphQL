@@ -19,8 +19,8 @@ const config = {
   },
   LICENSE: pjson.license,
   RECAPTCHA_KEY: '6Lf74QsTAAAAANwrE86qN9coHuyNsUnwowOFHmkt',
-  JWT_CHECK: 1000 * 60 * 60, // 1000 milliseconds * 60 seconds * 60 minutes = 1 hour
-  JWT_TIMEOUT: 60 * 60 * 24 * 7, // string as '1m' '1h' '1d'...
+  AUTH_CHECK: 1000 * 60 * 60, // 1000 milliseconds * 60 seconds * 60 minutes = 1 hour
+  COOKIE_TIMEOUT: 7, // 7 days
   DATA_SERVER: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api/2.1.0' : 'https://localhost:4000/api/2.1.0'
 }
 

@@ -14,9 +14,9 @@
 			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
 
 			<!-- must be outside #if block to avoid style issue in the dropdown -->
-			<UserDropDown label='{$user ? $user.displayName : ""}' />
+			<UserDropDown label='{$user ? $user.username : ""}' />
 
-			{#if $isAuth == false}
+			{#if Boolean($isAuth) === false}
 			<li class='{path === "/users/login" ? "active" : ""}'>
 				<a href="users/login" class="teal-text">Login</a>
 			</li>
@@ -43,7 +43,7 @@
 			<li><a href="company/about">About</a></li>
 			{#if $user && $isAuth}
 			<li class="divider"></li>
-			<li><a href="#!" class="indigo-text">Logged in as {$user.displayName}</a></li>
+			<li><a href="#!" class="indigo-text">Logged in as {$user.username}</a></li>
 			<li><a href="users/profile">Profile</a></li>
 			<li><a href="users/prefs">Preferences</a></li>
 			<li class="divider"></li>

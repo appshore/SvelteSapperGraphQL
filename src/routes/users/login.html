@@ -39,6 +39,7 @@
 
 <script>
 	import * as sapper from '../../../__sapper__/client'
+	import alert from '../../lib/alert'
 
 	export default {
 		// onupdate({ changed, current, previous }) {
@@ -56,24 +57,21 @@
 			}
 		},
 		methods: {
-			handleSubmit(evt) {
+			async handleSubmit(evt) {
 				evt.preventDefault()
 
 				let formData = this.get().form
 				console.log("login submit", formData, this.store)
 
-				this.store.login(formData)
-					.then(res => {
-						if (res.error) {
-							throw res.error
-						} else {
-							console.log('login/handleSubmit', res, this.get(), this.store.get())
-						}
-					})
-					.catch(err => {
-						console.error('login/handleSubmit catch', err)
-					})
-				sapper.goto('/')
+				if (await this.store.login(formData)) {
+					let {user} = this.store.get()
+					console.log('login/handleSubmit auth', this.get(), this.store.get())
+					alert(`Welcome back ${user.username}`)
+					sapper.goto('/')
+				}
+				else {
+					console.error('login/handleSubmit not auth')
+				}
 			}
 		}
 	}

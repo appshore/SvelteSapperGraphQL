@@ -5,14 +5,14 @@
 <div class="container">
 	<h4 class="teal-text">Blog</h4>
 
-	<h5>Recent posts</h5>
+	<h5>Recent blogs</h5>
 
 	<ul class="collection">
 		{#each blogs as blog}
 		<!-- we're using the non-standard `rel=prefetch` attribute to
-					tell Sapper to load the data for the page as soon as
-					the user hovers over the link or taps it, instead of
-					waiting for the 'click' event -->
+						tell Sapper to load the data for the page as soon as
+						the user hovers over the link or taps it, instead of
+						waiting for the 'click' event -->
 		<li class="collection-item">
 			<a rel='prefetch' href='blog/{blog.slug}'>{blog.title}</a>
 		</li>
@@ -22,16 +22,10 @@
 
 <script>
 	export default {
-		async preload() {
-			let firestore = this.store.get().firestore
-
-			let blogs = await firestore.collection("blogs").get().then( querySnapshot => {
-					return querySnapshot.docs.map(doc => {
-						return doc.data()
-					})
+		preload({ params, query }) {
+			return this.fetch(`blog.json`).then(r => r.json()).then(blogs => {
+				return { blogs }
 			})
-
-			return {blogs}
 		}
 	}
 </script>
