@@ -2,6 +2,7 @@
 	<title>Blog</title>
 </svelte:head>
 
+{#if Boolean($isAuth) === true }
 <div class="container">
 	<h4 class="teal-text">Blog</h4>
 
@@ -9,22 +10,29 @@
 
 	<ul class="collection">
 		{#each blogs as blog}
-		<!-- we're using the non-standard `rel=prefetch` attribute to
-						tell Sapper to load the data for the page as soon as
-						the user hovers over the link or taps it, instead of
-						waiting for the 'click' event -->
+		<!-- 
+			we're using the non-standard `rel=prefetch` attribute to
+			tell Sapper to load the data for the page as soon as
+			the user hovers over the link or taps it, instead of
+			waiting for the 'click' event 
+		-->
 		<li class="collection-item">
 			<a rel='prefetch' href='blog/{blog.slug}'>{blog.title}</a>
 		</li>
 		{/each}
 	</ul>
 </div>
+{/if}
 
 <script>
 	import * as sapper from '../../../__sapper__/client'
 
 	export default {
 		preload({ params, query }) {
+			// if( Boolean(this.store.get().isAuth) === false ) {
+			// 	this.redirect(302, '/')
+			// }
+
 			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
 				method: 'GET',
 				credentials: 'same-origin',
@@ -35,6 +43,7 @@
 			}).then(res => res.json()).then(blogs => { return { blogs } })
 		},
 		oncreate() {
+			// this works better than the commented redirect above
 			if( Boolean(this.store.get().isAuth) === false ) {
 				sapper.goto('/')
 			}

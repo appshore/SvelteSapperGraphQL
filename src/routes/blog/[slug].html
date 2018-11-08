@@ -2,6 +2,7 @@
 	<title>{blog.title}</title>
 </svelte:head>
 
+{#if Boolean($isAuth) === true }
 <div class="container">
 	<a href="/blog">
 		<h4 class="teal-text">Blog</h4>
@@ -16,13 +17,13 @@
 
 <style>
 	/*
-				By default, CSS is locally scoped to the component,
-				and any unused styles are dead-code-eliminated.
-				In this page, Svelte can't know which elements are
-				going to appear inside the {{{blog.html}}} block,
-				so we have to use the :global(...) modifier to target
-				all elements inside .content
-			*/
+		By default, CSS is locally scoped to the component,
+		and any unused styles are dead-code-eliminated.
+		In this page, Svelte can't know which elements are
+		going to appear inside the {{{blog.html}}} block,
+		so we have to use the :global(...) modifier to target
+		all elements inside .content
+	*/
 
 	.content :global(pre) {
 		background-color: #f9f9f9;
@@ -37,13 +38,16 @@
 		padding: 0;
 	}
 </style>
+{/if}
 
 <script>
+	import * as sapper from '../../../__sapper__/client'
+
 	export default {
 		preload({ params, query }) {
-			if( Boolean(this.store.get().isAuth) === false ) {
-				this.redirect(302, '/')
-			}
+			// if( Boolean(this.store.get().isAuth) === false ) {
+			// 	this.redirect(302, '/')
+			// }
 			
 			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog/${params.slug}`, {
 				method: 'GET',
@@ -53,6 +57,11 @@
 					'Content-Type': 'application/json',
 				}
 			}).then(res => res.json()).then(blog => { return { blog } })
+		},
+		oncreate() {
+			if( Boolean(this.store.get().isAuth) === false ) {
+				sapper.goto('/')
+			}
 		}
 	}
 </script>
