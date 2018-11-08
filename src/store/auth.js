@@ -10,7 +10,7 @@ const check = async store => {
       throw 'no token'
     }
 
-    let res = await fetch('users/check', {
+    let res = await fetch('auth/check', {
       method: 'GET',
       credentials: 'same-origin',
       headers: {
@@ -51,7 +51,7 @@ export const login = async (store, credentials) => {
   console.log('store/auth/login', credentials)
 
   try {
-    let res = await fetch('users/login', {
+    let res = await fetch('login', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -84,7 +84,7 @@ export const login = async (store, credentials) => {
 
 export const logout = async store => {
   try {
-    let res = await fetch('users/logout', {
+    await fetch('logout', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {
@@ -92,6 +92,8 @@ export const logout = async store => {
         'Content-Type': 'application/json',
       },
     }).then(res => res.json())
+
+    Cookie.remove('token', { path: '/'})
 
     store.set({
       isAuth: false,
@@ -111,7 +113,7 @@ export const signup = async (store, user) => {
   console.log('store/auth/signup', user)
 
   try {
-    let res = await fetch('users/signup', {
+    let res = await fetch('signup', {
       method: 'POST',
       credentials: 'same-origin',
       headers: {

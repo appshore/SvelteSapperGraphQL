@@ -2,6 +2,7 @@ import express from 'express'
 
 import check from './server/auth/check'
 import login from './server/auth/login'
+import logout from './server/auth/logout'
 import signup from './server/auth/signup'
 
 export let routes = express.Router()
@@ -49,9 +50,10 @@ routes.get('/checking', isAuth, (req, res) => {
   })
 })
 
-routes.get('/users/check', check)
-routes.post('/users/login', login)
-routes.post('/users/signup', signup)
+routes.get('/auth/check', check)
+routes.post('/login', login)
+routes.post('/logout', logout)
+routes.post('/signup', signup)
 
 // default and catchall route for API
 // API routes non recognized are denied
