@@ -8,7 +8,9 @@
 		<ul class="right hide-on-med-and-down">
 			<li class='{path === "/products" ? "active" : ""}'><a href="products">Products</a></li>
 			<li class='{path === "/services" ? "active" : ""}'><a href="services">Services</a></li>
+			{#if Boolean($isAuth) === true }
 			<li class='{path === "/blog" ? "active" : ""}'><a href="blog">Blog</a></li>
+			{/if}
 			<li class='{path === "/support" ? "active" : ""}'><a href="support">Support</a></li>
 			<li class='{path === "/forum" ? "active" : ""}'><a href="forum">Forum</a></li>
 			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
@@ -18,10 +20,10 @@
 
 			{#if Boolean($isAuth) === false}
 			<li class='{path === "/users/login" ? "active" : ""}'>
-				<a href="users/login" class="blue-text">Login</a>
+				<a href="user/login" class="blue-text">Login</a>
 			</li>
 			<li class='{path === "/users/signup" ? "active" : ""}'>
-				<a href="users/signup" class="orange-text">Sign Up</a>
+				<a href="user/signup" class="orange-text">Sign Up</a>
 			</li>
 			{/if}
 		</ul>
@@ -37,7 +39,9 @@
 			<li><a href="/">Home</a></li>
 			<li><a href="products">Products</a></li>
 			<li><a href="services">Services</a></li>
+			{#if Boolean($isAuth) }
 			<li><a href="blog">Blog</a></li>
+			{/if}
 			<li><a href="support">Support</a></li>
 			<li><a href="forum">Forum</a></li>
 			<li><a href="company/about">About</a></li>
@@ -48,13 +52,13 @@
 					{$user.username}
 				</a>
 			</li>
-			<li><a href="users/profile">Profile</a></li>
-			<li><a href="users/prefs">Preferences</a></li>
+			<li><a href="user/profile">Profile</a></li>
+			<li><a href="user/prefs">Preferences</a></li>
 			<li class="divider"></li>
-			<li><a href="users/logout" class="teal-text">Logout</a></li>
+			<li><a href="user/logout" class="teal-text">Logout</a></li>
 			{:else}
-			<li><a href="users/login" class="blue-text">Login</a></li>
-			<li><a href="users/signup" class="orange-text">Sign Up</a></li>
+			<li><a href="user/login" class="blue-text">Login</a></li>
+			<li><a href="user/signup" class="orange-text">Sign Up</a></li>
 			{/if}
 		</ul>
 		<a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>

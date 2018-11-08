@@ -13,8 +13,8 @@ import CFGSRV from '../../config.server'
 
 let routes = express.Router()
 
-const isAuth = (req, res, next) => {
-  console.log('routes/isAuth', req.cookies, req.headers)
+const withAuth = (req, res, next) => {
+  // console.log('routes/withAuth', req.cookies, req.headers)
   let token = req.cookies.token
   if (!token) {
     return res.status(401).send({ auth: false, message: 'No token provided.' })
@@ -30,7 +30,7 @@ const isAuth = (req, res, next) => {
 }
 
 routes.use('*', (req, res, next) => {
-    console.log('routes ', 'req.headers', req.headers, 'req.baseUrl', req.baseUrl)
+    // console.log('routes ', 'req.headers', req.headers, 'req.baseUrl', req.baseUrl)
     // only json requests are accepted
     // else back to default home screen (server side render)
     if (
@@ -53,8 +53,8 @@ routes.use('/checking', (req, res) => {
   })
 })
 
-routes.get('/blog/:slug', slug)
-routes.get('/blog', blog)
+routes.get('/blog/:slug', withAuth, slug)
+routes.get('/blog', withAuth, blog)
 
 routes.get('/auth/check', check)
 routes.post('/auth/login', login)

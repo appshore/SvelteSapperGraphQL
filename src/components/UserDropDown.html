@@ -1,10 +1,10 @@
 {#if $isAuth}
 <li>
 <ul id="dd-user" class="dropdown-content">
-	<li><a href="users/profile">Profile</a></li>
-	<li><a href="users/prefs">Preferences</a></li>
+	<li><a href="user/profile">Profile</a></li>
+	<li><a href="user/prefs">Preferences</a></li>
 	<li class="divider"></li>
-	<li><a href="users/logout" class="orange-text">Logout</a></li>
+	<li><a href="user/logout" class="orange-text">Logout</a></li>
 </ul>
 
 <a class="dropdown-trigger teal-text" href="#!" data-target="dd-user"><i class="material-icons right">arrow_drop_down</i>{label}</a>
@@ -16,7 +16,7 @@
 		onupdate({ changed, current, previous }) {
 			// console.log('UserDropDown onupdate', 'changed', changed, 'current', current, 'previous', previous)
 			current.$isAuth && typeof M !== "undefined" && M.Dropdown.init(document.querySelectorAll(".dropdown-trigger"), {
-					hover: true,
+					// hover: true,
 					coverTrigger: false,
 					constrainWidth: false
 				})

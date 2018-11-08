@@ -21,6 +21,8 @@
 </div>
 
 <script>
+	import * as sapper from '../../../__sapper__/client'
+
 	export default {
 		preload({ params, query }) {
 			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
@@ -31,6 +33,11 @@
 					'Content-Type': 'application/json',
 				}
 			}).then(res => res.json()).then(blogs => { return { blogs } })
+		},
+		oncreate() {
+			if( Boolean(this.store.get().isAuth) === false ) {
+				sapper.goto('/')
+			}
 		}
 	}
 </script>

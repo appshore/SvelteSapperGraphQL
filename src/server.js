@@ -49,13 +49,10 @@ app.use(express.static('static'))
 // set promise lib for Mongo and Mongoose
 let mongoOptions = {
   promiseLibrary: bluebird,
-  useNewUrlParser: true
+  useNewUrlParser: true,
 }
 mongoose.Promise = bluebird
-mongoose.connect(
-  CFGSRV.DB_URL,
-  mongoOptions
-)
+mongoose.connect(CFGSRV.DB_URL, mongoOptions)
 
 // api routes
 app.use(`/${CFG.API_VERSION}`, routes)
@@ -63,14 +60,17 @@ app.use(`/${CFG.API_VERSION}`, routes)
 // sapper framework with its own routes
 app.use(
   sapper.middleware({
-    store: () => new AppStore({ CFG }),
+    store: () =>
+      new AppStore({
+        CFG,
+      }),
   }),
 )
 
 // set http server
 let server = http.createServer(app)
 
-server.listen(PORT, (err) => {
+server.listen(PORT, err => {
   if (err) {
     console.log('error', err)
   }

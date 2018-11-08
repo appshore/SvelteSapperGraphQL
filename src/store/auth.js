@@ -2,48 +2,46 @@ import Cookie from 'js-cookie'
 
 import CFG from '../config'
 
-const check = async store => {
-  console.log('store/auth/check')
+export const checkAuth = async store => {
+  // console.log('store/auth/check')
 
-  try {
-    if (Boolean(Cookie.get('token')) === false) {
-      throw 'no token'
-    }
-
-    let res = await fetch(`/${CFG.API_VERSION}/auth/check`, {
-      method: 'GET',
-      credentials: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-
-    if (res.error) {
-      throw res.error
-    }
-    Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
-
-    store.set({
-      isAuth: true,
-      user: res.user,
-    })
-    console.log('store/auth/check auth', store.get())
-    return true
-  } catch (error) {
+  if (Boolean(Cookie.get('token')) === false) {
     store.set({
       isAuth: false,
       user: null,
     })
-    console.log('store/auth/check error ', error)
     return false
   }
+
+  let res = await fetch(`/${CFG.API_VERSION}/auth/check`, {
+    method: 'GET',
+    credentials: 'same-origin',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  }).then(res => res.json())
+
+  if (res.error) {
+    store.set({
+      isAuth: false,
+      user: null,
+    })
+    return false
+  }
+  Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
+
+  store.set({
+    isAuth: true,
+    user: res.user,
+  })
+  // console.log('store/auth/check auth', store.get())
+  return true
 }
 
 export const periodicCheckAuth = store => {
-  check(store)
   setInterval(() => {
-    check(store)
+    checkAuth(store)
   }, CFG.AUTH_CHECK)
 }
 
@@ -93,7 +91,7 @@ export const logout = async store => {
       },
     }).then(res => res.json())
 
-    Cookie.remove('token', { path: '/'})
+    Cookie.remove('token', { path: '/' })
 
     store.set({
       isAuth: false,

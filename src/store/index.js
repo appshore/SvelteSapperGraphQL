@@ -6,6 +6,10 @@ class AppStore extends Store {
     return auth.periodicCheckAuth(this)
   }
 
+  checkAuth() {
+    return auth.checkAuth(this)
+  }
+
   login(credentials) {
     return auth.login(this, credentials)
   }

@@ -41,6 +41,10 @@
 <script>
 	export default {
 		preload({ params, query }) {
+			if( Boolean(this.store.get().isAuth) === false ) {
+				this.redirect(302, '/')
+			}
+			
 			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog/${params.slug}`, {
 				method: 'GET',
 				credentials: 'same-origin',
