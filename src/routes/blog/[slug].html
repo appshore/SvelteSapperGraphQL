@@ -56,7 +56,7 @@
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				}
-			}).then(res => res.json()).then(blog => { return { blog } })
+			}).then(res => res.json()).then(blog => { return blog })
 		},
 		oncreate() {
 			if( Boolean(this.store.get().isAuth) === false ) {

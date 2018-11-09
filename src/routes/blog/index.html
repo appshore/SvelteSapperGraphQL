@@ -2,6 +2,7 @@
 	<title>Blog</title>
 </svelte:head>
 
+
 {#if Boolean($isAuth) === true }
 <div class="container">
 	<h4 class="teal-text">Blog</h4>
@@ -40,7 +41,7 @@
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				}
-			}).then(res => res.json()).then(blogs => { return { blogs } })
+			}).then(res => res.json()).then(blogs => { return blogs })
 		},
 		oncreate() {
 			// this works better than the commented redirect above

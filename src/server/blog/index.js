@@ -1,20 +1,21 @@
-import blogs from './_blogs.js'
-
-const contents = JSON.stringify(
-  blogs.map(blog => {
-    return {
-      title: blog.title,
-      slug: blog.slug,
-    }
-  }),
-)
+import { blogModel } from '../../models/blog'
 
 const blog = (req, res) => {
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-  })
-
-  res.end(contents)
+  // console.log('blog/slug', req.body, req.query)
+  blogModel
+    .find()
+    .exec()
+    .then(blogs => {
+      blogs = JSON.parse(JSON.stringify(blogs))
+      return res.status(200).json({
+        blogs
+      })
+    })
+    .catch(error => {
+      res.status(500).json({
+        error: error,
+      })
+    })
 }
 
 export default blog

@@ -1,32 +1,22 @@
-import blogs from './_blogs.js'
-
-const lookup = new Map()
-blogs.forEach(blog => {
-  lookup.set(blog.slug, JSON.stringify(blog))
-})
+import { blogModel } from '../../models/blog'
 
 const slug = (req, res) => {
-  // the `slug` parameter is available because
-  // this file is called [slug].json.js
-  const { slug } = req.params
+  // console.log('blog/slug', req.body, req.query, req.params)
+  blogModel
+    .findOne({ slug: req.params.slug })
+    .exec()
+    .then(blog => {
+      blog = JSON.parse(JSON.stringify(blog))
 
-  if (lookup.has(slug)) {
-    res.writeHead(200, {
-      'Content-Type': 'application/json'
-    })
-
-    res.end(lookup.get(slug))
-  } else {
-    res.writeHead(404, {
-      'Content-Type': 'application/json'
-    })
-
-    res.end(
-      JSON.stringify({
-        message: 'Not found'
+      return res.status(200).json({
+        blog,
       })
-    )
-  }
+    })
+    .catch(error => {
+      res.status(500).json({
+        error: error,
+      })
+    })
 }
 
 export default slug
