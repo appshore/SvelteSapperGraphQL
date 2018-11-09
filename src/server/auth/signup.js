@@ -9,6 +9,7 @@ const signup = (req, res) => {
 
   let user = new userModel({
     _id: new mongoose.Types.ObjectId(),
+    username: req.body.username,
     email: req.body.email,
     password: hashPassword(req.body.password),
   })
@@ -16,18 +17,19 @@ const signup = (req, res) => {
   user
     .save()
     .then(result => {
+      result = JSON.parse(JSON.stringify(result))
 
       let token = generateToken({
         email: user.email,
         _id: user._id,
       })
 
-      console.log('signup', result, user)
+      console.log('signup', result)
 
       res.status(200).json({
-        success: 'New user has been created',
+        success: 'New user',
         token,
-        user: filterProfile(user),
+        user: filterProfile(result),
       })
     })
     .catch(error => {

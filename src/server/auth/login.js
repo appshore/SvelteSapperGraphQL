@@ -23,7 +23,7 @@ const login = (req, res) => {
 
       console.log('login success', user, token, filterProfile(user))
       return res.status(200).json({
-        success: 'Welcome to the JWT Auth',
+        success: 'Welcome back',
         token,
         user: filterProfile(user),
       })

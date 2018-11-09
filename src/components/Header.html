@@ -1,98 +1,53 @@
-<nav class="white" role="navigation">
-	<div class="nav-wrapper container">
-		<a id="logo-container" href="/" class="brand-logo">
-			<img src="{$CFG.LOGO}" alt="{$CFG.BRAND}" />
-		</a>
+<div class="navbar-fixed">
+	<nav class="white" role="navigation">
+		<div class="nav-wrapper container">
+			<a id="logo-container" href="/" class="brand-logo">
+				<img src="{$CFG.LOGO}" alt="{$CFG.BRAND}" />
+			</a>
 
-		<!-- Large screen menu -->
-		<ul class="right hide-on-med-and-down">
-			<li class='{path === "/products" ? "active" : ""}'><a href="products">Products</a></li>
-			<li class='{path === "/services" ? "active" : ""}'><a href="services">Services</a></li>
-			{#if Boolean($isAuth) === true }
-			<li class='{path === "/blog" ? "active" : ""}'><a href="blog">Blog</a></li>
-			{/if}
-			<li class='{path === "/support" ? "active" : ""}'><a href="support">Support</a></li>
-			<li class='{path === "/forum" ? "active" : ""}'><a href="forum">Forum</a></li>
-			<li class='{path === "/company/about" ? "active" : ""}'><a href="company/about">About</a></li>
+			<!-- Large screen menu -->
+			<ul class="right hide-on-med-and-down">
+				<MenuItem path={path} href="/products" title="Products"/>
+				<MenuItem path={path} href="/services" title="Services"/>
 
-			<!-- must be outside #if block to avoid style issue in the dropdown -->
-			<UserDropDown label='{$user ? $user.username : ""}' />
+				{#if $isAuth }
+				<MenuItem path={path} href="/blog" title="Blog"/>
+				{/if}
 
-			{#if Boolean($isAuth) === false}
-			<li class='{path === "/users/login" ? "active" : ""}'>
-				<a href="user/login" class="blue-text">Login</a>
-			</li>
-			<li class='{path === "/users/signup" ? "active" : ""}'>
-				<a href="user/signup" class="orange-text">Sign Up</a>
-			</li>
-			{/if}
-		</ul>
+				<MenuItem path={path} href="/support" title="Support"/>
+				<MenuItem path={path} href="/forum" title="Forum"/>
+				<MenuItem path={path} href="/company/about" title="About"/>
 
-		<!-- Small screen menu  -->
-		<ul id="nav-mobile" class="sidenav sidenav-close">
-			<li class="center-align">
-				<a href="/"><img src="{$CFG.LOGO}" class="sidenav-logo" alt="{$CFG.BRAND}" /></a>
-			</li>
-			<li>
-				<div class="divider" />
-			</li>
-			<li><a href="/">Home</a></li>
-			<li><a href="products">Products</a></li>
-			<li><a href="services">Services</a></li>
-			{#if Boolean($isAuth) }
-			<li><a href="blog">Blog</a></li>
-			{/if}
-			<li><a href="support">Support</a></li>
-			<li><a href="forum">Forum</a></li>
-			<li><a href="company/about">About</a></li>
-			{#if $user && $isAuth}
-			<li class="divider"></li>
-			<li>
-				<a href="#!" class="indigo-text">
-					{$user.username}
-				</a>
-			</li>
-			<li><a href="user/profile">Profile</a></li>
-			<li><a href="user/prefs">Preferences</a></li>
-			<li class="divider"></li>
-			<li><a href="user/logout" class="teal-text">Logout</a></li>
-			{:else}
-			<li><a href="user/login" class="blue-text">Login</a></li>
-			<li><a href="user/signup" class="orange-text">Sign Up</a></li>
-			{/if}
-		</ul>
-		<a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-	</div>
-</nav>
+				<!-- must be outside #if block to avoid style issue in the dropdown -->
+				<UserDropDown label='{$user ? $user.username : ""}' />
+
+				{#if $isAuth === false}
+				<MenuItem path={path} href="/user/login" title="Login" color="blue-text"/>
+				<MenuItem path={path} href="/user/signup" title="Signup" color="orange-text"/>
+				{/if}
+			</ul>
+
+			<!-- Menu to call the sidenav for Small screen  -->
+			<a href="/" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons teal-text">menu</i></a>
+		</div>
+	</nav>
+</div>
+
+<!-- must be outside the main div -->
+<SideNav/>
 
 <script>
 	export default {
 		components: {
-			UserDropDown: '../components/UserDropDown.html'
-		},
-
-		oncreate() {
-			// console.log('Header oncreate', this.options, this.root, this.get(), this.store.get())
-			typeof M !== "undefined" && M.Sidenav.init(document.querySelectorAll(".sidenav"))
+			MenuItem: '../components/MenuItem.html',
+			UserDropDown: '../components/UserDropDown.html',
+			SideNav: '../components/SideNav.html'
 		}
 	}
 </script>
 
 <style>
-	nav ul a,
 	nav .brand-logo {
 	  color: #455a64;
-	}
-
-	nav ul a {
-	  font-size: 1rem;
-	}
-
-	.sidenav-logo {
-	  vertical-align: middle;
-	}
-
-	.sidenav-trigger {
-	  color: #26a69a;
 	}
 </style>

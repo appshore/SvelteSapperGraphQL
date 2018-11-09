@@ -1,4 +1,4 @@
-const alert = (html, level = 'd') => {
+const toast = (html, level = 'd') => {
   let classes = 'teal white-text' // default
 
   switch (level[0]) {
@@ -18,4 +18,4 @@ const alert = (html, level = 'd') => {
   M.toast({ html, classes: classes })
 }
 
-export default alert
+export default toast

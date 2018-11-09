@@ -4,16 +4,15 @@
 
 {#if Boolean($isAuth) === true }
 <div class="container">
-	<a href="/blog">
-		<h4 class="teal-text">Blog</h4>
-	</a>
-
-	<h5>{blog.title}</h5>
+	<h4>
+		<a href="/blog">Blog</a><i class="material-icons">chevron_right</i><span class="teal-text">{blog.title}</span>
+	</h4>
 
 	<div class='content'>
 		{@html blog.html}
 	</div>
 </div>
+{/if}
 
 <style>
 	/*
@@ -24,7 +23,6 @@
 		so we have to use the :global(...) modifier to target
 		all elements inside .content
 	*/
-
 	.content :global(pre) {
 		background-color: #f9f9f9;
 		box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
@@ -38,7 +36,6 @@
 		padding: 0;
 	}
 </style>
-{/if}
 
 <script>
 	import * as sapper from '../../../__sapper__/client'

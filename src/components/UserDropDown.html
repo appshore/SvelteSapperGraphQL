@@ -1,5 +1,5 @@
 {#if $isAuth}
-<li>
+<li class="topli">
 <ul id="dd-user" class="dropdown-content">
 	<li><a href="user/profile">Profile</a></li>
 	<li><a href="user/prefs">Preferences</a></li>
@@ -28,5 +28,11 @@
 	ul a {
 	  color: #455a64;
 	  font-size: 1rem;
+	}
+
+	.topli:hover {
+    border-bottom-width: thick;
+    border-bottom-color: orange;
+    border-bottom-style: solid;
 	}
 </style>
