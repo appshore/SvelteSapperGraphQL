@@ -2,16 +2,16 @@
 	<title>{blog.title}</title>
 </svelte:head>
 
-{#if Boolean($isAuth) === true }
-<div class="container">
-	<h4>
-		<a href="/blog">Blog</a><i class="material-icons">chevron_right</i><span class="teal-text">{blog.title}</span>
-	</h4>
+{#if Boolean($isAuth) && Boolean(blog)}
+	<div class="container">
+		<h4>
+			<a href="/blog">Blog</a><i class="material-icons">chevron_right</i><span class="teal-text">{blog.title}</span>
+		</h4>
 
-	<div class='content'>
-		{@html blog.html}
+		<div class='content'>
+			{@html blog.html}
+		</div>
 	</div>
-</div>
 {/if}
 
 <style>
@@ -41,23 +41,41 @@
 	import * as sapper from '../../../__sapper__/client'
 
 	export default {
-		preload({ params, query }) {
-			// if( Boolean(this.store.get().isAuth) === false ) {
-			// 	this.redirect(302, '/')
-			// }
-			
-			return this.fetch(`/${this.store.get().CFG.API_VERSION}/blog/${params.slug}`, {
-				method: 'GET',
-				credentials: 'same-origin',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				}
-			}).then(res => res.json()).then(blog => { return blog })
+		data() {
+			return {
+				blog: {}
+			}
 		},
-		oncreate() {
-			if( Boolean(this.store.get().isAuth) === false ) {
+		async oncreate() {
+			// this works better than the commented redirect above
+			if (Boolean(this.store.get().isAuth) === false) {
 				sapper.goto('/')
+			}
+			// console.log('slug', this, this.get().params)
+
+			try {
+				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
+					method: 'GET',
+					credentials: 'same-origin',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					}
+				}).then(res => res.json())
+
+				// console.log('res', res)
+				if (res.error) {
+					throw res.error
+				}
+				this.set({ blog: res.blog })
+
+				this.store.banner({
+					html: "Auto dismiss after 3s", 
+					level: 'warning',
+					duration: 3
+				})
+			} catch (err) {
+				this.set({ blog: null })
 			}
 		}
 	}

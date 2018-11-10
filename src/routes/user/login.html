@@ -39,7 +39,6 @@
 
 <script>
 	import * as sapper from '../../../__sapper__/client'
-	import toast from '../../lib/toast'
 
 	export default {
 		data() {
@@ -60,7 +59,7 @@
 				if (await this.store.login(formData)) {
 					let {user} = this.store.get()
 					// console.log('login/handleSubmit auth', this.get(), this.store.get())
-					toast(`Welcome back ${user.username}`)
+					this.store.toast({html:`Welcome back ${user.username}`})
 					sapper.goto('/')
 				}
 			}

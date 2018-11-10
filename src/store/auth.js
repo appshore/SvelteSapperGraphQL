@@ -22,20 +22,20 @@ export const checkAuth = async store => {
     },
   }).then(res => res.json())
 
-  if (res.error) {
+  if (res.error || Boolean(res.token) === false ) {
     store.set({
       isAuth: false,
       user: null,
     })
     return false
   }
+  
   Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
 
   store.set({
     isAuth: true,
     user: res.user,
   })
-  // console.log('store/auth/check auth', store.get())
   return true
 }
 
@@ -46,8 +46,6 @@ export const periodicCheckAuth = store => {
 }
 
 export const login = async (store, credentials) => {
-  console.log('store/auth/login', credentials)
-
   try {
     let res = await fetch(`/${CFG.API_VERSION}/auth/login`, {
       method: 'POST',
@@ -68,14 +66,13 @@ export const login = async (store, credentials) => {
       isAuth: true,
       user: res.user,
     })
-    console.log('store/auth/login loggedIn', res.user, store.get())
     return true
   } catch (error) {
     store.set({
       isAuth: false,
       user: null,
     })
-    console.log('store/auth/login error ', error)
+    console.error('store/auth/login error', error)
     return false
   }
 }
@@ -97,19 +94,17 @@ export const logout = async store => {
       isAuth: false,
       user: null,
     })
+    return true
   } catch (error) {
-    console.log('store/auth/logout error ', error)
+    console.error('store/auth/logout error', error)
+    return false
   }
-  return true
 }
 
 export const resetpassword = async (store, email) => {
-  console.log('store/auth/resetpassword', email)
 }
 
 export const signup = async (store, user) => {
-  console.log('store/auth/signup', user)
-
   try {
     let res = await fetch(`/${CFG.API_VERSION}/auth/signup`, {
       method: 'POST',
@@ -124,18 +119,15 @@ export const signup = async (store, user) => {
     if (res.error) {
       throw res.error
     }
-    // console.log('signup afterSubmit', 'success', res, this.state, this.props)
     Cookie.set('token', res.token, { path: '/', maxAge: CFG.COOKIE_TIMEOUT })
 
     store.set({
       isAuth: true,
       user: res.user,
     })
+    return true
   } catch (error) {
-    console.log('store/auth/signup error ', error)
+    console.error('store/auth/signup error ', error)
+    return false
   }
-
-  console.log('store/auth/signup signup', store.get())
-
-  return true
 }

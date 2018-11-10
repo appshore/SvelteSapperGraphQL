@@ -1,0 +1,47 @@
+{#if Boolean($banner)}
+<div class="container" id="banner">
+	<div class="row">
+		<div class="col s12 m12">
+			<div class="card {$banner.classes}">
+				<div class="row">
+					<div class="col s12 m10">
+						<div class="card-content white-text">
+							<h6>{@html $banner.html}</h6>
+					</div>
+				</div>
+				{#if $banner.duration == 0}
+				<div class="col s12 m2">
+					<i class="material-icons dismiss-icon" on:click="dismiss()">cancel</i>
+				</div>
+				{/if}
+			</div>
+		 </div>
+		</div>
+	</div>
+</div>
+{/if}
+
+<style>
+	.row, .col {
+		padding: 0;
+	}
+
+	.dismiss-icon{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 1.5rem;
+    color: white;
+    cursor:pointer; 
+}
+</style>
+
+<script>
+	export default {
+		methods: {
+			dismiss() {
+				this.store.banner()
+			}
+		}
+	}
+</script>

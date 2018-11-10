@@ -1,5 +1,6 @@
 import { Store } from 'svelte/store'
 import * as auth from './auth'
+import * as ui from './ui'
 
 class AppStore extends Store {
   periodicCheckAuth() {
@@ -10,16 +11,24 @@ class AppStore extends Store {
     return auth.checkAuth(this)
   }
 
-  login(credentials) {
-    return auth.login(this, credentials)
+  login(params) {
+    return auth.login(this, params)
   }
 
   logout() {
     return auth.logout(this)
   }
 
-  signup(user) {
-    return auth.signup(this, user)
+  signup(params) {
+    return auth.signup(this, params)
+  }
+
+  banner(params) {
+    ui.banner(this, params)
+  }
+
+  toast(params) {
+    ui.toast(this, params)
   }
 }
 

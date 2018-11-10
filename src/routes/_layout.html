@@ -1,6 +1,7 @@
 <Header path={child.props.path} />
 
 <main>
+	<Banner />
 	<svelte:component this={child.component} {...child.props} />
 </main>
 
@@ -11,6 +12,7 @@
 <script>
 	export default {
 		components: {
+			Banner: '../components/Banner.html',
 			Floating: '../components/Floating.html',
 			Footer: '../components/Footer.html',
 			Header: '../components/Header.html'
