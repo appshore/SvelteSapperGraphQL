@@ -3,9 +3,9 @@
 </svelte:head>
 
 {#if Boolean($isAuth) && Boolean(blog)}
-	<div class="container">
+	<div class="w3-container">
 		<h4>
-			<a href="/blog">Blog</a><i class="material-icons">chevron_right</i><span class="teal-text">{blog.title}</span>
+			<a href="/blog">Blog</a> <i class="fas fa-chevron-right"/> <span class="w3-text-teal">{blog.title}</span>
 		</h4>
 
 		<div class='content'>

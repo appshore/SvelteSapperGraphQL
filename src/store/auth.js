@@ -1,9 +1,8 @@
 import Cookie from 'js-cookie'
 
-import CFG from '../config'
-
 export const checkAuth = async store => {
   // console.log('store/auth/check')
+  let CFG = store.get().CFG
 
   if (Boolean(Cookie.get('token')) === false) {
     store.set({
@@ -40,12 +39,16 @@ export const checkAuth = async store => {
 }
 
 export const periodicCheckAuth = store => {
+  let CFG = store.get().CFG
+
   setInterval(() => {
     checkAuth(store)
   }, CFG.AUTH_CHECK)
 }
 
 export const login = async (store, credentials) => {
+  let CFG = store.get().CFG
+
   try {
     let res = await fetch(`/${CFG.API_VERSION}/auth/login`, {
       method: 'POST',
@@ -78,6 +81,8 @@ export const login = async (store, credentials) => {
 }
 
 export const logout = async store => {
+  let CFG = store.get().CFG
+
   try {
     await fetch(`/${CFG.API_VERSION}/auth/logout`, {
       method: 'POST',
@@ -102,9 +107,13 @@ export const logout = async store => {
 }
 
 export const resetpassword = async (store, email) => {
+  let CFG = store.get().CFG
+
 }
 
 export const signup = async (store, user) => {
+  let CFG = store.get().CFG
+
   try {
     let res = await fetch(`/${CFG.API_VERSION}/auth/signup`, {
       method: 'POST',

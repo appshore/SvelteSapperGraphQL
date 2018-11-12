@@ -17,4 +17,6 @@ store.checkAuth().then(() => {
   })
 })
 
+// run some event handlers
 store.periodicCheckAuth()
+store.listenerResize()

@@ -2,18 +2,15 @@
 	<title>Forum</title>
 </svelte:head>
 
-<div class="container">
-	<h4 class="teal-text">Forum</h4>
-
-	<h5>Recent posts</h5>
-
-	<ul class="collection">
+<div class="w3-container">
+	<h4 class="w3-text-teal">Forum</h4>
+	<ul class="w3-collection">
 		{#each posts as post}
 		<!-- we're using the non-standard `rel=prefetch` attribute to
 						tell Sapper to load the data for the page as soon as
 						the user hovers over the link or taps it, instead of
 						waiting for the 'click' event -->
-		<li class="collection-item">
+		<li class="w3-collection-item">
 			<a rel='prefetch' href='forum/{post.slug}'>{post.title}</a>
 		</li>
 		{/each}

@@ -2,12 +2,12 @@
 	<title>{$CFG.BRAND} - Login</title>
 </svelte:head>
 
-<div class="container">
+<div class="w3-container">
 	<br />
 	<!-- because title is inside the box -->
 	<div class="z-depth-2 row row-top center">
-		<h4 class="teal-text">Login to {$CFG.BRAND}</h4>
-		<form class="col s12" on:submit="handleSubmit(event)">
+		<h4 class="w3-text-teal">Login to {$CFG.BRAND}</h4>
+		<form class="w3-col s12" on:submit="handleSubmit(event)">
 			<div class=" row">
 				<div class="input-field col s12">
 					<input class="validate" type="email" required="true" bind:value="form.email" id="email" />
@@ -25,11 +25,11 @@
 				</div>
 			</div>
 
-			<div class="row">
-				<button type="submit" class="col s12 btn btn-large waves-effect">Login</button>
+			<div class="w3-row">
+				<button type="submit" class="w3-col s12 btn btn-large waves-effect">Login</button>
 			</div>
 
-			<div class="row">
+			<div class="w3-row">
 				New to {$CFG.BRAND}? <a href="/users/signup" class="orange-text">Sign up</a>
 			</div>
 

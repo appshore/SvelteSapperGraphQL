@@ -1,27 +1,40 @@
-<Header path={child.props.path} />
+<div class="mobileOnly">
+		<MobileNav path={child.props.path}/>
+</div>
+<div class="webOnly">
+		<WebNav path={child.props.path}/>
+</div>
 
-<main>
+<main isMobile={$isMobile}>
 	<Banner />
 	<svelte:component this={child.component} {...child.props} />
 </main>
 
-<Footer />
+<div class="webOnly">
+	<WebFooter/>
+</div>
 
-<Floating />
+<style>
+	main {
+		flex: 1 0 auto;
+    padding-top: 46px; /* to offset the fixed navbar */
+	}
+</style>
 
 <script>
 	export default {
 		components: {
 			Banner: '../components/Banner.html',
-			Floating: '../components/Floating.html',
-			Footer: '../components/Footer.html',
-			Header: '../components/Header.html'
+			WebFooter: '../components/WebFooter.html',
+			WebNav: '../components/WebNav.html',
+			MobileNav: '../components/MobileNav.html'
+		},
+	
+		onupdate({ changed, current, previous }) {
+			if( changed.$isMobile ) {
+				document.querySelectorAll(".mobileOnly").forEach( elt => elt.style.display = current.$isMobile ? "block" : "none")
+				document.querySelectorAll(".webOnly").forEach( elt => elt.style.display = current.$isMobile ? "none" : "block")
+			}
 		}
 	}
 </script>
-
-<style>
-	main {
-		flex: 1 0 auto;
-	}
-</style>

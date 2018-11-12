@@ -1,0 +1,88 @@
+<div class="mobile-header w3-top">
+	<div class="w3-bar w3-card w3-white">
+		<span class="w3-bar-item" on:click="toggleSidebar()">&#9776;</span>
+		<a href="/" class="w3-bar-item">
+			<img src="{$CFG.LOGO}" alt="{$CFG.BRAND}" />
+		</a>
+	</div>
+</div>
+
+<div class="mobile-sidebar w3-sidebar w3-bar-block w3-card">
+	<div class="items">
+		<MobileNavMenuItem href="/products" title="Products"/>
+		<MobileNavMenuItem href="/services" title="Services"/>
+		<MobileNavMenuItem href="/support" title="Support"/>
+		<MobileNavMenuItem href="/forum" title="Forum"/>
+
+		{#if $isAuth }
+		<MobileNavMenuItem href="/blog" title="Blog"/>
+		{/if}
+
+		<MobileNavMenuItem href="/company/about" title="About"/>
+
+		<hr/>
+
+		{#if $isAuth }
+		<MobileNavMenuItem href="/user/profile" title="Profile"/>
+		<MobileNavMenuItem href="/user/prefs" title="Preferences"/>
+		<MobileNavMenuItem href="/user/logout" title="Logout" classes="w3-text-orange"/>
+		{:else}
+		<MobileNavMenuItem href="/user/login" title="Login" classes="w3-text-blue"/>
+		<MobileNavMenuItem href="/user/signup" title="Signup" classes="w3-text-orange"/>
+		{/if}
+	</div>
+
+	<div class="mobile-footer w3-bottom w3-center w3-light-grey w3-text-grey w3-small">
+		<a href={$CFG.WEBSITE}>{$CFG.COMPANY}</a> &copy; since 2005
+	</div>
+</div>
+
+<div class="mobile-overlay w3-overlay" on:click="toggleSidebar()"></div>
+
+<style>
+
+	hr {
+		margin: unset;
+	}
+
+	.items {
+		margin-bottom: 80px;
+    overflow-y: auto;
+	}
+
+	.mobile-footer {
+    width: 200px;
+	}
+
+	.mobile-overlay {
+		cursor:pointer;
+	}
+
+	.mobile-header {
+		z-index: 5;
+	}
+
+	.mobile-sidebar {
+		width: 200px;
+		top: 46px;
+		display: none;
+		z-index: 4;
+	} 
+	
+</style> 
+
+<script>
+	export default {
+		components: {
+			MobileNavMenuItem: './MobileNavMenuItem.html'
+		},
+
+		methods: {
+			toggleSidebar() {
+				let display = document.querySelector(".mobile-sidebar").style.display == "none" ? "block" : "none"
+				document.querySelector(".mobile-sidebar").style.display = display
+				document.querySelector(".mobile-overlay").style.display = display
+			}
+		}
+	}
+</script>

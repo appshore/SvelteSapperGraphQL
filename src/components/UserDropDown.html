@@ -1,38 +1,22 @@
 {#if $isAuth}
-<li class="topli">
-<ul id="dd-user" class="dropdown-content">
-	<li><a href="user/profile">Profile</a></li>
-	<li><a href="user/prefs">Preferences</a></li>
-	<li class="divider"></li>
-	<li><a href="user/logout" class="orange-text">Logout</a></li>
-</ul>
-
-<a class="dropdown-trigger teal-text" href="#!" data-target="dd-user"><i class="material-icons right">arrow_drop_down</i>{label}</a>
-</li>
+	<div class="w3-dropdown-hover w3-right">
+    <button class="w3-button w3-text-blue">{label} <i class="fa fa-caret-down"></i></button>
+    <div class="w3-dropdown-content w3-bar-block w3-card-4">
+      <a href="/user/profile" class="w3-bar-item w3-button">Profile</a>
+      <a href="/user/prefs" class="w3-bar-item w3-button">Preferences</a>
+      <a href="/user/logout" class="w3-bar-item w3-button w3-border-top w3-text-orange">Logout</a>
+    </div>
+  </div>
 {/if}
 
-<script>
-	export default {
-		onupdate({ changed, current, previous }) {
-			// console.log('UserDropDown onupdate', 'changed', changed, 'current', current, 'previous', previous)
-			current.$isAuth && typeof M !== "undefined" && M.Dropdown.init(document.querySelectorAll(".dropdown-trigger"), {
-					// hover: true,
-					coverTrigger: false,
-					constrainWidth: false
-				})
-		}
-	}
-</script>
-
 <style>
-	ul a {
-	  color: #455a64;
-	  font-size: 1rem;
+	.w3-dropdown-hover,
+	.w3-dropdown-content {
+		margin-right:16px;
 	}
 
-	.topli:hover {
-    border-bottom-width: thick;
-    border-bottom-color: orange;
-    border-bottom-style: solid;
+	.w3-dropdown-content {
+		right:0;
 	}
+
 </style>

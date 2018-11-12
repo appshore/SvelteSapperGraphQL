@@ -30,6 +30,10 @@ class AppStore extends Store {
   toast(params) {
     ui.toast(this, params)
   }
+
+  listenerResize() {
+    ui.listenerResize(this)
+  }
 }
 
 export default AppStore

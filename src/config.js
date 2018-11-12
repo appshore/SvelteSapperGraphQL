@@ -18,6 +18,7 @@ const config = {
     SUPPORT: 'support@appshore.com'
   },
   LICENSE: pjson.license,
+  MOBILE_WIDTH: '960px', // upper limit to switch between mobile and web interfaces 
   RECAPTCHA_KEY: '6Lf74QsTAAAAANwrE86qN9coHuyNsUnwowOFHmkt',
   AUTH_CHECK: 1000 * 60 * 60, // 1000 milliseconds * 60 seconds * 60 minutes = 1 hour
   COOKIE_TIMEOUT: 7, // 7 days

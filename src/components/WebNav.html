@@ -1,0 +1,39 @@
+<div class="w3-top">
+	<div class="w3-bar w3-card w3-light-grey">
+		<div class="w3-row">
+			<div class="w3-col" style="width:200px">
+				<a href="/" class="w3-bar-item w3-display-left">
+					<img src="{$CFG.LOGO}" alt="{$CFG.BRAND}" />
+				</a>&nbsp;
+			</div>
+			<!-- Large screen menu -->
+			<div class="w3-rest">		
+					<WebNavMenuItem path={path} href="/products" title="Products"/>
+					<WebNavMenuItem path={path} href="/services" title="Services"/>
+					<WebNavMenuItem path={path} href="/support" title="Support"/>
+					<WebNavMenuItem path={path} href="/forum" title="Forum"/>
+	
+					<UserDropDown label='{$user ? $user.username : ""}' />
+
+					{#if $isAuth === false}
+					<WebNavMenuItem path={path} href="/user/signup" title="Signup" classes="w3-text-orange w3-right"/>
+					<WebNavMenuItem path={path} href="/user/login" title="Login" classes="w3-text-blue w3-right"/>
+					{/if}
+		
+					<WebNavMenuItem path={path} href="/company/about" title="About" classes="w3-right"/>
+					{#if $isAuth }
+					<WebNavMenuItem path={path} href="/blog" title="Blog" classes="w3-right"/>
+					{/if}
+				</div>
+			</div>
+	</div>
+</div>
+
+<script>
+	export default {
+		components: {
+			WebNavMenuItem: './WebNavMenuItem.html',
+			UserDropDown: './UserDropDown.html'
+		}
+	}
+</script>

@@ -4,11 +4,11 @@
 
 
 {#if Boolean($isAuth) }
-<div class="container">
-	<h4 class="teal-text">Blog</h4>
+<div class="w3-container">
+	<h4 class="w3-text-teal">Blog</h4>
 
 	{#if Boolean(blogs)}
-		<ul class="collection">
+		<ul class="w3-collection">
 			{#each blogs as blog}
 			<!-- 
 				we're using the non-standard `rel=prefetch` attribute to
@@ -16,7 +16,7 @@
 				the user hovers over the link or taps it, instead of
 				waiting for the 'click' event 
 			-->
-			<li class="collection-item">
+			<li class="w3-collection-item">
 				<!-- <a rel='prefetch' href='blog/{blog.slug}'>{blog.title}</a> -->
 				<a href='blog/{blog.slug}'>{blog.title}</a>
 			</li>

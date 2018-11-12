@@ -1,0 +1,23 @@
+<a href="{href}" 
+	class="w3-bar-item w3-button {classes}"
+	on:click="closeSidebar()"
+	>
+	{title}
+</a>
+
+<script>
+	export default {
+		data() {
+			return {
+				classes : ''
+			}
+		},
+
+		methods: {
+			closeSidebar() {
+				document.querySelector(".mobile-sidebar").style.display = "none"
+				document.querySelector(".mobile-overlay").style.display = "none"
+			}
+		}
+	}
+</script>
