@@ -3,73 +3,59 @@
 </svelte:head>
 
 <div class="w3-container">
-	<br />
-	<!-- because title is inside the box -->
-	<div class="z-depth-2 row row-top center">
-		<h4 class="w3-text-teal">Login to {$CFG.BRAND}</h4>
-		<form class="w3-col s12" on:submit="handleSubmit(event)">
-			<div class=" row">
-				<div class="input-field col s12">
-					<input class="validate" type="email" required="true" bind:value="form.email" id="email" />
-					<label for="email" class="{form.email ? 'active' : ''}">Email</label>
-					<span class="helper-text" data-error="Enter a valid email address"></span>
-				</div>
+	<div class="w3-container w3-padding-24">
+		<div class="w3-col l3 m2 s0">&nbsp;</div>
+		<div class="w3-col l6 m8 s12 w3-card-4 w3-center">
 
-				<div class="input-field col s12">
-					<input class="validate" type="password" required="true" bind:value="form.password" id="password" minlength="8" />
-					<label for="password" class="{form.password ? 'active' : ''}">Password</label>
+			<h4 class="w3-margin-top w3-text-teal">Login to {$CFG.BRAND}</h4>
+
+			<form class="w3-container" on:submit="handleSubmit(event)">
+				<div class="w3-padding-16">
+					<label for="email" class="w3-left {form.email ? 'active' : ''}">Email</label>
+					<input class="w3-input w3-border w3-margin-bottom validate" type="email" required bind:value="form.email" id="email" />
+					<label for="password" class="w3-left {form.password ? 'active' : ''}">Password</label>
+					<input class="w3-input w3-border w3-margin-bottom validate" type="password" required="true" bind:value="form.password"
+					 id="password" minlength="8" />
 					<span class="helper-text" data-error="8 characters minimum"></span>
-					<div class="right">
-						<a href="/users/resetpassword">Forgot password?</a>
-					</div>
+					<span class="w3-right w3-small w3-text-blue"><a href="/users/resetpassword">Forgot password?</a></span>
 				</div>
-			</div>
+				<button class="w3-button w3-block w3-teal w3-section" type="submit">Login</button>
+			</form>
 
-			<div class="w3-row">
-				<button type="submit" class="w3-col s12 btn btn-large waves-effect">Login</button>
+			<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
+				<span class="w3-center">New to {$CFG.BRAND}? <a href="/user/signup" class="w3-text-orange">Sign up</a></span>
 			</div>
-
-			<div class="w3-row">
-				New to {$CFG.BRAND}? <a href="/users/signup" class="orange-text">Sign up</a>
-			</div>
-
-		</form>
+		</div>
+		<div class="w3-col l3 m2 s0">&nbsp;</div>
 	</div>
 </div>
 
 <script>
-	import * as sapper from '../../../__sapper__/client'
+  import * as sapper from '../../../__sapper__/client'
 
-	export default {
-		data() {
-			return {
-				form: {
-					email: 'test@test.com',
-					password: 'test1234'
-				}
-			}
-		},
-		methods: {
-			async handleSubmit(evt) {
-				evt.preventDefault()
+  export default {
+    data() {
+      return {
+        form: {
+          email: 'test@test.com',
+          password: 'test1234',
+        },
+      }
+    },
+    methods: {
+      async handleSubmit(evt) {
+        evt.preventDefault()
 
-				let formData = this.get().form
-				// console.log("login submit", formData, this.store)
+        let formData = this.get().form
+        // console.log("login submit", formData, this.store)
 
-				if (await this.store.login(formData)) {
-					let {user} = this.store.get()
-					// console.log('login/handleSubmit auth', this.get(), this.store.get())
-					this.store.toast({html:`Welcome back ${user.username}`})
-					sapper.goto('/')
-				}
-			}
-		}
-	}
+        if (await this.store.login(formData)) {
+          let { user } = this.store.get()
+          // console.log('login/handleSubmit auth', this.get(), this.store.get())
+          this.store.toast({ html: `Welcome back ${user.username}` })
+          sapper.goto('/')
+        }
+      },
+    },
+  }
 </script>
-
-<style>
-	.row-top {
-	  max-width: 500px;
-	  padding: 10px;
-	}
-</style>

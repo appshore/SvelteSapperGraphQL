@@ -7,25 +7,25 @@
 				</a>&nbsp;
 			</div>
 			<!-- Large screen menu -->
-			<div class="w3-rest">		
-					<WebNavMenuItem path={path} href="/products" title="Products"/>
-					<WebNavMenuItem path={path} href="/services" title="Services"/>
-					<WebNavMenuItem path={path} href="/support" title="Support"/>
-					<WebNavMenuItem path={path} href="/forum" title="Forum"/>
-	
-					<UserDropDown label='{$user ? $user.username : ""}' />
+			<div class="w3-rest">
+				<WebNavMenuItem path={path} href="/products" title="Products" />
+				<WebNavMenuItem path={path} href="/services" title="Services" />
+				<WebNavMenuItem path={path} href="/support" title="Support" />
+				<WebNavMenuItem path={path} href="/forum" title="Forum" />
 
-					{#if $isAuth === false}
-					<WebNavMenuItem path={path} href="/user/signup" title="Signup" classes="w3-text-orange w3-right"/>
-					<WebNavMenuItem path={path} href="/user/login" title="Login" classes="w3-text-blue w3-right"/>
-					{/if}
-		
-					<WebNavMenuItem path={path} href="/company/about" title="About" classes="w3-right"/>
-					{#if $isAuth }
-					<WebNavMenuItem path={path} href="/blog" title="Blog" classes="w3-right"/>
-					{/if}
-				</div>
+				<UserDropDown label='{$user ? $user.username : ""}' />
+
+				{#if $isAuth === false}
+				<WebNavMenuItem path={path} href="/user/signup" title="Signup" classes="w3-text-orange w3-right" />
+				<WebNavMenuItem path={path} href="/user/login" title="Login" classes="w3-text-blue w3-right" />
+				{/if}
+
+				<WebNavMenuItem path={path} href="/company/about" title="About" classes="w3-right" />
+				{#if $isAuth }
+				<WebNavMenuItem path={path} href="/blog" title="Blog" classes="w3-right" />
+				{/if}
 			</div>
+		</div>
 	</div>
 </div>
 
