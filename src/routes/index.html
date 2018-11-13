@@ -2,33 +2,28 @@
 	<title>{$CFG.BRAND}</title>
 </svelte:head>
 
-<div id="index-banner" class="parallax-w3-container">
-	<div class="section no-pad-bot">
-		<div class="w3-container center">
-			<h1 class="w3-text-teal text-lighten-1">{$CFG.BRAND}</h1>
-			<div class="w3-row">
-				<h5 class="white-text">For Smart Business</h5>
-			</div>
-			<div class="w3-row">
-				<a href="/customer/signup" id="download-button" class="btn-large w3-teal">Get Started</a>
-			</div>
+<div class="bgimg-1 w3-display-container">
+	<div class="w3-display-middle w3-center">
+		<div class="w3-xxlarge w3-text-black w3-wide">
+			{$CFG.BRAND}<br/>
+			For Smart Business
+		</div>
+		<div class="w3-row w3-padding-32">
+			<a href="/customer/signup" class="w3-button w3-xlarge w3-teal w3-text-black">Get Started</a>
 		</div>
 	</div>
-	<div class="parallax"><img src="background1.jpg" alt="Unsplashed background img 1"></div>
 </div>
 
-
 <div class="w3-container">
-	<div class="section">
+	<div class="w3-section">
 
-		<!--   Icon Section   -->
 		<div class="w3-row">
 			<div class="w3-col s12 m4">
 				<div class="icon-block">
-					<h2 class="center brown-text"><i class="material-icons">flash_on</i></h2>
-					<h5 class="center">Easy to use</h5>
+					<h2 class="w3-center w3-text-brown"><i class="fas fa-bolt fa-2x"/></h2>
+					<h5 class="w3-center w3-text-teal">Lightning fast</h5>
 
-					<p class="light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum deserunt illum minus, sed
+					<p class="w3-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum deserunt illum minus, sed
 						delectus vero molestiae, cum voluptas repellendus, dolorem nulla dolores quaerat quisquam itaque incidunt
 						explicabo id quae aliquam?.</p>
 				</div>
@@ -36,8 +31,8 @@
 
 			<div class="w3-col s12 m4">
 				<div class="icon-block">
-					<h2 class="center brown-text"><i class="material-icons">group</i></h2>
-					<h5 class="center">Great user experience</h5>
+					<h2 class="w3-center w3-text-brown"><i class="fas fa-users fa-2x"/></h2>
+					<h5 class="w3-center w3-text-teal">Great user experience</h5>
 
 					<p class="light">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quis dolorum dolorem nemo repellat
 						aliquid molestiae explicabo, unde facere alias perferendis pariatur commodi quam accusantium quos maxime iure
@@ -47,8 +42,8 @@
 
 			<div class="w3-col s12 m4">
 				<div class="icon-block">
-					<h2 class="center brown-text"><i class="material-icons">settings</i></h2>
-					<h5 class="center">Highly customizable</h5>
+					<h2 class="w3-center w3-text-brown"><i class="fas fa-sliders-h fa-2x"/></h2>
+					<h5 class="w3-center w3-text-teal">Highly customizable</h5>
 
 					<p class="light">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Inventore, deleniti molestiae ea
 						itaque, minus architecto voluptates delectus similique expedita eveniet autem consequatur ipsam doloribus fugit
@@ -60,16 +55,11 @@
 	</div>
 </div>
 
-
-<div class="parallax-w3-container valign-wrapper">
-	<div class="section no-pad-bot">
-		<div class="w3-container">
-			<div class="w3-row center">
-				<h5 class="header w3-col s12 light">A modern responsive user interface based on Material Design</h5>
-			</div>
-		</div>
+<!-- Second Parallax Image with Portfolio Text -->
+<div class="bgimg-2 w3-display-container">
+	<div class="w3-display-middle w3-center">
+		<span class="w3-xxlarge w3-text-white w3-wide">A modern responsive user interface based on Material Design</span>
 	</div>
-	<div class="parallax"><img src="background2.jpg" alt="Unsplashed background img 2"></div>
 </div>
 
 <div class="w3-container">
@@ -77,7 +67,6 @@
 
 		<div class="w3-row">
 			<div class="w3-col s12 center">
-				<h3><i class="mdi-content-send brown-text"></i></h3>
 				<h4 class="w3-text-teal">Contact Us</h4>
 				<p class="left-align light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque id nunc nec
 					volutpat. Etiam pellentesque tristique arcu, non consequat magna fermentum ac. Cras ut ultricies eros. Maecenas
@@ -91,16 +80,11 @@
 	</div>
 </div>
 
-
-<div class="parallax-w3-container valign-wrapper">
-	<div class="section no-pad-bot">
-		<div class="w3-container">
-			<div class="w3-row center">
-				<h5 class="header w3-col s12 light">Fast and robust Javascript back-end</h5>
-			</div>
-		</div>
+<!-- Third Parallax Image with Portfolio Text -->
+<div class="bgimg-3 w3-display-container">
+	<div class="w3-display-middle w3-center">
+			<span class="w3-xxlarge w3-text-black w3-wide">Fast and robust Javascript back-end</span>
 	</div>
-	<div class="parallax"><img src="background3.jpg" alt="Unsplashed background img 3"></div>
 </div>
 
 <script>
@@ -112,39 +96,42 @@
 </script>
 
 <style>
-	.parallax-w3-container {
-		min-height: 380px;
-		line-height: 0;
-		height: auto;
-		color: rgba(255, 255, 255, .9);
-	}
-
-	.parallax-w3-container .section {
-		width: 100%;
-	}
-
-	@media only screen and (max-width : 992px) {
-		.parallax-w3-container .section {
-			position: absolute;
-			top: 40%;
+		/* Create a Parallax Effect */
+		.bgimg-1, .bgimg-2, .bgimg-3 {
+				background-attachment: fixed;
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
 		}
-
-		#index-banner .section {
-			top: 10%;
+		
+		/* First image (Logo. Full height) */
+		.bgimg-1 {
+				background-image: url("/background5.jpg");
+				top: -4px;
+				min-height: 500px;
 		}
-	}
-
-	@media only screen and (max-width : 600px) {
-		#index-banner .section {
-			top: 0;
+		
+		/* Second image (Portfolio) */
+		.bgimg-2 {
+				background-image: url("/background3.jpg");
+				min-height: 500px;
 		}
-	}
+		
+		/* Third image (Contact) */
+		.bgimg-3 {
+				background-image: url("/background4.jpg");
+				min-height: 500px;
+		}
+		
+		.w3-wide {
+			letter-spacing: 10px;
+			}
 
-	.icon-block {
-		padding: 0 15px;
-	}
-
-	.icon-block .material-icons {
-		font-size: inherit;
-	}
-</style>
+		/* Turn off parallax scrolling for tablets and phones */
+		@media only screen and (max-device-width: 1600px) {
+				.bgimg-1, .bgimg-2, .bgimg-3 {
+						background-attachment: scroll;
+						min-height: 400px;
+				}
+		}
+		</style>
