@@ -8,7 +8,7 @@
 	<h4 class="w3-text-teal">Blog</h4>
 
 	{#if Boolean(blogs)}
-		<ul class="w3-collection">
+		<ul class="w3-ul">
 			{#each blogs as blog}
 			<!-- 
 				we're using the non-standard `rel=prefetch` attribute to
@@ -16,10 +16,16 @@
 				the user hovers over the link or taps it, instead of
 				waiting for the 'click' event 
 			-->
-			<li class="w3-collection-item">
-				<!-- <a rel='prefetch' href='blog/{blog.slug}'>{blog.title}</a> -->
-				<a href='blog/{blog.slug}'>{blog.title}</a>
-			</li>
+			<li class="w3-bar">
+					<span class="w3-bar-item w3-right w3-small w3-text-grey">{blog.slug}</span>
+					<div class="w3-bar-item">
+							<i class="fas fa-question-circle fa-3x"></i>
+					</div>
+					<div class="w3-bar-item">
+						<span class="w3-large"><a href='blog/{blog.slug}'>{blog.title}</a></span><br>
+						<span class="w3-text-grey">{@html blog.html.split(" ").splice(0,10).join(" ")}...</span>
+					</div>
+				</li>
 			{/each}
 			</ul>
 	{/if}
@@ -56,11 +62,11 @@
 				}
 				this.set({ blogs: res.blogs })
 
-				this.store.banner({
-					html: "With a link <a href='/company/about' class='black-text'>About</a> and manual dismiss", 
-					level: 'info',
-					duration: 0
-				})
+				// this.store.banner({
+				// 	html: "With a link <a href='/company/about' class='black-text'>About</a> and manual dismiss", 
+				// 	level: 'info',
+				// 	duration: 0
+				// })
 			} catch (err) {
 				this.set({ blogs: [] })
 			}

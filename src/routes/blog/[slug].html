@@ -63,17 +63,16 @@
 					}
 				}).then(res => res.json())
 
-				// console.log('res', res)
 				if (res.error) {
 					throw res.error
 				}
 				this.set({ blog: res.blog })
 
-				this.store.banner({
-					html: "Auto dismiss after 3s", 
-					level: 'warning',
-					duration: 3
-				})
+				// this.store.banner({
+				// 	html: "Auto dismiss after 3s", 
+				// 	level: 'warning',
+				// 	duration: 3
+				// })
 			} catch (err) {
 				this.set({ blog: null })
 			}
