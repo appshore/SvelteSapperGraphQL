@@ -1,75 +1,73 @@
 <svelte:head>
-	<title>Blog</title>
+  <title>Blog</title>
 </svelte:head>
 
-
 {#if Boolean($isAuth) }
-<div class="w3-container">
-	<h4 class="w3-text-teal">Blog</h4>
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+  <h3 class="w3-text-teal">Blog</h3>
 
-	{#if Boolean(blogs)}
-		<ul class="w3-ul">
-			{#each blogs as blog}
-			<!-- 
-				we're using the non-standard `rel=prefetch` attribute to
-				tell Sapper to load the data for the page as soon as
-				the user hovers over the link or taps it, instead of
-				waiting for the 'click' event 
+	{#if Boolean(blogs)} 
+		{#each blogs as blog}
+		<div class="w3-row w3-display-container">
+			<!--
+				<div class="w3-bar-item">
+						<i class="fas fa-question-circle fa-3x"></i>
+				</div>
 			-->
-			<li class="w3-bar">
-					<span class="w3-bar-item w3-right w3-small w3-text-grey">{blog.slug}</span>
-					<div class="w3-bar-item">
-							<i class="fas fa-question-circle fa-3x"></i>
-					</div>
-					<div class="w3-bar-item">
-						<span class="w3-large"><a href='blog/{blog.slug}'>{blog.title}</a></span><br>
-						<span class="w3-text-grey">{@html blog.html.split(" ").splice(0,10).join(" ")}...</span>
-					</div>
-				</li>
-			{/each}
-			</ul>
+			<div class="w3-col l12 w3-large">
+				<a href="blog/{blog.slug}">{blog.title}</a>
+			</div>
+			<div class="w3-col l9 w3-text-grey">
+				<a href="blog/{blog.slug}">{@html blog.content}...</a>
+			</div>
+			<div class="w3-col l3 w3-display-bottomright w3-small w3-text-grey">
+				<span class="w3-right">{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a></span>
+			</div>
+		</div>
+		<hr/>
+		{/each} 
 	{/if}
 
 </div>
 {/if}
 
 <script>
-	import * as sapper from '../../../__sapper__/client'
+  import * as sapper from '../../../__sapper__/client'
 
-	export default {
-		data() {
-			return {
-				blogs: []
-			}
-		},
-		async oncreate() {
-			// this works better than the commented redirect above
-			if (Boolean(this.store.get().isAuth) === false) {
-				sapper.goto('/')
-			}
+  export default {
+    data() {
+      return {
+        blogs: [],
+      }
+    },
+    async oncreate() {
+      // this works better than the commented redirect above
+      if (Boolean(this.store.get().isAuth) === false) {
+        sapper.goto('/')
+      }
 
-			try {
-				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
-					method: 'GET',
-					credentials: 'same-origin',
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-					}
-				}).then(res => res.json())
-				if( res.error ) {
-					throw res.error
-				}
-				this.set({ blogs: res.blogs })
+      try {
+        let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
+          method: 'GET',
+          credentials: 'same-origin',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }).then(res => res.json())
+        if (res.error) {
+          throw res.error
+        }
+        this.set({ blogs: res.blogs })
 
-				// this.store.banner({
-				// 	html: "With a link <a href='/company/about' class='black-text'>About</a> and manual dismiss", 
-				// 	level: 'info',
-				// 	duration: 0
-				// })
-			} catch (err) {
-				this.set({ blogs: [] })
-			}
-		}
-	}
+        // this.store.banner({
+        // 	html: "With a link <a href='/company/about' class='black-text'>About</a> and manual dismiss",
+        // 	level: 'info',
+        // 	duration: 0
+        // })
+      } catch (err) {
+        this.set({ blogs: [] })
+      }
+    },
+  }
 </script>

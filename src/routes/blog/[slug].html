@@ -3,39 +3,19 @@
 </svelte:head>
 
 {#if Boolean($isAuth) && Boolean(blog)}
-	<div class="w3-container">
-		<h4>
-			<a href="/blog">Blog</a> <i class="fas fa-chevron-right"/> <span class="w3-text-teal">{blog.title}</span>
-		</h4>
-
-		<div class='content'>
-			{@html blog.html}
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+		<h3>
+			<a href="/blog" class="w3-text-blue">Blog</a> <i class="fas fa-chevron-right"/> <span class="w3-text-teal">{blog.title}</span>
+		</h3>
+		<div class="w3-small w3-text-grey">
+			<span class="w3-right">{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a></span>
+			<br/>
+		</div>
+		<div>
+			{@html blog.content}
 		</div>
 	</div>
 {/if}
-
-<style>
-	/*
-		By default, CSS is locally scoped to the component,
-		and any unused styles are dead-code-eliminated.
-		In this page, Svelte can't know which elements are
-		going to appear inside the {{{blog.html}}} block,
-		so we have to use the :global(...) modifier to target
-		all elements inside .content
-	*/
-	.content :global(pre) {
-		background-color: #f9f9f9;
-		box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
-		padding: 0.5em;
-		border-radius: 2px;
-		overflow-x: auto;
-	}
-
-	.content :global(pre) :global(code) {
-		background-color: transparent;
-		padding: 0;
-	}
-</style>
 
 <script>
 	import * as sapper from '../../../__sapper__/client'
