@@ -8,21 +8,23 @@
 
 	{#if Boolean(blogs)} 
 		{#each blogs as blog}
-		<div class="w3-row w3-display-container">
+		<div class="title w3-row">
 			<!--
 				<div class="w3-bar-item">
 						<i class="fas fa-question-circle fa-3x"></i>
 				</div>
 			-->
-			<div class="w3-col l12 w3-large">
+			<div class="w3-col m8 s9 w3-large">
 				<a href="blog/{blog.slug}">{blog.title}</a>
 			</div>
-			<div class="w3-col l9 w3-text-grey">
-				<a href="blog/{blog.slug}">{@html blog.content}...</a>
+			<div class="w3-col m4 m3 w3-small w3-text-grey">
+				<span class="w3-right">
+					{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
+				</span>
 			</div>
-			<div class="w3-col l3 w3-display-bottomright w3-small w3-text-grey">
-				<span class="w3-right">{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a></span>
-			</div>
+		</div>
+		<div class="w3-text-grey">
+				<a href="blog/{blog.slug}">{@html blog.content}</a>
 		</div>
 		<hr/>
 		{/each} 
@@ -30,6 +32,13 @@
 
 </div>
 {/if}
+
+<style>
+	.title {
+		display:flex;
+    align-items:center;
+	}
+</style>
 
 <script>
   import * as sapper from '../../../__sapper__/client'

@@ -7,9 +7,14 @@ export const filterBlog = (blog, user) => {
     title: blog.title,
     slug: blog.slug,
     content: blog.html
-      .split(' ')
-      .splice(0, 10)
-      .join(' '),
+      .substring(0, 200)
+      .split('</')
+      .splice(0, 2)
+      .join('</')+'...',
+    // content: blog.html
+    //   .split(' ')
+    //   .splice(0, 10)
+    //   .join(' '),
     timestamp: formatRelative(blog.createdAt, new Date(), {locale: enGB}),
     userId: user._id,
     username: user.username,

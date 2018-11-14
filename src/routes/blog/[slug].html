@@ -4,18 +4,35 @@
 
 {#if Boolean($isAuth) && Boolean(blog)}
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-		<h3>
-			<a href="/blog" class="w3-text-blue">Blog</a> <i class="fas fa-chevron-right"/> <span class="w3-text-teal">{blog.title}</span>
-		</h3>
-		<div class="w3-small w3-text-grey">
-			<span class="w3-right">{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a></span>
-			<br/>
+		<div class="title w3-row">
+			<!--
+				<div class="w3-bar-item">
+						<i class="fas fa-question-circle fa-3x"></i>
+				</div>
+			-->
+			<div class="w3-col m8 s9">
+				<h3>
+					<a href="/blog" class="w3-text-blue">Blog</a> <i class="fas fa-angle-right w3-text-orange"/> <span class="w3-text-teal">{blog.title}</span>
+				</h3>
+			</div>
+			<div class="w3-col m4 m3 w3-small w3-text-grey">
+				<span class="w3-right">
+					{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
+				</span>
+			</div>
 		</div>
 		<div>
 			{@html blog.content}
 		</div>
 	</div>
 {/if}
+
+<style>
+	.title {
+		display:flex;
+    align-items:center;
+	}
+</style>
 
 <script>
 	import * as sapper from '../../../__sapper__/client'
