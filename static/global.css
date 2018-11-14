@@ -7,3 +7,8 @@ body {
 a:link {
 	text-decoration: none;
 }
+
+.valign {
+	display:flex;
+	align-items:center;
+}

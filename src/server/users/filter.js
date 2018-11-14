@@ -1,4 +1,4 @@
-// Add extra info to the user's profile
+// Add extra info to the user profile
 export const extendProfile = user => {
   user.fullName = user.firstName + ' ' + user.lastName
   return user

@@ -6,16 +6,13 @@ export const filterBlog = (blog, user) => {
   return {
     title: blog.title,
     slug: blog.slug,
-    content: blog.html
-      .substring(0, 200)
-      .split('</')
-      .splice(0, 2)
-      .join('</')+'...',
-    // content: blog.html
-    //   .split(' ')
-    //   .splice(0, 10)
-    //   .join(' '),
-    timestamp: formatRelative(blog.createdAt, new Date(), {locale: enGB}),
+    content:
+      blog.html
+        .substring(0, 200)
+        .split('</')
+        .splice(0, 2)
+        .join('</') + '...',
+    timestamp: formatRelative(blog.createdAt, new Date(), { locale: enGB }),
     userId: user._id,
     username: user.username,
   }
@@ -27,7 +24,7 @@ export const filterSlug = (blog, user) => {
     title: blog.title,
     slug: blog.slug,
     content: blog.html,
-    timestamp: formatRelative(blog.createdAt, new Date(), {locale: enGB}),
+    timestamp: formatRelative(blog.createdAt, new Date(), { locale: enGB }),
     userId: user._id,
     username: user.username,
   }

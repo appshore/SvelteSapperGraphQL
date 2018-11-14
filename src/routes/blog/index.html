@@ -8,7 +8,7 @@
 
 	{#if Boolean(blogs)} 
 		{#each blogs as blog}
-		<div class="title w3-row">
+		<div class="valign w3-row">
 			<!--
 				<div class="w3-bar-item">
 						<i class="fas fa-question-circle fa-3x"></i>
@@ -32,13 +32,6 @@
 
 </div>
 {/if}
-
-<style>
-	.title {
-		display:flex;
-    align-items:center;
-	}
-</style>
 
 <script>
   import * as sapper from '../../../__sapper__/client'

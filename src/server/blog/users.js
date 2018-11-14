@@ -3,7 +3,7 @@ import { filterProfile } from '../users/filter'
 
 export const getUsers = async ids => {
 
-    // make an array of unique ids
+  // make an array of unique ids
   ids = [...new Set(ids.map(f => f.toString()))]
 
   return await userModel
