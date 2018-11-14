@@ -7,24 +7,19 @@
   <h3 class="w3-text-teal">Blog</h3>
 
 	{#if Boolean(blogs)} 
-		{#each blogs as blog}
-		<div class="valign w3-row">
-			<!--
-				<div class="w3-bar-item">
-						<i class="fas fa-question-circle fa-3x"></i>
-				</div>
-			-->
-			<div class="w3-col m8 s9 w3-large">
-				<a href="blog/{blog.slug}">{blog.title}</a>
-			</div>
-			<div class="w3-col m4 m3 w3-small w3-text-grey">
-				<span class="w3-right">
+    {#each blogs as blog}
+    <div class="w3-row">
+      <div class="w3-col s9">
+          <a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a>
+      </div>
+			<div class="w3-col s3">
+				<span class="w3-right w3-small w3-text-grey">
 					{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
 				</span>
 			</div>
-		</div>
-		<div class="w3-text-grey">
-				<a href="blog/{blog.slug}">{@html blog.content}</a>
+    </div>
+    <div>
+        <a href="blog/{blog.slug}">{@html blog.content}</a>
 		</div>
 		<hr/>
 		{/each} 
