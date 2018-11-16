@@ -1,6 +1,8 @@
 {#if $isAuth}
 	<div class="w3-dropdown-hover w3-right">
-    <span class="w3-bar-item w3-text-blue w3-hover-light-grey">{label} <i class="fa fa-caret-down"></i></span>
+    <span class="w3-bar-item w3-text-blue w3-hover-light-grey">
+			<i class="fa fa-user-alt w3-text-orange"/>&nbsp;{label}&nbsp;<i class="fa fa-caret-down"></i>
+		</span>
     <div class="w3-dropdown-content w3-bar-block w3-card-4">
       <a href="/user/profile" class="w3-bar-item w3-button w3-hover-light-grey">Profile</a>
       <a href="/user/prefs" class="w3-bar-item w3-button w3-hover-light-grey">Preferences</a>
