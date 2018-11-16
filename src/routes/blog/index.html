@@ -2,69 +2,59 @@
   <title>Blog</title>
 </svelte:head>
 
-{#if Boolean($isAuth) }
 <div class="w3-container {!$isMobile && 'w3-margin'}">
   <h3 class="w3-text-teal">Blog</h3>
 
-	{#if Boolean(blogs)} 
+  {#if Boolean(blogs)} 
     {#each blogs as blog}
     <div class="w3-row">
-      <div class="w3-col s9">
-          <a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a>
+      <div class="w3-col s9"><a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a></div>
+      <div class="w3-col s3">
+        <span class="w3-right w3-small w3-text-grey">
+          {blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
+        </span>
       </div>
-			<div class="w3-col s3">
-				<span class="w3-right w3-small w3-text-grey">
-					{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
-				</span>
-			</div>
     </div>
-    <div>
-        <a href="blog/{blog.slug}">{@html blog.content}</a>
-		</div>
-		<hr/>
-		{/each} 
-	{/if}
-
+    <div><a href="blog/{blog.slug}">{@html blog.content}</a></div>
+    <hr />
+    {/each} 
+  {/if}
 </div>
-{/if}
 
 <script>
   import * as sapper from '../../../__sapper__/client'
 
   export default {
-    data() {
-      return {
-        blogs: [],
+    preload(params) {
+      if ( this.store.get().isAuth === false ) {
+        return this.redirect(301, '/')
       }
     },
-    async oncreate() {
-      // this works better than the commented redirect above
-      if (Boolean(this.store.get().isAuth) === false) {
-        sapper.goto('/')
-      }
 
+    data() {
+      return {
+        blogs: []
+      }
+    },
+    
+    async oncreate() {
       try {
         let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
           method: 'GET',
           credentials: 'same-origin',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }).then(res => res.json())
         if (res.error) {
           throw res.error
         }
         this.set({ blogs: res.blogs })
-
-        // this.store.banner({
-        // 	html: "With a link <a href='/company/about' class='black-text'>About</a> and manual dismiss",
-        // 	level: 'info',
-        // 	duration: 0
-        // })
       } catch (err) {
         this.set({ blogs: [] })
       }
-    },
+    }
+
   }
 </script>

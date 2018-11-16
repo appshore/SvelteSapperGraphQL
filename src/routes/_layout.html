@@ -1,18 +1,23 @@
-<div class="mobileOnly">
+<!-- {#if $isMobile} -->
+<div style="display:{$isMobile?'block':'none'}">
 		<MobileNav path={child.props.path}/>
+<!-- {:else} -->
 </div>
-<div class="webOnly">
+<div style="display:{$isMobile?'none':'block'}">
 		<WebNav path={child.props.path}/>
 </div>
+<!-- {/if} -->
 
-<main isMobile={$isMobile}>
+<main>
 	<Banner />
 	<svelte:component this={child.component} {...child.props} />
 </main>
 
-<div class="webOnly">
+<!-- {#if $isMobile == false} -->
+<div style="display:{$isMobile?'none':'block'}">
 	<WebFooter/>
 </div>
+<!-- {/if} -->
 
 <style>
 	main {
@@ -28,13 +33,6 @@
 			WebFooter: '../components/WebFooter.html',
 			WebNav: '../components/WebNav.html',
 			MobileNav: '../components/MobileNav.html'
-		},
-	
-		onupdate({ changed, current, previous }) {
-			if( changed.$isMobile ) {
-				document.querySelectorAll(".mobileOnly").forEach( elt => elt.style.display = current.$isMobile ? "block" : "none")
-				document.querySelectorAll(".webOnly").forEach( elt => elt.style.display = current.$isMobile ? "none" : "block")
-			}
 		}
 	}
 </script>

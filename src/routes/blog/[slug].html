@@ -2,7 +2,7 @@
 	<title>{blog.title}</title>
 </svelte:head>
 
-{#if Boolean($isAuth) && Boolean(blog)}
+{#if Boolean(blog)}
 <div class="w3-container {!$isMobile && 'w3-margin'}">
 	<h3>
 		<a href="/blog" class="w3-text-blue">Blog</a> <i class="fas fa-chevron-right w3-text-orange"/> <span class="w3-text-teal">{blog.title}</span>
@@ -36,18 +36,21 @@
 	import * as sapper from '../../../__sapper__/client'
 
 	export default {
+		preload(params) {
+      if ( this.store.get().isAuth === false ) {
+        return this.redirect(301, '/')
+      }
+		},
+		
 		data() {
 			return {
-				blog: {}
+				blog: {},
+				nextSlug: null,
+				prevSlug: null
 			}
 		},
-		async oncreate() {
-			// this works better than the commented redirect above
-			if (Boolean(this.store.get().isAuth) === false) {
-				sapper.goto('/')
-			}
-			// console.log('slug', this, this.get().params)
 
+		async oncreate() {
 			try {
 				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
 					method: 'GET',
@@ -61,16 +64,15 @@
 				if (res.error) {
 					throw res.error
 				}
-				this.set({ blog: res.blog, nextSlug: res.nextSlug, prevSlug: res.prevSlug })
-
-				// this.store.banner({
-				// 	html: "Auto dismiss after 3s", 
-				// 	level: 'warning',
-				// 	duration: 3
-				// })
+				this.set({ 
+					blog: res.blog, 
+					nextSlug: res.nextSlug, 
+					prevSlug: res.prevSlug
+				})
 			} catch (err) {
 				this.set({ blog: null, nextSlug: null, prevSlug: null })
 			}
 		}
+
 	}
 </script>

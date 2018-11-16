@@ -7,7 +7,7 @@
 	</div>
 </div>
 
-<div class="mobile-sidebar w3-sidebar w3-bar-block w3-card">
+<div class="w3-sidebar w3-bar-block w3-card mobile-sidebar">
 	<div class="items">
 		<MobileNavMenuItem href="/products" title="Products"/>
 		<MobileNavMenuItem href="/services" title="Services"/>
@@ -24,8 +24,12 @@
 		<hr/>
 
 		{#if $isAuth }
+		<span class="w3-bar-item w3-text-blue w3-hover-light-grey">
+			<i class="fa fa-user-alt w3-text-orange" />&nbsp;{$user ? $user.username : ""}
+		</span>
 		<MobileNavMenuItem href="/user/profile" title="Profile"/>
 		<MobileNavMenuItem href="/user/prefs" title="Preferences"/>
+		<hr/>
 		<MobileNavMenuItem href="/user/logout" title="Logout" classes="w3-text-orange"/>
 		{:else}
 		<MobileNavMenuItem href="/user/login" title="Login" classes="w3-text-blue"/>
@@ -41,7 +45,6 @@
 <div class="mobile-overlay w3-overlay" on:click="toggleSidebar()"></div>
 
 <style>
-
 	hr {
 		margin: unset;
 	}
@@ -69,10 +72,10 @@
 		display: none;
 		z-index: 4;
 	} 
-	
 </style> 
 
 <script>
+
 	export default {
 		components: {
 			MobileNavMenuItem: './MobileNavMenuItem.html'

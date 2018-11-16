@@ -1,30 +1,31 @@
 {#if Boolean($banner)}
 <div class="w3-container">
 	<div class="w3-panel {$banner.classes} w3-display-container w3-card-4">
-			{#if $banner.duration == 0}
-				<div class="w3-display-topright">
-					<i on:click="dismiss()" class="fas fa-times-circle"/>
-				</div>
-			{/if}
-			<h6 class="w3-padding-16">{@html $banner.html}</h6>
-	</div> 
+		{#if $banner.duration == 0}
+		<div class="w3-display-topright">
+			<i on:click="dismiss()" class="fas fa-times-circle" />
+		</div>
+		{/if}
+		<h6 class="w3-padding-16">{@html $banner.html}</h6>
+	</div>
 </div>
 {/if}
 
 <style>
-	.fas, .fas:hover {
-		margin: 10px 10px ;
-		cursor: pointer;
+	.fas,
+	.fas:hover {
+	  margin: 10px 10px;
+	  cursor: pointer;
 	}
 </style>
 
 
 <script>
 	export default {
-		methods: {
-			dismiss() {
-				this.store.banner()
-			}
-		}
+	  methods: {
+	    dismiss() {
+	      this.store.banner()
+	    },
+	  },
 	}
 </script>

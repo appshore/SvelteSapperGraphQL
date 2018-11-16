@@ -16,12 +16,14 @@
           <h2 class="w3-wide">$ 10</h2>
           <span class="w3-opacity">per month</span>
         </li>
+        {#if $isAuth === false}
         <li class="w3-grey w3-padding-24"><a href="/user/signup" class="w3-button w3-black w3-padding-large">Sign Up</a></li>
+        {/if}      
       </ul>
     </div>
     <div class="w3-third">
       <ul class="w3-ul w3-light-grey w3-hover-shadow">
-        <li class="w3-teal w3-xlarge w3-padding-48">Pro</li>
+        <li class="w3-orange w3-xlarge w3-padding-48">Pro</li>
         <li class="w3-padding-16"><b>25GB</b> Storage</li>
         <li class="w3-padding-16"><b>25</b> Emails</li>
         <li class="w3-padding-16"><b>25</b> Domains</li>
@@ -30,12 +32,14 @@
           <h2 class="w3-wide">$ 25</h2>
           <span class="w3-opacity">per month</span>
         </li>
+        {#if $isAuth === false}
         <li class="w3-grey w3-padding-24"><a href="/user/signup" class="w3-button w3-black w3-padding-large">Sign Up</a></li>
+        {/if}      
       </ul>
     </div>
     <div class="w3-third w3-section">
       <ul class="w3-ul w3-light-grey w3-hover-shadow w3-margin-left">
-        <li class="w3-orange w3-xlarge w3-padding-32">Premium</li>
+        <li class="w3-teal w3-xlarge w3-padding-32">Premium</li>
         <li class="w3-padding-16"><b>50GB</b> Storage</li>
         <li class="w3-padding-16"><b>50</b> Emails</li>
         <li class="w3-padding-16"><b>50</b> Domains</li>
@@ -44,7 +48,9 @@
           <h2 class="w3-wide">$ 50</h2>
           <span class="w3-opacity">per month</span>
         </li>
+        {#if $isAuth === false}
         <li class="w3-grey w3-padding-24"><a href="/user/signup" class="w3-button w3-black w3-padding-large">Sign Up</a></li>
+        {/if}
       </ul>
     </div>
   </div>

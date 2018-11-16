@@ -7,14 +7,16 @@
 					<img src="{$CFG.LOGO}" alt="{$CFG.BRAND}" />
 				</a>&nbsp;
 			</div>
-			<!-- Large screen menu -->
+
 			<div class="w3-rest">
+				<!-- left side menu items -->
 				<WebNavMenuItem path={path} href="/products" title="Products" />
 				<WebNavMenuItem path={path} href="/services" title="Services" />
 				<WebNavMenuItem path={path} href="/pricing" title="Pricing" />
 				<WebNavMenuItem path={path} href="/support" title="Support" />
 				<WebNavMenuItem path={path} href="/forum" title="Forum" />
 
+				<!-- right side menu items, listed in reverse order -->
 				<UserDropDown label='{$user ? $user.username : ""}' />
 
 				{#if $isAuth === false}
@@ -27,6 +29,7 @@
 				<WebNavMenuItem path={path} href="/blog" title="Blog" classes="w3-right" />
 				{/if}
 			</div>
+			
 		</div>
 	</div>
 </div>

@@ -1,19 +1,31 @@
 <script>
+	import * as sapper from '../../../__sapper__/client'
+
 	export default {
-		preload() {
+		preload(params) {
+      if ( this.store.get().isAuth === false) {
+        return this.redirect(301, '/')
+      }
+		},
+
+    oncreate() {
 			this.store.logout()
 				.then(res => {
 					if (res.error) {
 						throw res.error
 					} else {
-						// console.log('logout/preload', res, this.store.get())
+						this.store.banner({
+							html: "Signed off",
+							level: 'warning',
+							duration: 3
+						})
 					}
 				})
 				.catch(err => {
-					console.error('logout/preload catch', err)
+					console.error('logout/oncreate catch', err)
 				})
-
-			this.redirect(301, '/')
+			return sapper.goto('/')	
 		}
+
 	}
 </script>

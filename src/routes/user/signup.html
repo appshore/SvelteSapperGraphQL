@@ -61,6 +61,12 @@
   import * as sapper from '../../../__sapper__/client'
 
   export default {
+		preload(params) {
+      if ( this.store.get().isAuth ) {
+        return this.redirect(301, '/')
+      }
+		},
+
     data() {
       return {
         form: {
@@ -70,6 +76,7 @@
         },
       }
     },
+
     methods: {
       async handleSubmit(evt) {
         evt.preventDefault()
@@ -81,9 +88,10 @@
           let { user } = this.store.get()
           // console.log('signup/handleSubmit auth', this.get(), this.store.get())
           this.store.toast({ html: `Hello ${user.username}. Thank you for signing up!` })
-          sapper.goto('/')
+          return sapper.goto('/')
         }
-      },
-    },
+      }
+    }
+
   }
 </script>

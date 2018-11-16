@@ -8,9 +8,11 @@
 			{$CFG.BRAND}<br/>
 			For Smart Business
 		</div>
+		{#if $isAuth === false}
 		<div class="w3-row w3-padding-32">
 			<a href="/customer/signup" class="w3-button w3-xlarge w3-teal w3-text-black">Get Started</a>
 		</div>
+		{/if}
 	</div>
 </div>
 
