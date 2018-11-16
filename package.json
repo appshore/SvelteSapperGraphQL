@@ -7,6 +7,10 @@
     "build": "sapper build",
     "export": "sapper export",
     "start": "node __sapper__/build",
+    "-- TESTS --": "",
+    "cy:run": "cypress run",
+    "cy:open": "cypress open",
+    "test": "run-p --race dev cy:run",
     "-- DATABASE --": "",
     "mongo": "mongod --dbpath ./db",
     "dump": "mongodump --db=sapeur --out=dump/$npm_package_version"
