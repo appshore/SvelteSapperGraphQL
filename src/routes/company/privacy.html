@@ -2,12 +2,12 @@
 	<title>{$CFG.COMPANY} - Privacy Policy</title>
 </svelte:head>
 
-<div class="w3-container">
-	<h4 class="w3-text-teal">Privacy Policy</h4>
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+	<h3 class="w3-text-teal">Privacy Policy</h3>
 	{$CFG.COMPANY} is providing this privacy statement to make you aware of our practices regarding the ways we
-	collect information submitted on {$CFG.WEBSITE}. If you have any questions about our Privacy Policy, contact: <a
-	 href="mailto:{$CFG.EMAIL.LEGAL}">{$CFG.EMAIL.LEGAL}</a>.
-	<h5>Collection of Personal Information and Use</h5>
+	collect information submitted on {$CFG.WEBSITE}. If you have any questions about our Privacy Policy, send an email at <a
+	 href="mailto:{$CFG.EMAIL.LEGAL}" class="w3-text-blue">{$CFG.EMAIL.LEGAL}</a>.
+	<h5 class="w3-text-orange">Collection of Personal Information and Use</h5>
 	Physical, electronic and managerial procedures have been employed by {$CFG.COMPANY} to safeguard the security and
 	integrity of your personal information. We use the information you provide about yourself when registering only to
 	complete the registration process. We do not share this information with outside parties. We use return email
@@ -18,24 +18,23 @@
 	information.<br />
 	{$CFG.COMPANY} does not knowingly collect or maintain any personal information from children under the age of 13.
 	In addition, no part of our site is designed with the purpose of attracting any person under age 13.
-	<h5>Computer Tracking</h5>
+	<h5 class="w3-text-orange">Computer Tracking</h5>
 	Our web site is not set up to track, collect or distribute personal information not entered by visitors.
 	Our site logs do generate certain kinds of non-identifying site usage data, such as the number of hits and visits to
 	our sites. This information is used for internal purposes by technical support staff to provide better services to the
 	public and may also be provided to others, but the statistics contain no personal information and cannot be used to
 	gather such information.
-	<h5>Cookies</h5>
+	<h5 class="w3-text-orange">Cookies</h5>
 	A cookie is a small amount of data that is sent to your browser from a Web server and stored on your computer's hard
 	drive. {$CFG.COMPANY} uses non-identifying cookies to provide easier site navigation and access to forms.
 	You may or may not be able to use the {$CFG.COMPANY} sites if your browser is set to reject cookies.
 	Our cookies do not generate personal data, do not read personal data from your machine and are never tied to anything
 	that could be used to identify you.
-	<h5>Security</h5>
-	If you have any questions about the security at our website, you can send an email to <a href="mailto:{$CFG.EMAIL.WEBMASTER}">{$CFG.EMAIL.WEBMASTER}</a>.
+	<h5 class="w3-text-orange">Security</h5>
+	If you have any questions about the security at our website, send an email at <a href="mailto:{$CFG.EMAIL.WEBMASTER}" class="w3-text-blue">{$CFG.EMAIL.WEBMASTER}</a>.
 	<br /><br />
 	Copyright © {$CFG.COMPANY}, Inc. All rights reserved. {$CFG.COMPANY} is a trademark of {$CFG.COMPANY},
 	Inc. Other trademarks are the property of their respective owners. The contents and images of this website are
 	protected by copyright. No portion of this website may be reproduced without the written consent of
 	{$CFG.COMPANY}.
-	<br /><br />
 </div>

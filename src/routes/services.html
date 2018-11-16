@@ -2,7 +2,32 @@
 	<title>{$CFG.BRAND} - Services</title>
 </svelte:head>
 
-<div class="w3-container">
-		<h4 class="w3-text-teal">Services</h4>
-
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+	<h3 class="w3-text-teal">Services</h3>
+	AppShore offers the following Professional Services at affordable rates. Please send an email at <a href="mailto:{$CFG.EMAIL.SUPPORT}" class="w3-text-blue">{$CFG.EMAIL.SUPPORT}</a> to
+	get a quote.
+	<h5 class="w3-text-orange">Data cleansing and import Service</h5>
+	Involves formatting of data in Excel spreadsheets, or data exported from other systems like ACT!, Outlook, Goldmine
+	or Salesforce.com,
+	and the proper importing of the data into your AppShore data base.<br />
+	If you would like us to add, delete, or modify records in your data base in bulk according rules that you define. We
+	can usually come up
+	with an automated script to do so.
+	<h5 class="w3-text-orange">Implementation of our Lead Capture Service</h5>
+	We can modify your web site ‘Contact Us’ form in order to implement our
+	automated Lead Capture feature. Have Leads loaded directly from your web site into your AppShore data base.
+	<h5 class="w3-text-orange">AppShore implementation review and analysis Service</h5>
+	We will review and analyze your use of AppShore and offer practical and technical recommendations on how to improve
+	the efficiency and productivity of your users. We can also implement the recommendations for you if you like.
+	<h5 class="w3-text-orange">Custom Reports</h5>
+	Can’t get the results you need from our standard reports or by building your own Custom Reports?
+	We can create new reports for you according on our business requirements.
+	<h5 class="w3-text-orange">Custom Applications</h5>
+	Do you need functionality we don’t provide in our standard system? We do custom development to enhance our existing
+	platform with new features and functions, or we can build an application from scratch.
+	We work with you to develop the specification, we provide you with an estimate of time and cost,
+	and deliver the application based on the terms agreed.
+	<h5 class="w3-text-orange">Data base recovery and back up</h5>
+	We do nightly back ups and save them for 30 days. If you have accidentally deleted records or otherwise corrupted
+	your data base we can restore it to a point in time of your choosing within the past 30 days of your request.
 </div>

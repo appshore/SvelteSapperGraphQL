@@ -2,8 +2,8 @@
 	<title>Forum</title>
 </svelte:head>
 
-<div class="w3-container">
-	<h4 class="w3-text-teal">Forum</h4>
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+		<h3 class="w3-text-teal">Forum</h3>
 	<ul class="w3-collection">
 		{#each posts as post}
 		<!-- we're using the non-standard `rel=prefetch` attribute to

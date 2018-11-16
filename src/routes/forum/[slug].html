@@ -2,10 +2,8 @@
 	<title>{post.title}</title>
 </svelte:head>
 
-<div class="w3-container">
-	<a href="/forum">
-		<h4 class="w3-text-teal">Forum</h4>
-	</a>
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+		<h3 class="w3-text-teal">Forum</h3>
 
 	<h5>{post.title}</h5>
 
@@ -15,15 +13,6 @@
 </div>
 
 <style>
-	/*
-				By default, CSS is locally scoped to the component,
-				and any unused styles are dead-code-eliminated.
-				In this page, Svelte can't know which elements are
-				going to appear inside the {{{post.html}}} block,
-				so we have to use the :global(...) modifier to target
-				all elements inside .content
-			*/
-
 	.content :global(pre) {
 		background-color: #f9f9f9;
 		box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
@@ -41,8 +30,6 @@
 <script>
 	export default {
 		async preload({ params, query }) {
-			// the `slug` parameter is available because
-			// this file is called [slug].html
 			const res = await this.fetch(`forum/${params.slug}.json`)
 			const data = await res.json()
 

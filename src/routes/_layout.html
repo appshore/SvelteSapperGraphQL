@@ -1,8 +1,8 @@
 <!-- {#if $isMobile} -->
 <div style="display:{$isMobile?'block':'none'}">
-		<MobileNav path={child.props.path}/>
-<!-- {:else} -->
+	<MobileNav path={child.props.path}/>
 </div>
+<!-- {:else} -->
 <div style="display:{$isMobile?'none':'block'}">
 		<WebNav path={child.props.path}/>
 </div>
