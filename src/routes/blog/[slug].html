@@ -5,18 +5,57 @@
 {#if Boolean(blog)}
 <div class="w3-container {!$isMobile && 'w3-margin'}">
 	<h3>
-		<a href="/blog" class="w3-text-blue">Blog</a> <i class="fas fa-chevron-right w3-text-orange"/> <span class="w3-text-teal">{blog.title}</span>
+		<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;<i class="fas fa-chevron-right w3-text-orange"/>
+		{#if editMode }
+			<input type="text" class="w3-border-0 w3-border-bottom w3-text-teal" size=50 maxlength=50 value="{blog.title}"/>
+		{:else}
+			<input type="text" class="w3-border-0 w3-border-bottom w3-border-white w3-text-teal" size=52 value="{blog.title}" disabled/>
+		{/if}
 	</h3>
 	<div class="w3-row">
-		<div class="w3-col s12">
+		<div class="w3-col s6">
+			<span class="w3-bar">
+				{#if editMode }
+					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleUndo()">
+						<i class="fas fa-undo w3-text-orange"/>
+					</button>
+					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleSave()">
+						<i class="fas fa-save w3-text-blue"/>
+					</button>
+					{#if blog.slug !== '_new' }
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
+							<i class="fas fa-trash-alt w3-text-red"/>
+						</button>
+					{/if}
+				{:else}
+					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleEdit()">
+						<i class="fas fa-edit w3-text-blue"/>
+					</button>
+					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleClone()">
+						<i class="fas fa-clone w3-text-orange"/>
+					</button>
+					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
+						<i class="fas fa-trash-alt w3-text-red"/>
+					</button>					
+					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+						<i class="fas fa-plus w3-text-teal"/>
+					</button>
+				{/if}
+			</span>
+		</div>
+		<div class="w3-col s6">
 			<span class="w3-right w3-small w3-text-grey">
 				{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
 			</span>
 		</div>
 	</div>
-	<div>
-			{@html blog.content}
-	</div>
+	{#if editMode }
+		<div class="w3-margin-top" id="editor"/>
+	{:else}
+		<div id="content">
+				{@html blog.content}
+		</div>
+	{/if}
 
 	<div class="w3-padding w3-center">
 		<h4>
@@ -33,6 +72,7 @@
 {/if}
 
 <script>
+	import Editor from 'cl-editor'
 	import * as sapper from '../../../__sapper__/client'
 
 	export default {
@@ -46,11 +86,16 @@
 			return {
 				blog: {},
 				nextSlug: null,
-				prevSlug: null
+				prevSlug: null,
+				editMode: false
 			}
 		},
 
 		async oncreate() {
+			console.log('blog/slug/oncreate', this.get(), this.store.get())
+			if( this.get().params.slug === '_new' ) {
+				return this.handleNew()
+			}
 			try {
 				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
 					method: 'GET',
@@ -72,7 +117,91 @@
 			} catch (err) {
 				this.set({ blog: null, nextSlug: null, prevSlug: null })
 			}
-		}
+		},
 
+		methods: {
+			handleEdit() {
+				// contentHeight must be set before editMode is true
+				// let contentHeight = `${Math.max(window.innerHeight-250, document.getElementById('content').clientHeight+100)}px`
+				let contentHeight = `${Math.max(400, document.getElementById('content').clientHeight+50)}px`
+				
+				this.set({ editMode: true})
+
+				const editor = new Editor({
+					// <HTMLElement> required
+					target: document.getElementById('editor'),
+					// optional
+					data: {
+						// <Array[string | Object]> string if overwriting, object if customizing/creating
+						// available actions:
+						// 'viewHtml', 'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
+						// 'ol', 'ul', 'hr', 'left', 'right', 'center', 'justify', 'a', 'image', 'forecolor', 'backcolor', 'removeFormat'
+						actions: [
+							'b', 'i', 'u', 'strike', 'ul', 'ol',
+							{
+								name: 'copy', // required
+								icon: '<i class="far fa-copy"/>', // string or html string (ex. <svg>...</svg>)
+								title: 'Copy',
+								result: () => {
+									// copy current selection or whole editor content
+									const selection = window.getSelection();
+									if (!selection.toString().length) {
+										const range = document.createRange();
+										range.selectNodeContents(editor.refs.editor);
+										selection.removeAllRanges();
+										selection.addRange(range);
+									}
+									editor.exec('copy');
+								}
+							},
+							'h1', 'p', 'image'
+						],
+						// default 300px
+						height: contentHeight,
+						// initial html
+						html: this.get().blog.content,
+						// remove format action clears formatting, but also removes some html tags.
+						// you can specify which tags you want to be removed.
+						// removeFormatTags: ['h1', 'h2', 'blackquote'] // default
+					}
+				})
+			},
+
+			handleUndo() {
+				console.log('blog/slug/handleUndo', this.get(), this.store.get())
+
+				if( this.get().blog.slug === '_new') {
+					return sapper.goto('/blog')
+				}
+				this.set({ editMode: false})
+			},
+
+			handleClone() {
+			},
+
+			handleDelete() {
+				if( this.get().blog.slug === '_new') {
+					return sapper.goto('/blog')
+				}
+				this.set({ editMode: false})
+			},
+			
+			handleNew() {
+				this.set({ 
+					blog: {
+						title: 'New blog',
+						slug: '_new',
+						content: '',
+						timestamp: '',
+						username: this.store.get().user.username
+					}
+				})
+				return this.handleEdit()
+			},
+			
+			handleSave() {
+				this.set({ editMode: false})
+			}
+		}
 	}
 </script>

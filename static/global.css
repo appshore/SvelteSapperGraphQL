@@ -7,3 +7,7 @@ body {
 a:link {
 	text-decoration: none;
 }
+
+*:focus {
+	outline-width: 1px;
+}

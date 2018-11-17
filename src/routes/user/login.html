@@ -5,7 +5,7 @@
 <div class="w3-container">
 	<div class="w3-container w3-padding-24">
 		<div class="w3-col l3 m2 s0">&nbsp;</div>
-		<div class="w3-col l6 m8 s12 w3-card-4 w3-center">
+		<div class="w3-col l6 m8 s12 w3-card-4 w3-round w3-center">
 
 			<h4 class="w3-margin-top w3-text-teal">Login to {$CFG.BRAND}</h4>
 
@@ -19,7 +19,12 @@
 					<span class="helper-text" data-error="8 characters minimum"></span>
 					<span class="w3-right w3-small w3-text-blue"><a href="/user/resetpassword">Forgot password?</a></span>
 				</div>
-				<button class="w3-button w3-block w3-teal w3-section" type="submit">Login</button>
+        <!-- <button class="w3-button w3-card w3-round w3-hover-light-grey w3-block w3-teal w3-section" type="submit">Login</button> -->
+        <div class="w3-section w3-center">
+          <button class="w3-button w3-card w3-round w3-hover-light-grey w3-teal w3-text-white" type="submit">
+              <i class="fas fa-sign-in-alt" />&nbsp;Login
+          </button>
+        </div>
 			</form>
 
 			<div class="w3-container w3-border-top w3-padding-16 w3-light-grey">

@@ -4,20 +4,25 @@
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
   <h3 class="w3-text-teal">Blog</h3>
-
+	
+  <button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew(event)">
+    <i class="fas fa-plus w3-text-teal"/>
+  </button>
   {#if Boolean(blogs)} 
-    {#each blogs as blog}
-    <div class="w3-row">
-      <div class="w3-col s9"><a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a></div>
-      <div class="w3-col s3">
-        <span class="w3-right w3-small w3-text-grey">
-          {blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
-        </span>
+    <div class="w3-margin-top">
+      {#each blogs as blog}
+      <div class="w3-row">
+        <div class="w3-col s9"><a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a></div>
+        <div class="w3-col s3">
+          <span class="w3-right w3-small w3-text-grey">
+            {blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
+          </span>
+        </div>
       </div>
+      <div><a href="blog/{blog.slug}">{@html blog.content}</a></div>
+      <hr />
+      {/each}
     </div>
-    <div><a href="blog/{blog.slug}">{@html blog.content}</a></div>
-    <hr />
-    {/each} 
   {/if}
 </div>
 
@@ -53,6 +58,12 @@
         this.set({ blogs: res.blogs })
       } catch (err) {
         this.set({ blogs: [] })
+      }
+    },
+
+    methods: {
+			handleNew(evt) {
+        sapper.goto('/blog/_new')
       }
     }
 
