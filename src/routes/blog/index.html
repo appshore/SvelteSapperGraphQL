@@ -12,10 +12,11 @@
     <div class="w3-margin-top">
       {#each blogs as blog}
       <div class="w3-row">
-        <div class="w3-col s9"><a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a></div>
-        <div class="w3-col s3">
-          <span class="w3-right w3-small w3-text-grey">
-            {blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
+        <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="blog/{blog.slug}">{blog.title}</a></div>
+        <div class="w3-col m4 s3">
+          <span class="w3-right w3-small w3-text-grey w3-right-align">
+              <span class="nowrap">{blog.timestamp}</span>
+              <span class="nowrap"> by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a><span/>
           </span>
         </div>
       </div>
@@ -25,6 +26,12 @@
     </div>
   {/if}
 </div>
+
+<style>
+  .nowrap {
+    white-space:nowrap;
+  }
+</style>
 
 <script>
   import * as sapper from '../../../__sapper__/client'

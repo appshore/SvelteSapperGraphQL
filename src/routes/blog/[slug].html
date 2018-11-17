@@ -4,16 +4,16 @@
 
 {#if Boolean(blog)}
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-	<h3>
+	<h3 class="nowrap">
 		<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;<i class="fas fa-chevron-right w3-text-orange"/>
 		{#if editMode }
-			<input type="text" class="w3-border-0 w3-border-bottom w3-text-teal" size=50 maxlength=50 value="{blog.title}"/>
+			<input type="text" class="title w3-border-0 w3-border-bottom w3-text-teal" value="{blog.title}"/>
 		{:else}
-			<input type="text" class="w3-border-0 w3-border-bottom w3-border-white w3-text-teal" size=52 value="{blog.title}" disabled/>
+			<input type="text" class="title w3-border-0 w3-border-bottom w3-border-white w3-text-teal" value="{blog.title}" disabled/>
 		{/if}
 	</h3>
-	<div class="w3-row">
-		<div class="w3-col s6">
+	<div class="w3-row w3-margin-bottom">
+		<div class="w3-col s9">
 			<span class="w3-bar">
 				{#if editMode }
 					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleUndo()">
@@ -43,33 +43,43 @@
 				{/if}
 			</span>
 		</div>
-		<div class="w3-col s6">
-			<span class="w3-right w3-small w3-text-grey">
-				{blog.timestamp} by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a>
+		<div class="w3-col s3">
+			<span class="w3-right w3-small w3-text-grey w3-right-align">
+					<span class="nowrap">{blog.timestamp}</span>
+					<span class="nowrap"> by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a><span/>
 			</span>
 		</div>
 	</div>
 	{#if editMode }
-		<div class="w3-margin-top" id="editor"/>
+		<div id="content"/>
 	{:else}
 		<div id="content">
 				{@html blog.content}
 		</div>
+		<div class="w3-padding w3-center">
+			<h4>
+					{#if Boolean(nextSlug)}
+						<a href="/blog/{nextSlug}"><i class="fas fa-chevron-left w3-text-orange"/>&nbsp;Next article</a>
+					{/if}	
+					&nbsp;&nbsp;<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;&nbsp;
+					{#if Boolean(prevSlug)}
+						<a href="/blog/{prevSlug}">Previous article&nbsp;<i class="fas fa-chevron-right w3-text-orange"/></a>
+					{/if}
+			</h4>
+		</div>
 	{/if}
-
-	<div class="w3-padding w3-center">
-		<h4>
-				{#if Boolean(nextSlug)}
-					<a href="/blog/{nextSlug}"><i class="fas fa-chevron-left w3-text-orange"/>&nbsp;Next article</a>
-				{/if}	
-				&nbsp;&nbsp;<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;&nbsp;
-				{#if Boolean(prevSlug)}
-					<a href="/blog/{prevSlug}">Previous article&nbsp;<i class="fas fa-chevron-right w3-text-orange"/></a>
-				{/if}
-		</h4>
-	</div>
 </div>
 {/if}
+
+<style>
+	.nowrap {
+		white-space:nowrap;
+	}
+
+	.title {
+		min-width:75%;
+	}
+</style>
 
 <script>
 	import Editor from 'cl-editor'
@@ -122,14 +132,13 @@
 		methods: {
 			handleEdit() {
 				// contentHeight must be set before editMode is true
-				// let contentHeight = `${Math.max(window.innerHeight-250, document.getElementById('content').clientHeight+100)}px`
-				let contentHeight = `${Math.max(400, document.getElementById('content').clientHeight+50)}px`
+				let contentHeight = `${window.innerHeight-(document.getElementById('content').getBoundingClientRect().top+50)}px`
 				
 				this.set({ editMode: true})
 
 				const editor = new Editor({
 					// <HTMLElement> required
-					target: document.getElementById('editor'),
+					target: document.getElementById('content'),
 					// optional
 					data: {
 						// <Array[string | Object]> string if overwriting, object if customizing/creating
