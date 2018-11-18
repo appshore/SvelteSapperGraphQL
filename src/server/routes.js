@@ -1,7 +1,7 @@
 import express from 'express'
 
-import authRoutes from './auth'
-import blogRoutes from './blog'
+import authRoutes from './auth/routes'
+import blogRoutes from './blog/routes'
 
 let routes = express.Router()
 

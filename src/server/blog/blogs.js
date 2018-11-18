@@ -1,8 +1,8 @@
 import { blogModel } from '../../models/blog'
-import { filterBlog } from './filter'
+import { filterBlogInList } from './filter'
 import { getUsers } from './users'
 
-const blog = (req, res) => {
+export const getBlogs = (req, res) => {
   blogModel
     .find()
     .exec()
@@ -14,7 +14,7 @@ const blog = (req, res) => {
 
       // add user info to each blog then filter it to remove unwanted fields
       return res.status(200).json({
-        blogs: blogs.map( blog => filterBlog(blog, users.find( user => blog.userId == user._id)))
+        blogs: blogs.map( blog => filterBlogInList(blog, users.find( user => blog.userId == user._id)))
       })
     })
     .catch(error => {
@@ -23,5 +23,3 @@ const blog = (req, res) => {
       })
     })
 }
-
-export default blog

@@ -218,8 +218,29 @@
 				return this.handleEdit()
 			},
 			
-			handleSave() {
-				this.set({ editMode: false})
+			async handleSave() {
+				try {
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
+						method: 'POST',
+						credentials: 'same-origin',
+						headers: {
+							Accept: 'application/json',
+							'Content-Type': 'application/json',
+						},
+      			body: JSON.stringify(this.store.get().blog),
+					}).then(res => res.json())
+
+					if (res.error) {
+						throw res.error
+					}
+					this.set({ 
+						blog: res.blog, 
+						nextSlug: res.nextSlug, 
+						prevSlug: res.prevSlug
+					})
+				} catch (err) {
+					this.set({ blog: null, nextSlug: null, prevSlug: null })
+				}
 			}
 		}
 	}

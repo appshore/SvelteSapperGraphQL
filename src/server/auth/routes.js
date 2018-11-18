@@ -1,9 +1,9 @@
 import express from 'express'
 
-import check from '../auth/check'
-import login from '../auth/login'
-import logout from '../auth/logout'
-import signup from '../auth/signup'
+import check from './check'
+import login from './login'
+import logout from './logout'
+import signup from './signup'
 
 let routes = express.Router()
 
