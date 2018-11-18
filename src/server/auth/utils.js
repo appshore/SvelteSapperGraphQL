@@ -3,21 +3,21 @@ import bcrypt from 'bcryptjs'
 
 import CFGSRV from '../../config.server'
 
-export function hashPassword(password) {
+export const hashPassword = password => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(4), null)
 }
 
-export function validPassword(clear, hashed) {
+export const validPassword = (clear, hashed) => {
   return bcrypt.compareSync(clear, hashed)
 }
 
-export function generateToken(data) {
+export const generateToken = data => {
   // console.log('generateToken', data)
   // return jwt.sign(data, CFGSRV.SECRET)
   return jwt.sign(data, CFGSRV.SECRET, { expiresIn: CFGSRV.TOKEN_TIMEOUT })
 }
 
-export function verifyToken(token, timeout = false) {
+export const verifyToken = (token, timeout = false) => {
   let decoded = false
   try {
     decoded = jwt.verify(token, CFGSRV.SECRET)
@@ -32,7 +32,7 @@ export function verifyToken(token, timeout = false) {
   return decoded
 }
 
-export function withAuth(req, res, next) {
+export const withAuth = (req, res, next) => {
   // console.log('routes/withAuth', req.cookies, req.headers)
   let token = req.cookies.token
   if (!token) {

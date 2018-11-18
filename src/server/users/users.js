@@ -1,7 +1,7 @@
 import { userModel } from '../../models/user'
-import { filterProfile } from '../users/filter'
+import { filterProfile } from './filter'
 
-export const getUsers = async ids => {
+export const getUsersByIds = async ids => {
 
   // make an array of unique ids
   ids = [...new Set(ids.map(f => f.toString()))]

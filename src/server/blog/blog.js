@@ -1,6 +1,6 @@
 import { blogModel } from '../../models/blog'
 import { filterBlog } from './filter'
-import { getUsers } from './users'
+import { getUsersByIds } from '../users/users'
 
 export const getBlog = (req, res) => {
   blogModel
@@ -10,7 +10,7 @@ export const getBlog = (req, res) => {
       blog = JSON.parse(JSON.stringify(blog))
 
       // retrieve the user whom authored a blog
-      let [user] = await getUsers([blog.userId])
+      let [user] = await getUsersByIds([blog.userId])
 
       // the slug of the next and previous articles
       let nextSlug = await blogModel.findOne({ createdAt:{$gt: new Date(blog.createdAt)}}, {slug:1}).sort({createdAt:1}).exec()
@@ -38,7 +38,7 @@ export const setBlog = (req, res) => {
       blog = JSON.parse(JSON.stringify(blog))
 
       // retrieve the user whom authored a blog
-      let [user] = await getUsers([blog.userId])
+      let [user] = await getUsersByIds([blog.userId])
 
       // the slug of the next and previous articles
       let nextSlug = await blogModel.findOne({ createdAt:{$gt: new Date(blog.createdAt)}}, {slug:1}).sort({createdAt:1}).exec()
