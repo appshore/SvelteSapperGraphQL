@@ -15,6 +15,7 @@ import CFG from './config'
 import CFGSRV from './config.server'
 
 import routes from './server/routes'
+import withUser from './server/auth/withUser'
 
 const { PORT, NODE_ENV } = process.env
 
@@ -53,6 +54,9 @@ let mongoOptions = {
 }
 mongoose.Promise = bluebird
 mongoose.connect(CFGSRV.DB_URL, mongoOptions)
+
+// if user isAuth then retrieve profile
+app.use(withUser)
 
 // api routes
 app.use(`/${CFG.API_VERSION}`, routes)

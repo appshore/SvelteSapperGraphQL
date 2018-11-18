@@ -13,7 +13,7 @@ export const filterBlogInList = (blog, user) => {
         .splice(0, 2)
         .join('</') + '...',
     timestamp: formatRelative(blog.createdAt, new Date(), { locale: enGB }),
-    userId: user._id,
+    createdBy: user._id,
     username: user.username,
   }
 }
@@ -25,7 +25,7 @@ export const filterBlog = (blog, user) => {
     slug: blog.slug,
     content: blog.html,
     timestamp: formatRelative(blog.createdAt, new Date(), { locale: enGB }),
-    userId: user._id,
+    createdBy: user._id,
     username: user.username,
   }
 }

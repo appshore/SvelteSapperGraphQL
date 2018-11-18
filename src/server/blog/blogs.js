@@ -10,11 +10,11 @@ export const getBlogs = (req, res) => {
       blogs = JSON.parse(JSON.stringify(blogs))
 
       // retrieve the users whom authored a blog
-      let users = await getUsersByIds(blogs.map(f => f.userId))
+      let users = await getUsersByIds(blogs.map(f => f.createdBy))
 
       // add user info to each blog then filter it to remove unwanted fields
       return res.status(200).json({
-        blogs: blogs.map( blog => filterBlogInList(blog, users.find( user => blog.userId == user._id)))
+        blogs: blogs.map( blog => filterBlogInList(blog, users.find( user => blog.createdBy == user._id)))
       })
     })
     .catch(error => {

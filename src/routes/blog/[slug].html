@@ -7,7 +7,7 @@
 	<h3 class="nowrap">
 		<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;<i class="fas fa-chevron-right w3-text-orange"/>
 		{#if editMode }
-			<input type="text" class="title w3-border-0 w3-border-bottom w3-text-teal" value="{blog.title}"/>
+			<input type="text" class="title w3-border-0 w3-border-bottom w3-text-teal" bind:value="blog.title"/>
 		{:else}
 			<input type="text" class="title w3-border-0 w3-border-bottom w3-border-white w3-text-teal" value="{blog.title}" disabled/>
 		{/if}
@@ -46,7 +46,7 @@
 		<div class="w3-col s3">
 			<span class="w3-right w3-small w3-text-grey w3-right-align">
 					<span class="nowrap">{blog.timestamp}</span>
-					<span class="nowrap"> by <a href="/users/{blog.userId}" class="w3-text-blue">{blog.username}</a><span/>
+					<span class="nowrap"> by <a href="/users/{blog.createdBy}" class="w3-text-blue">{blog.username}</a><span/>
 			</span>
 		</div>
 	</div>
@@ -97,7 +97,10 @@
 		
 		data() {
 			return {
-				blog: {},
+				blog: {
+					title : '',
+					html: ''
+				},
 				nextSlug: null,
 				prevSlug: null,
 				editMode: false
@@ -219,6 +222,10 @@
 			},
 			
 			async handleSave() {
+
+				let formData = Object.assign({}, this.get().blog, {html:this.editor.getHtml()})
+				console.log("blog/handleSave", formData)
+				
 				try {
 					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
 						method: 'POST',
@@ -227,7 +234,7 @@
 							Accept: 'application/json',
 							'Content-Type': 'application/json',
 						},
-      			body: JSON.stringify(this.store.get().blog),
+      			body: JSON.stringify(formData),
 					}).then(res => res.json())
 
 					if (res.error) {

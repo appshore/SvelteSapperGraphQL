@@ -1,6 +1,6 @@
 import express from 'express'
 
-import {withAuth} from '../auth/utils'
+import withAuth from '../auth/withAuth'
 
 import {getBlogs} from './blogs'
 import {getBlog, setBlog} from './blog'

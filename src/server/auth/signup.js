@@ -5,7 +5,7 @@ import { generateToken, hashPassword } from './utils'
 import { filterProfile } from '../users/filter'
 
 const signup = (req, res) => {
-  console.log('signup', req.body)
+  // console.log('signup', req.body)
 
   let user = new userModel({
     _id: new mongoose.Types.ObjectId(),

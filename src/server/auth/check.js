@@ -1,39 +1,27 @@
-import { userModel } from '../../models/user'
-import { verifyToken, generateToken } from './utils'
+import { generateToken } from './utils'
 import { filterProfile } from '../users/filter'
 
+
+// called by client to check if user is auth and retrieve profile
 const check = (req, res) => {
-  let token = req.cookies.token
-  if (Boolean(token) === false) {
-    return res.status(401).send({ auth: false, message: 'No token provided' })
+  console.log('routes/check', req.user)
+
+  if (Boolean(req.user) === false) {
+    return res.status(401).json({ 
+      auth: false, 
+      message: 'Not authentified' 
+    })
   }
 
-  let decoded = verifyToken(token)
-  if (decoded === false) {
-    return res.status(401).send({ auth: false, message: 'Invalid token' })
-  }
+  let token = generateToken({
+    email: req.user.email,
+    _id: req.user._id
+  })
 
-  userModel
-    .findOne({ _id: decoded._id })
-    .exec()
-    .then(user => {
-      user = JSON.parse(JSON.stringify(user))
-
-      let token = generateToken({
-        email: user.email,
-        _id: user._id,
-      })
-      return res.status(200).json({
-        token,
-        user: filterProfile(user),
-      })
-    })
-    .catch(error => {
-      return res.status(401).json({
-        failed: 'Unauthorized Access',
-        error
-      })
-    })
+  return res.status(200).json({
+    token,
+    user: filterProfile(req.user)
+  })
 }
 
 export default check

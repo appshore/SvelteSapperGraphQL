@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 
 import CFGSRV from '../../config.server'
+import { userModel } from '../../models/user'
+
+import { filterProfile } from '../users/filter'
 
 export const hashPassword = password => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(4), null)
@@ -30,20 +33,4 @@ export const verifyToken = (token, timeout = false) => {
     return false
   }
   return decoded
-}
-
-export const withAuth = (req, res, next) => {
-  // console.log('routes/withAuth', req.cookies, req.headers)
-  let token = req.cookies.token
-  if (!token) {
-    return res.status(401).send({ auth: false, message: 'No token provided.' })
-  }
-
-  jwt.verify(token, CFGSRV.SECRET, err => {
-    if (err) {
-      res.status(500).send({ auth: false, message: 'Failed to authenticate token.' })
-    }
-    //   res.status(200).send({ auth: true, message: 'Succeed to authenticate token.' })
-    next()
-  })
 }
