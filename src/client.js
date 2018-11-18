@@ -5,7 +5,8 @@ import CFG from './config'
 
 let store = new AppStore({
   CFG,
-  isMobile:true
+  isMobile:true,
+  isResize: new Date()
 })
 
 // we check for auth before running sapper
