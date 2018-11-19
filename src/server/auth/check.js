@@ -4,8 +4,6 @@ import { filterProfile } from '../users/filter'
 
 // called by client to check if user is auth and retrieve profile
 const check = (req, res) => {
-  console.log('routes/check', req.user)
-
   if (Boolean(req.user) === false) {
     return res.status(401).json({ 
       auth: false, 

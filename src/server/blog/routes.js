@@ -2,15 +2,17 @@ import express from 'express'
 
 import withAuth from '../auth/withAuth'
 
-import {getBlogs} from './blogs'
-import {getBlog, setBlog} from './blog'
+import {findBlogs} from './blogs'
+import {deleteBlog, findBlog, saveBlog, updateBlog} from './blog'
 
 let routes = express.Router()
 
-// routes are reserved for authentified users
-routes.get('/:slug', withAuth, getBlog)
-routes.post('/:slug', withAuth, setBlog)
+routes.delete('/:slug', withAuth, deleteBlog)
 
-routes.get('/', withAuth, getBlogs)
+routes.post('/:slug', withAuth, updateBlog)
+routes.post('/', withAuth, saveBlog)
+
+routes.get('/:slug', findBlog)
+routes.get('/', findBlogs)
 
 export default routes

@@ -14,9 +14,10 @@
 		<MobileNavMenuItem href="/pricing" title="Pricing"/>
 		<MobileNavMenuItem href="/support" title="Support"/>
 		<MobileNavMenuItem href="/forum" title="Forum"/>
+		<MobileNavMenuItem href="/blog" title="Blog"/>
 
 		{#if $isAuth }
-		<MobileNavMenuItem href="/blog" title="Blog"/>
+			<!-- menu items that required to be auth -->
 		{/if}
 
 		<MobileNavMenuItem href="/company/about" title="About"/>

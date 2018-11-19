@@ -14,34 +14,39 @@
 	</h3>
 	<div class="w3-row w3-margin-bottom">
 		<div class="w3-col s9">
-			<span class="w3-bar">
-				{#if editMode }
-					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleUndo()">
-						<i class="fas fa-undo w3-text-orange"/>
-					</button>
-					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleSave()">
-						<i class="fas fa-save w3-text-blue"/>
-					</button>
-					{#if blog.slug !== '_new' }
+			{#if $isAuth }
+				<!-- menu items that required to be auth -->
+				<span class="w3-bar">
+					{#if editMode }
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleUndo()">
+							<i class="fas fa-undo w3-text-orange"/>
+						</button>
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleSave()">
+							<i class="fas fa-save w3-text-blue"/>
+						</button>
+						{#if blog.slug !== '_new' }
+							<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
+								<i class="fas fa-trash-alt w3-text-red"/>
+							</button>
+						{/if}
+					{:else}
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleEdit()">
+							<i class="fas fa-edit w3-text-blue"/>
+						</button>
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleClone()">
+							<i class="fas fa-clone w3-text-orange"/>
+						</button>
 						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
 							<i class="fas fa-trash-alt w3-text-red"/>
+						</button>					
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+							<i class="fas fa-plus w3-text-teal"/>
 						</button>
 					{/if}
-				{:else}
-					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleEdit()">
-						<i class="fas fa-edit w3-text-blue"/>
-					</button>
-					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleClone()">
-						<i class="fas fa-clone w3-text-orange"/>
-					</button>
-					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
-						<i class="fas fa-trash-alt w3-text-red"/>
-					</button>					
-					<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
-						<i class="fas fa-plus w3-text-teal"/>
-					</button>
-				{/if}
-			</span>
+				</span>
+			{:else}
+				&nbsp;
+			{/if}
 		</div>
 		<div class="w3-col s3">
 			<span class="w3-right w3-small w3-text-grey w3-right-align">
@@ -89,11 +94,11 @@
 	let editor
 
 	export default {
-		preload(params) {
-      if ( this.store.get().isAuth === false ) {
-        return this.redirect(301, '/')
-      }
-		},
+		// preload(params) {
+    //   if ( this.store.get().isAuth === false ) {
+    //     return this.redirect(301, '/')
+    //   }
+		// },
 		
 		data() {
 			return {
@@ -109,6 +114,9 @@
 
 		async oncreate() {
 			if( this.get().params.slug === '_new' ) {
+				if( this.store.get().isAuth === false ){
+					return sapper.goto('/blog')
+				}
 				return this.handleNew()
 			}
 			try {
@@ -201,18 +209,35 @@
 			handleClone() {
 			},
 
-			handleDelete() {
+			async handleDelete() {
 				if( this.get().blog.slug === '_new') {
 					return sapper.goto('/blog')
 				}
-				this.set({ editMode: false})
+				try {
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
+						method: 'DELETE',
+						credentials: 'same-origin',
+						headers: {
+							Accept: 'application/json',
+							'Content-Type': 'application/json',
+						},
+					}).then(res => res.json())
+
+					if (res.error) {
+						throw res.error
+					}
+
+					return sapper.goto('/blog')
+
+				} catch (err) {
+					this.set({ blog: null, nextSlug: null, prevSlug: null })
+				}
 			},
 			
 			handleNew() {
 				this.set({ 
 					blog: {
 						title: 'New blog',
-						slug: '_new',
 						content: '',
 						timestamp: '',
 						username: this.store.get().user.username
@@ -224,10 +249,11 @@
 			async handleSave() {
 
 				let formData = Object.assign({}, this.get().blog, {html:this.editor.getHtml()})
-				console.log("blog/handleSave", formData)
+				console.log("blog/handleSave", formData, this.get().params)
 				
 				try {
-					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
+					let apiUrl = this.get().params.slug === '_new' ? '' : `/${this.get().params.slug}`
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog${apiUrl}`, {
 						method: 'POST',
 						credentials: 'same-origin',
 						headers: {
@@ -245,6 +271,9 @@
 						nextSlug: res.nextSlug, 
 						prevSlug: res.prevSlug
 					})
+					history.replaceState(history.state, 'blog', `/blog/${res.blog.slug}`)
+					this.set({params:{slug:res.blog.slug}})
+
 				} catch (err) {
 					this.set({ blog: null, nextSlug: null, prevSlug: null })
 				}

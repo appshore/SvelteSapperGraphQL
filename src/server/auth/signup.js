@@ -5,8 +5,6 @@ import { generateToken, hashPassword } from './utils'
 import { filterProfile } from '../users/filter'
 
 const signup = (req, res) => {
-  // console.log('signup', req.body)
-
   let user = new userModel({
     _id: new mongoose.Types.ObjectId(),
     username: req.body.username,
@@ -24,16 +22,14 @@ const signup = (req, res) => {
         _id: user._id,
       })
 
-      console.log('signup', result)
-
-      res.status(200).json({
+      return res.status(200).json({
         success: 'New user',
         token,
         user: filterProfile(result),
       })
     })
     .catch(error => {
-      res.status(500).json({
+      return res.status(500).json({
         error,
       })
     })

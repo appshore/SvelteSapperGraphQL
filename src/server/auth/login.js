@@ -3,7 +3,6 @@ import { generateToken, validPassword } from './utils'
 import { filterProfile } from '../users/filter'
 
 const login = (req, res) => {
-  console.log('login', req.body)
   userModel
     .findOne({ email: req.body.email })
     .exec()
@@ -21,7 +20,6 @@ const login = (req, res) => {
         _id: user._id,
       })
 
-      console.log('login success', user, token, filterProfile(user))
       return res.status(200).json({
         success: 'Welcome back',
         token,
@@ -29,7 +27,7 @@ const login = (req, res) => {
       })
     })
     .catch(error => {
-      res.status(500).json({
+      return res.status(500).json({
         error: error,
       })
     })

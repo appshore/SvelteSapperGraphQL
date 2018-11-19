@@ -16,6 +16,10 @@
 				<WebNavMenuItem path={path} href="/support" title="Support" />
 				<WebNavMenuItem path={path} href="/forum" title="Forum" />
 
+				{#if $isAuth }
+					<!-- menu items that required to be auth -->
+				{/if}
+
 				<!-- right side menu items, listed in reverse order -->
 				<UserDropDown label='{$user ? $user.username : ""}' />
 
@@ -25,9 +29,7 @@
 				{/if}
 
 				<WebNavMenuItem path={path} href="/company/about" title="About" classes="w3-right" />
-				{#if $isAuth }
 				<WebNavMenuItem path={path} href="/blog" title="Blog" classes="w3-right" />
-				{/if}
 			</div>
 			
 		</div>

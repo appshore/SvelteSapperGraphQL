@@ -2,9 +2,10 @@ import { blogModel } from '../../models/blog'
 import { filterBlogInList } from './filter'
 import { getUsersByIds } from '../users/users'
 
-export const getBlogs = (req, res) => {
+export const findBlogs = (req, res) => {
   blogModel
     .find()
+    .sort({createdAt:-1})
     .exec()
     .then(async blogs => {
       blogs = JSON.parse(JSON.stringify(blogs))

@@ -4,10 +4,13 @@
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
   <h3 class="w3-text-teal">Blog</h3>
-	
-  <button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew(event)">
-    <i class="fas fa-plus w3-text-teal"/>
-  </button>
+  
+  {#if $isAuth }
+    <!-- menu items that required to be auth -->
+    <button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+      <i class="fas fa-plus w3-text-teal"/>
+    </button>
+  {/if}
   {#if Boolean(blogs)} 
     <div class="w3-margin-top">
       {#each blogs as blog}
@@ -37,11 +40,11 @@
   import * as sapper from '../../../__sapper__/client'
 
   export default {
-    preload(params) {
-      if ( this.store.get().isAuth === false ) {
-        return this.redirect(301, '/')
-      }
-    },
+    // preload(params) {
+    //   if ( this.store.get().isAuth === false ) {
+    //     return this.redirect(301, '/')
+    //   }
+    // },
 
     data() {
       return {
@@ -69,7 +72,7 @@
     },
 
     methods: {
-			handleNew(evt) {
+			handleNew() {
         sapper.goto('/blog/_new')
       }
     }

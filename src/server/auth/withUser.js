@@ -4,22 +4,20 @@ import { filterProfile } from '../users/filter'
 
 // express middleware to inject user's profile in request
 const withUser = async (req, res, next) => {
-  // console.log('routes/withUser', req.cookies, req.headers)
-  if (Boolean(req.cookies.token) === false) {
-    next()
+  if ( req.cookies.token ) {
+    let decoded = verifyToken(req.cookies.token)
+
+    if (decoded) {
+      // user is auth we retrieve profile
+      let user = await userModel
+        .findOne({ _id: decoded._id })
+        .exec()
+        .then(user => JSON.parse(JSON.stringify(user)))
+
+      req.user = filterProfile(user)
+    }
   }
 
-  let decoded = verifyToken(req.cookies.token)
-  if (decoded === false) {
-    next()
-  }
-
-  let user = await userModel
-    .findOne({ _id: decoded._id })
-    .exec()
-    .then(user => JSON.parse(JSON.stringify(user)))
-
-  req.user = filterProfile(user)
   next()
 }
 
