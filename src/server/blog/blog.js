@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import sanitizeHtml from 'sanitize-html'
 import slug from 'slug'
 
 import { blogModel } from '../../models/blog'
@@ -55,15 +56,27 @@ export const findBlog = (req, res) => {
     })
 }
 
-export const saveBlog = (req, res) => {
+export const saveBlog = async (req, res) => {
   let blog = new blogModel({
     _id: new mongoose.Types.ObjectId(),
     slug: slug(req.body.title, { lower: true }),
     title: req.body.title,
-    html: req.body.html,
+    html: sanitizeHtml(req.body.html, {allowedTags: false, allowedAttributes: false}),
     createdAt: new Date(),
     createdBy: req.user._id
   })
+
+  // check that the title and therefore the slug are not already taken
+  let checkBlog = await blogModel
+    .findOne({ slug: blog.slug }, { slug: 1, title: 1 })
+    .exec()
+    .then(result => JSON.parse(JSON.stringify(result)))
+
+  if( checkBlog.slug === blog.slug && checkBlog.title === blog.title ) {
+    return res.status(200).json({
+      error: 'Title already in use'
+    })
+  }
 
   blog
     .save()
@@ -100,16 +113,16 @@ export const updateBlog = (req, res, next) => {
   let dataSet = {
     slug: slug(req.body.title, { lower: true }),
     title: req.body.title,
-    html: req.body.html,
+    html: sanitizeHtml(req.body.html, {allowedTags: false, allowedAttributes: false}),
     updatedAt: new Date(),
     updatedBy: req.user._id
   }
 
   blogModel
     .updateOne({ slug: req.params.slug }, { $set: dataSet })
-    .then( () => {
+    .then( async () => {
       req.params.slug = dataSet.slug // in case title has been modified
-      return findBlog(req, res, next)
+      return await findBlog(req, res, next)
     })
     .catch(error => {
       return res.status(500).json({

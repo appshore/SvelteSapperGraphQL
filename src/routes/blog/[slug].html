@@ -117,7 +117,15 @@
 				if( this.store.get().isAuth === false ){
 					return sapper.goto('/blog')
 				}
-				return this.handleNew()
+				this.set({ 
+					blog: {
+						title: 'New blog',
+						content: '',
+						timestamp: '',
+						username: this.store.get().user.username
+					}
+				})
+				return this.handleEdit()
 			}
 			try {
 				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
@@ -167,24 +175,8 @@
 						// 'viewHtml', 'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
 						// 'ol', 'ul', 'hr', 'left', 'right', 'center', 'justify', 'a', 'image', 'forecolor', 'backcolor', 'removeFormat'
 						actions: [
-							'b', 'i', 'u', 'strike', 'ul', 'ol',
-							{
-								name: 'copy', // required
-								icon: '<i class="far fa-copy"/>', // string or html string (ex. <svg>...</svg>)
-								title: 'Copy',
-								result: () => {
-									// copy current selection or whole editor content
-									const selection = window.getSelection();
-									if (!selection.toString().length) {
-										const range = document.createRange();
-										range.selectNodeContents(editor.refs.editor);
-										selection.removeAllRanges();
-										selection.addRange(range);
-									}
-									editor.exec('copy');
-								}
-							},
-							'h1', 'p', 'image'
+						'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
+						'ol', 'ul', 'hr', 'left', 'right', 'center', 'justify', 'a', 'image', 'forecolor', 'backcolor', 'removeFormat', 'viewHtml'
 						],
 						// default 300px
 						height: this.contentHeight(),
@@ -192,7 +184,7 @@
 						html: this.get().blog.content,
 						// remove format action clears formatting, but also removes some html tags.
 						// you can specify which tags you want to be removed.
-						// removeFormatTags: ['h1', 'h2', 'blackquote'] // default
+						// removeFormatTags: ['h1', 'h2', 'blockquote'] // default
 					}
 				})
 			},
@@ -233,18 +225,10 @@
 					this.set({ blog: null, nextSlug: null, prevSlug: null })
 				}
 			},
-			
+
 			handleNew() {
-				this.set({ 
-					blog: {
-						title: 'New blog',
-						content: '',
-						timestamp: '',
-						username: this.store.get().user.username
-					}
-				})
-				return this.handleEdit()
-			},
+        sapper.goto('/blog/_new')
+      },
 			
 			async handleSave() {
 
