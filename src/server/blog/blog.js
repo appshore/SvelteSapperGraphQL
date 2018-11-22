@@ -66,7 +66,7 @@ export const saveBlog = async (req, res) => {
     createdBy: req.user._id
   })
 
-  // check that the title and therefore the slug are not already taken
+  // check that title and slug are not already taken
   let checkBlog = await blogModel
     .findOne({ slug: blog.slug }, { slug: 1, title: 1 })
     .exec()
