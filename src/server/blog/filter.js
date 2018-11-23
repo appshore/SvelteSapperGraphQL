@@ -6,7 +6,7 @@ export const filterBlogInList = (blog, user) => {
   return {
     title: blog.title,
     slug: blog.slug,
-    content:
+    html:
       blog.html
         .substring(0, 200)
         .split('</')
@@ -23,7 +23,7 @@ export const filterBlog = (blog, user) => {
   return {
     title: blog.title,
     slug: blog.slug,
-    content: blog.html,
+    html: blog.html,
     timestamp: formatRelative(blog.createdAt, new Date(), { locale: enGB }),
     createdBy: user._id,
     username: user.username,

@@ -1,33 +1,26 @@
 <script>
-	import * as sapper from '../../../__sapper__/client'
+  import * as sapper from '../../../__sapper__/client'
 
-	import {logout} from './_auth'
-	
-	export default {
-		preload(params) {
-      if ( this.store.get().isAuth === false) {
+  import { logout } from './_auth'
+
+  export default {
+    preload(params) {
+      if (this.store.get().isAuth === false) {
         return this.redirect(301, '/')
       }
-		},
+    },
 
-    oncreate() {
-			logout(this.store)
-				.then(res => {
-					if (res.error) {
-						throw res.error
-					} else {
-						this.store.banner({
-							html: "Signed off",
-							level: 'warning',
-							duration: 3
-						})
-					}
-				})
-				.catch(err => {
-					console.error('logout/oncreate catch', err)
-				})
-			return sapper.goto('/')	
-		}
+    async oncreate() {
+			let res = await logout(this.store)
 
-	}
+			if ( res.status ) {
+				let { user } = this.store.get()
+				// console.log('login/handleSubmit auth', this.get(), this.store.get())
+				this.store.toast({ html: 'You are now signed off', level: 'w' })
+			} else {
+				this.store.banner({ html: res.msg, level : 'd', duration : 0 })
+			}
+			return sapper.goto('/')
+    }
+  }
 </script>

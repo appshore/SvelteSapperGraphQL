@@ -94,13 +94,9 @@
         let res = await updateProfile(this.store, this.get().form)
 
         if( res.status ) {
-          // console.log('signup/handleSave auth', this.get(), this.store.get())
-          this.store.toast({ html: 'Profile saved 0', duration : 0 })
-          this.store.toast({ html: 'toast 2', level : 'd', duration : 5 })
-          this.store.toast({ html: 'Profile saved 2', duration : 0 })
-          this.store.toast({ html: 'toast 3', level : 'i', duration : 2 })
+          this.store.toast({ html: 'Profile saved'})
         } else {
-          this.store.banner({ html: `Err: ${res.msg}` })
+          this.store.banner({ html: res.msg, level : 'd', duration : 0 })
         }
       }
     }

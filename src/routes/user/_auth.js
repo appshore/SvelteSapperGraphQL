@@ -23,14 +23,18 @@ export const login = async (store, credentials) => {
       isAuth: true,
       user: res.user
     })
-    return true
+    return {
+      status: true
+    }
   } catch (error) {
     store.set({
       isAuth: false,
       user: null
     })
-    console.error('store/auth/login error', error)
-    return false
+    return {
+      status: false,
+      msg: error
+    }
   }
 }
 
@@ -53,10 +57,14 @@ export const logout = async store => {
       isAuth: false,
       user: null
     })
-    return true
+    return {
+      status: true
+    }
   } catch (error) {
-    console.error('store/auth/logout error', error)
-    return false
+    return {
+      status: false,
+      msg: error
+    }
   }
 }
 
@@ -83,9 +91,13 @@ export const signup = async (store, user) => {
       isAuth: true,
       user: res.user
     })
-    return true
+    return {
+      status: true
+    }
   } catch (error) {
-    console.error('store/auth/signup error ', error)
-    return false
+    return {
+      status: false,
+      msg: error
+    }
   }
 }

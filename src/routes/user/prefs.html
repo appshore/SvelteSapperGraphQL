@@ -94,10 +94,9 @@
         let res = await updatePrefs(this.store, this.get().form)
 
         if( res.status ) {
-          // console.log('signup/handleSave auth', this.get(), this.store.get())
-          this.store.toast({ html: 'Prefs saved' })
+          this.store.toast({ html: 'Preferences saved'})
         } else {
-          this.store.banner({ html: `Err: ${res.msg}` })
+          this.store.banner({ html: res.msg, level : 'd', duration : 0 })
         }
       }
     }

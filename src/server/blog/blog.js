@@ -72,7 +72,7 @@ export const saveBlog = async (req, res) => {
     .exec()
     .then(result => JSON.parse(JSON.stringify(result)))
 
-  if( checkBlog.slug === blog.slug && checkBlog.title === blog.title ) {
+  if( checkBlog && checkBlog.slug === blog.slug && checkBlog.title === blog.title ) {
     return res.status(200).json({
       error: 'Title already in use'
     })
@@ -109,13 +109,25 @@ export const saveBlog = async (req, res) => {
     })
 }
 
-export const updateBlog = (req, res, next) => {
+export const updateBlog = async (req, res, next) => {
   let dataSet = {
     slug: slug(req.body.title, { lower: true }),
     title: req.body.title,
     html: sanitizeHtml(req.body.html, {allowedTags: false, allowedAttributes: false}),
     updatedAt: new Date(),
     updatedBy: req.user._id
+  }
+
+  // check that title and slug are not already taken
+  let checkBlog = await blogModel
+  .findOne({ slug: dataSet.slug }, { slug: 1, title: 1 })
+  .exec()
+  .then(result => JSON.parse(JSON.stringify(result)))
+
+  if( checkBlog && checkBlog.slug === dataSet.slug && checkBlog.title === dataSet.title ) {
+    return res.status(200).json({
+      error: 'Title already in use'
+    })
   }
 
   blogModel

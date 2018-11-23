@@ -60,7 +60,7 @@
 		<div id="content" resize="{$isResize}"/>
 	{:else}
 		<div id="content">
-				{@html blog.content}
+				{@html blog.html}
 		</div>
 		<div class="w3-padding w3-center">
 			<h4>
@@ -114,7 +114,7 @@
 				this.set({ 
 					blog: {
 						title: 'New blog',
-						content: '',
+						html: '',
 						timestamp: '',
 						username: this.store.get().user.username
 					}
@@ -130,6 +130,8 @@
 						'Content-Type': 'application/json',
 					}
 				}).then(res => res.json())
+
+				console.log("blog/oncreate", res)
 
 				if (res.error) {
 					throw res.error
@@ -175,7 +177,7 @@
 						// default 300px
 						height: this.contentHeight(),
 						// initial html
-						html: this.get().blog.content,
+						html: this.get().blog.html,
 						// remove format action clears formatting, but also removes some html tags.
 						// you can specify which tags you want to be removed.
 						// removeFormatTags: ['h1', 'h2', 'blockquote'] // default
@@ -184,8 +186,6 @@
 			},
 
 			handleUndo() {
-				console.log('blog/slug/handleUndo', this.get(), this.store.get())
-
 				if( this.get().blog.slug === '_new') {
 					return sapper.goto('/blog')
 				}
@@ -213,6 +213,7 @@
 						throw res.error
 					}
 
+          this.store.toast({ html: 'Blog deleted', level : 'd'})
 					return sapper.goto('/blog')
 
 				} catch (err) {
@@ -225,12 +226,12 @@
       },
 			
 			async handleSave() {
-
+				let isNew = this.get().params.slug === '_new'
 				let formData = Object.assign({}, this.get().blog, {html:this.editor.getHtml()})
-				console.log("blog/handleSave", formData, this.get().params)
+				console.log("blog/handleSave", formData, this.get().blog, this.get().params)
 				
 				try {
-					let apiUrl = this.get().params.slug === '_new' ? '' : `/${this.get().params.slug}`
+					let apiUrl = isNew ? '' : `/${this.get().params.slug}`
 					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog${apiUrl}`, {
 						method: 'POST',
 						credentials: 'same-origin',
@@ -252,8 +253,11 @@
 					history.replaceState(history.state, 'blog', `/blog/${res.blog.slug}`)
 					this.set({params:{slug:res.blog.slug}})
 
+					this.store.toast(isNew ?  { html: 'Blog created', level : 's'} : { html: 'Blog updated', level : 'i'})
+
 				} catch (err) {
-					this.set({ blog: null, nextSlug: null, prevSlug: null })
+					this.store.banner({ html: err, level : 'd', duration : 0})
+					this.set({ nextSlug: null, prevSlug: null })
 				}
 			}
 		}
