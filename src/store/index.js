@@ -11,18 +11,6 @@ class AppStore extends Store {
     return auth.checkAuth(this)
   }
 
-  login(params) {
-    return auth.login(this, params)
-  }
-
-  logout() {
-    return auth.logout(this)
-  }
-
-  signup(params) {
-    return auth.signup(this, params)
-  }
-
   banner(params) {
     ui.banner(this, params)
   }

@@ -4,7 +4,7 @@ import slug from 'slug'
 
 import { blogModel } from '../../models/blog'
 import { filterBlog } from './filter'
-import { getUsersByIds } from '../users/users'
+import { findUsersByIds } from '../user/users'
 
 export const deleteBlog = (req, res) => {
   blogModel
@@ -30,7 +30,7 @@ export const findBlog = (req, res) => {
       result = JSON.parse(JSON.stringify(result))
 
       // retrieve the user whom authored a blog
-      let [user] = await getUsersByIds([result.createdBy])
+      let [user] = await findUsersByIds([result.createdBy])
 
       // the slug of the next and previous articles
       let nextSlug = await blogModel
@@ -84,7 +84,7 @@ export const saveBlog = async (req, res) => {
       result = JSON.parse(JSON.stringify(result))
 
       // retrieve the user whom authored a blog
-      let [user] = await getUsersByIds([result.createdBy])
+      let [user] = await findUsersByIds([result.createdBy])
 
       // the slug of the next and previous articles
       let nextSlug = await blogModel

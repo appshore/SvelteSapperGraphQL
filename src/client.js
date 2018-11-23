@@ -5,7 +5,8 @@ import CFG from './config'
 
 let store = new AppStore({
   CFG,
-  isMobile:true,
+  isAuth: false,
+  isMobile: false,
   isResize: new Date()
 })
 

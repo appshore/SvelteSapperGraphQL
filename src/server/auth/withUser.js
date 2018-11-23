@@ -1,6 +1,6 @@
-import { userModel } from '../../models/user'
 import { verifyToken } from './utils'
-import { filterProfile } from '../users/filter'
+import { filterProfile } from '../user/profile'
+import { findUserById } from '../user/user'
 
 // express middleware to inject user's profile in request
 const withUser = async (req, res, next) => {
@@ -9,12 +9,7 @@ const withUser = async (req, res, next) => {
 
     if (decoded) {
       // user is auth we retrieve profile
-      let user = await userModel
-        .findOne({ _id: decoded._id })
-        .exec()
-        .then(user => JSON.parse(JSON.stringify(user)))
-
-      req.user = filterProfile(user)
+      req.user = filterProfile(await findUserById( decoded._id))
     }
   }
 

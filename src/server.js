@@ -66,7 +66,7 @@ app.use(
   sapper.middleware({
     store: () =>
       new AppStore({
-        CFG,
+        CFG
       }),
   }),
 )

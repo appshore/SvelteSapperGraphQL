@@ -11,6 +11,7 @@
 <main>
 	<Banner />
 	<svelte:component this={child.component} {...child.props} />
+	<Toast />
 </main>
 
 <!-- {#if $isMobile == false} -->
@@ -30,6 +31,7 @@
 	export default {
 		components: {
 			Banner: '../components/Banner.html',
+			Toast: '../components/Toast.html',
 			WebFooter: '../components/WebFooter.html',
 			WebNav: '../components/WebNav.html',
 			MobileNav: '../components/MobileNav.html'

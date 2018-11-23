@@ -64,6 +64,8 @@
 <script>
   import * as sapper from '../../../__sapper__/client'
 
+  import {signup} from './_auth'
+
   export default {
 		preload(params) {
       if ( this.store.get().isAuth ) {
@@ -88,7 +90,7 @@
         let formData = this.get().form
         // console.log("signup submit", formData, this.store.get())
 
-        if (await this.store.signup(formData)) {
+        if (await signup(this.store, formData)) {
           let { user } = this.store.get()
           // console.log('signup/handleSubmit auth', this.get(), this.store.get())
           this.store.toast({ html: `Hello ${user.username}. Thank you for signing up!` })

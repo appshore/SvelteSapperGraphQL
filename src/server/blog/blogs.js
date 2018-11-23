@@ -1,6 +1,6 @@
 import { blogModel } from '../../models/blog'
 import { filterBlogInList } from './filter'
-import { getUsersByIds } from '../users/users'
+import { findUsersByIds } from '../user/users'
 
 export const findBlogs = (req, res) => {
   blogModel
@@ -11,7 +11,7 @@ export const findBlogs = (req, res) => {
       blogs = JSON.parse(JSON.stringify(blogs))
 
       // retrieve the users whom authored a blog
-      let users = await getUsersByIds(blogs.map(f => f.createdBy))
+      let users = await findUsersByIds(blogs.map(f => f.createdBy))
 
       // add user info to each blog then filter it to remove unwanted fields
       return res.status(200).json({

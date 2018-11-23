@@ -1,0 +1,39 @@
+{#if Boolean($toasts)}
+<div class="toasts w3-container w3-fixed w3-display-topright">
+	{#each $toasts as toast}
+	<div class="w3-panel {toast.classes} w3-display-container w3-card-4">
+		{#if toast.duration == 0}
+		<div class="w3-display-topright">
+			<i on:click="dismiss({dismiss:toast.id})" class="fas fa-times-circle" />
+		</div>
+		{/if}
+		<h6 class="w3-padding-16">{toast.id}, {@html toast.html}</h6>
+	</div>
+	{/each}
+</div>
+{/if}
+
+<style>
+	.fas,
+	.fas:hover {
+	  margin: 10px 10px;
+	  cursor: pointer;
+	}
+
+	.toasts {
+		top: 50px;
+		width: 300px;
+	}
+</style>
+
+
+<script>
+	export default {
+	  methods: {
+	    dismiss(params) {
+				// console.log('Toast/dismiss', params)
+	      this.store.toast(params)
+	    }
+	  }
+	}
+</script>

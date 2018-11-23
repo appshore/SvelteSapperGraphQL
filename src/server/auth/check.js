@@ -1,5 +1,5 @@
 import { generateToken } from './utils'
-import { filterProfile } from '../users/filter'
+import { filterProfile } from '../user/profile'
 
 
 // called by client to check if user is auth and retrieve profile

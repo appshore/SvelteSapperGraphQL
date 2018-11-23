@@ -1,0 +1,106 @@
+<svelte:head>
+  <title>{$CFG.BRAND} - Preferences</title>
+</svelte:head>
+
+<div class="w3-container {!$isMobile && 'w3-margin'}">
+  <h3 class="w3-text-teal">{form && form.username}'s preferences</h3>
+
+  <form on:submit="handleSave(event)">
+    <label for="username" class="{form.username ? 'active' : ''}">Name (will be displayed)</label>
+    <input
+      class="w3-input w3-border w3-margin-bottom validate"
+      type="text"
+      required="true"
+      bind:value="form.username"
+      id="username"
+    />
+    <span class="helper-text" data-error="4 characters minimum"></span>
+    <label for="email" class="{form.email ? 'active' : ''}">Email (will stay private)</label>
+    <input
+      class="w3-input w3-border w3-margin-bottom validate"
+      type="email"
+      required="true"
+      bind:value="form.email"
+      id="email"
+    />
+    <span class="helper-text" data-error="Enter a valid email address"></span>
+
+    <div class="w3-row">
+      <div class="w3-half">
+        <label for="password" class="{form.password ? 'active' : ''}">Password</label>
+        <input
+          class="w3-input {!$isMobile && 'w3-input-left'} w3-border w3-margin-bottom validate"
+          type="password"
+          bind:value="form.password"
+          id="password"
+          minlength="8"
+        />
+        <span class="helper-text" data-error="8 characters minimum"></span>
+      </div>
+      <div class="w3-half">
+        <label for="confirmPassword" class="{form.confirmPassword ? 'active' : ''}">Confirm Password</label>
+        <input
+          class="w3-input w3-border w3-margin-bottom validate"
+          type="password"
+          bind:value="form.confirmPassword"
+          id="confirmPassword"
+          minlength="8"
+        />
+        <span class="helper-text" data-error="8 characters minimum"></span>
+      </div>
+    </div>
+    <div class="w3-section">
+        <button class="w3-button w3-card w3-round w3-hover-light-grey w3-teal w3-text-white" type="submit">
+            Save
+        </button>
+      </div>
+  </form>
+</div>
+
+<style>
+  .w3-input-left {
+    width: 95%;
+  }
+</style>
+
+<script>
+  import * as sapper from '../../../__sapper__/client'
+
+  import {updatePrefs} from './_prefs'
+
+  export default {
+		preload(params) {
+      if ( this.store.get().isAuth === false) {
+        return this.redirect(301, '/')
+      }
+		},
+
+    data() {
+      return {
+        form: {}
+      }
+    },
+
+    oncreate() {
+      this.set({
+        form: this.store.get().user
+      })
+    },
+
+    methods: {
+      async handleSave(evt) {
+        evt.preventDefault()
+
+        let res = await updatePrefs(this.store, this.get().form)
+
+        if( res.status ) {
+          // console.log('signup/handleSave auth', this.get(), this.store.get())
+          this.store.toast({ html: 'Prefs saved' })
+        } else {
+          this.store.banner({ html: `Err: ${res.msg}` })
+        }
+      }
+    }
+
+  }
+</script>

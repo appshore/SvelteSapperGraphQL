@@ -2,9 +2,6 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 
 import CFGSRV from '../../config.server'
-import { userModel } from '../../models/user'
-
-import { filterProfile } from '../users/filter'
 
 export const hashPassword = password => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(4), null)

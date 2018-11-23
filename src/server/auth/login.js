@@ -1,36 +1,34 @@
-import { userModel } from '../../models/user'
 import { generateToken, validPassword } from './utils'
-import { filterProfile } from '../users/filter'
+import { findUserByEmail } from '../user/user'
+import { filterProfile } from '../user/profile'
 
-const login = (req, res) => {
-  userModel
-    .findOne({ email: req.body.email })
-    .exec()
-    .then(user => {
-      user = JSON.parse(JSON.stringify(user))
+const login = async (req, res) => {
+  try {
+    let user = await findUserByEmail(req.body.email)
 
-      if (validPassword(req.body.password, user.password) === false) {
-        return res.status(401).json({
-          failed: 'Unauthorized Access',
-        })
-      }
+    user = JSON.parse(JSON.stringify(user))
 
-      let token = generateToken({
-        email: user.email,
-        _id: user._id,
+    if (validPassword(req.body.password, user.password) === false) {
+      return res.status(401).json({
+        failed: 'Unauthorized Access'
       })
+    }
 
-      return res.status(200).json({
-        success: 'Welcome back',
-        token,
-        user: filterProfile(user),
-      })
+    let token = generateToken({
+      email: user.email,
+      _id: user._id
     })
-    .catch(error => {
-      return res.status(500).json({
-        error: error,
-      })
+
+    return res.status(200).json({
+      success: 'Welcome back',
+      token,
+      user: filterProfile(user)
     })
+  } catch (error) {
+    return res.status(500).json({
+      error: error
+    })
+  }
 }
 
 export default login
