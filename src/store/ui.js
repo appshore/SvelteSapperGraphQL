@@ -18,13 +18,11 @@ export const toast = (store, { html = '', level, duration = 3, dismiss = null })
   let toasts = store.get().toasts || []
 
   if (dismiss !== null) {
-    console.log('ui/toast/dismiss', dismiss)
     toasts = store.get().toasts.filter(toast => toast.id != dismiss)
   }
   else {
     let id = Math.random(1, 100)*Date.now()
     toasts.push({ id, html, level, duration, classes: getClasses(level) })
-    // console.log('toast', toasts)
 
     if (duration) {
       setTimeout(() => {
