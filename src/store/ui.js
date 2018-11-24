@@ -1,3 +1,5 @@
+import Snackbar from '../components/Snackbar.html'
+
 export const banner = (store, { html = '', level = '', duration = 3, dismiss = false}) => {
   let params = {}
 

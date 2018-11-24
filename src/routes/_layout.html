@@ -12,6 +12,7 @@
 	<Banner />
 	<svelte:component this={child.component} {...child.props} />
 	<Toast />
+	<Snackbar ref:snackbar/>
 </main>
 
 <!-- {#if $isMobile == false} -->
@@ -31,10 +32,18 @@
 	export default {
 		components: {
 			Banner: '../components/Banner.html',
+			Snackbar: '../components/Snackbar.html',
 			Toast: '../components/Toast.html',
 			WebFooter: '../components/WebFooter.html',
 			WebNav: '../components/WebNav.html',
 			MobileNav: '../components/MobileNav.html'
-		}
+		},
+
+		oncreate() {
+			console.log('_layout', this.refs)
+      this.store.set({
+        Snackbar: this.refs.snackbar
+      })
+    },
 	}
 </script>

@@ -66,9 +66,9 @@
         let res = await login(this.store, formData)
 
         if ( res.status ) {
-          let { user } = this.store.get()
-          // console.log('login/handleSubmit auth', this.get(), this.store.get())
-          this.store.toast({ html: `Welcome back ${user.username}` })
+          let { user, Snackbar } = this.store.get()
+          Snackbar.info(`Welcome back ${user.username}`)
+          // this.store.toast({ html: `Welcome back ${user.username}` })
           return sapper.goto('/')
         } else {
           this.store.banner({ html: res.msg, level : 'd', duration : 0 })

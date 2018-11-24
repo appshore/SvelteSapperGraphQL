@@ -1,0 +1,77 @@
+<div class="snackbar w3-container">
+	{#if Boolean(snacks)}
+		{#each snacks as snack}
+		<div class="w3-panel {snack.classes} w3-display-container w3-card-4">
+			{#if snack.duration == 0}
+			<div class="w3-display-topright">
+				<i on:click="dismiss(snack.id)" class="fas fa-times-circle" />
+			</div>
+			{/if}
+			<h6 class="w3-padding-16">{@html snack.html}</h6>
+		</div>
+		{/each}
+	{/if}
+</div>
+
+<style>
+	.fas,
+	.fas:hover {
+	  margin: 10px 10px;
+	  cursor: pointer;
+	}
+
+	.snackbar {
+		position: absolute;
+		top: 50px;
+		right: 0;
+		width: 300px;
+	}
+</style>
+
+<script>
+	export default {
+		data() {
+			return {
+				snacks : []
+			}
+		},
+
+	  methods: {
+	    dismiss(id) {
+				let snacks = this.get().snacks
+				snacks = snacks.filter(snack => snack.id != id)
+				this.set({ snacks })
+			},
+
+			shout({ html = '', duration = 3, classes }) {
+				let id = Math.random(1, 100) * Date.now()
+				let snacks = this.get().snacks
+				snacks.push({ id, html, duration, classes })
+
+				if (duration) {
+					setTimeout(() => {
+						this.dismiss(id)
+					}, duration * 1000)
+				}
+
+				this.set({ snacks })
+			},
+
+			danger( html, duration = 0) {
+				this.shout( { html, duration , classes : 'w3-red w3-text-white' })
+			},
+
+			info( html, duration) {
+				this.shout( { html, duration , classes : 'w3-blue w3-text-white'})
+			},
+
+			success( html, duration) {
+				this.shout( { html, duration , classes : 'w3-teal w3-text-white' })
+			},
+
+			warning( html, duration = 5) {
+				this.shout( { html, duration , classes : 'w3-orange w3-text-black' })
+			}
+	  }
+	}
+</script>
