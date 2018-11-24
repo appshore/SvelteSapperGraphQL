@@ -94,9 +94,9 @@
         let res = await updatePrefs(this.store, this.get().form)
 
         if( res.status ) {
-          this.store.toast({ html: 'Preferences saved'})
+					this.store.get().Snackbar.info('Preferences saved')
         } else {
-          this.store.banner({ html: res.msg, level : 'd', duration : 0 })
+          this.store.get().Banner.danger(res.msg)
         }
       }
     }

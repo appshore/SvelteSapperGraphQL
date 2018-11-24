@@ -94,9 +94,9 @@
         let res = await updateProfile(this.store, this.get().form)
 
         if( res.status ) {
-          this.store.toast({ html: 'Profile saved'})
+					this.store.get().Snackbar.info('Profile saved')
         } else {
-          this.store.banner({ html: res.msg, level : 'd', duration : 0 })
+          this.store.get().Banner.danger(res.msg)
         }
       }
     }

@@ -9,11 +9,11 @@
 <!-- {/if} -->
 
 <main>
-	<Banner />
+	<Banner ref:banner/>
 	<svelte:component this={child.component} {...child.props} />
-	<Toast />
-	<Snackbar ref:snackbar/>
 </main>
+
+<Snackbar ref:snackbar/>
 
 <!-- {#if $isMobile == false} -->
 <div style="display:{$isMobile?'none':'block'}">
@@ -33,15 +33,16 @@
 		components: {
 			Banner: '../components/Banner.html',
 			Snackbar: '../components/Snackbar.html',
-			Toast: '../components/Toast.html',
 			WebFooter: '../components/WebFooter.html',
 			WebNav: '../components/WebNav.html',
 			MobileNav: '../components/MobileNav.html'
 		},
 
 		oncreate() {
-			console.log('_layout', this.refs)
+			// we add these components to the store so we can access their methods/properties from all over the app
+			// like so this.store.get().Banner.info('a message')
       this.store.set({
+        Banner: this.refs.banner,
         Snackbar: this.refs.snackbar
       })
     },

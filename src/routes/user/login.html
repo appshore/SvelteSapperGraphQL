@@ -68,10 +68,9 @@
         if ( res.status ) {
           let { user, Snackbar } = this.store.get()
           Snackbar.info(`Welcome back ${user.username}`)
-          // this.store.toast({ html: `Welcome back ${user.username}` })
           return sapper.goto('/')
         } else {
-          this.store.banner({ html: res.msg, level : 'd', duration : 0 })
+          this.store.get().Banner.danger(res.msg)
         }
       },
     },

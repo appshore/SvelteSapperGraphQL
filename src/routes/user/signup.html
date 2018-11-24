@@ -88,17 +88,15 @@
         evt.preventDefault()
 
         let formData = this.get().form
-        // console.log("signup submit", formData, this.store.get())
 
         let res = await signup(this.store, formData)
 
         if ( res.status ) {
-          let { user } = this.store.get()
-          // console.log('signup/handleSubmit auth', this.get(), this.store.get())
-          this.store.toast({ html: `Hello ${user.username}. Thank you for signing up!`, level : 's' })
+          let { user, Snackbar } = this.store.get()
+          Snackbar.success(`Hello ${user.username}. Thank you for signing up!`)
           return sapper.goto('/')
         } else {
-          this.store.banner({ html: res.msg, level : 'd', duration : 0 })
+          this.store.get().Banner.danger(res.msg)
         }
       }
     }

@@ -14,11 +14,11 @@
 			let res = await logout(this.store)
 
 			if ( res.status ) {
-				let { user } = this.store.get()
+				let { user, Snackbar } = this.store.get()
 				// console.log('login/handleSubmit auth', this.get(), this.store.get())
-				this.store.toast({ html: 'You are now signed off', level: 'w' })
+				Snackbar.info('You are now signed off')
 			} else {
-				this.store.banner({ html: res.msg, level : 'd', duration : 0 })
+        this.store.get().Banner.danger(res.msg)
 			}
 			return sapper.goto('/')
     }

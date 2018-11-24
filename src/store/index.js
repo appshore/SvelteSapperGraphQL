@@ -11,14 +11,6 @@ class AppStore extends Store {
     return auth.checkAuth(this)
   }
 
-  banner(params) {
-    ui.banner(this, params)
-  }
-
-  toast(params) {
-    ui.toast(this, params)
-  }
-
   listenerResize() {
     ui.listenerResize(this)
   }
