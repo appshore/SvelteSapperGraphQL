@@ -17,7 +17,7 @@ export const login = async (store, credentials) => {
     if (res.error) {
       throw res.error
     }
-    Cookie.set('token', res.token, { path: '/', maxAge: CFG.COOKIE_TIMEOUT })
+    Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
 
     store.set({
       isAuth: true,
@@ -85,7 +85,7 @@ export const signup = async (store, user) => {
     if (res.error) {
       throw res.error
     }
-    Cookie.set('token', res.token, { path: '/', maxAge: CFG.COOKIE_TIMEOUT })
+    Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
 
     store.set({
       isAuth: true,

@@ -1,0 +1,60 @@
+	<div class="gdpr">
+		{#if show }
+		<div class="w3-container w3-center w3-padding w3-small w3-black w3-text-white">
+
+			<div>
+				<h6 class="w3-text-blue">Cookies usage</h6>
+				<p>
+					We use encrypted cookie to keep active the session of an authentified user. 
+					This is a required cookie activated once the user has signed in with his credentials. 
+					The cookie is removed when the user sign out.
+				</p>
+			</div>
+			<div>
+					<button class="w3-button w3-round w3-hover-light-grey w3-green w3-text-black" on:click="accept()">
+							Accept
+					</button>&nbsp;
+					<button class="w3-button w3-round w3-hover-light-grey w3-red w3-text-white" on:click="decline()">
+							Decline
+					</button>
+			</div>
+		</div>
+		{/if}
+	</div>
+
+<style>
+	.gdpr {
+		position: fixed;
+		bottom: 0px;
+		left: 0px;
+		width: 100%;
+	}
+</style>
+
+<script>
+	import Cookie from 'js-cookie'
+
+	export default {
+		data() {
+			return {
+				show: false
+			}
+		},
+
+		oncreate() {
+			this.set({ show: Boolean(Cookie.get('GDPR')) === false })
+		},
+
+		methods: {
+			accept() {
+				Cookie.set('GDPR', 'cookies_usage_acceptd_explicitely_by_user', { path: '/', expires: 365 })
+				this.set({ show: false })
+			},
+
+			decline() {
+				Cookie.remove('GDPR', { path: '/' })
+				this.set({ show: false })
+			}
+		}
+	}
+</script>
