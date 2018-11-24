@@ -124,7 +124,7 @@ export const updateBlog = async (req, res, next) => {
   .exec()
   .then(result => JSON.parse(JSON.stringify(result)))
 
-  if( checkBlog && checkBlog.slug === dataSet.slug && checkBlog.title === dataSet.title ) {
+  if( checkBlog && checkBlog.slug === dataSet.slug && req.body.slug !== dataSet.slug ) {
     return res.status(200).json({
       error: 'Title already in use'
     })

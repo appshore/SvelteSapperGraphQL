@@ -131,8 +131,6 @@
 					}
 				}).then(res => res.json())
 
-				console.log("blog/oncreate", res)
-
 				if (res.error) {
 					throw res.error
 				}
@@ -213,7 +211,9 @@
 						throw res.error
 					}
 
-          this.store.toast({ html: 'Blog deleted', level : 'd'})
+					let { Snackbar } = this.store.get()
+					Snackbar.warning('Blog deleted')
+					
 					return sapper.goto('/blog')
 
 				} catch (err) {
@@ -228,7 +228,6 @@
 			async handleSave() {
 				let isNew = this.get().params.slug === '_new'
 				let formData = Object.assign({}, this.get().blog, {html:this.editor.getHtml()})
-				console.log("blog/handleSave", formData, this.get().blog, this.get().params)
 				
 				try {
 					let apiUrl = isNew ? '' : `/${this.get().params.slug}`
@@ -248,15 +247,17 @@
 					this.set({ 
 						blog: res.blog, 
 						nextSlug: res.nextSlug, 
-						prevSlug: res.prevSlug
+						prevSlug: res.prevSlug,
+						params: {
+							slug:res.blog.slug
+						}
 					})
 					history.replaceState(history.state, 'blog', `/blog/${res.blog.slug}`)
-					this.set({params:{slug:res.blog.slug}})
 
-					this.store.toast(isNew ?  { html: 'Blog created', level : 's'} : { html: 'Blog updated', level : 'i'})
-
+					let { Snackbar } = this.store.get()
+					isNew ? Snackbar.success('Blog created') : Snackbar.info('Blog updated')
 				} catch (err) {
-					this.store.banner({ html: err, level : 'd', duration : 0})
+          this.store.get().Banner.danger(err)
 					this.set({ nextSlug: null, prevSlug: null })
 				}
 			}
