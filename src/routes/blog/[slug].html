@@ -254,8 +254,7 @@
 					})
 					history.replaceState(history.state, 'blog', `/blog/${res.blog.slug}`)
 
-					let { Snackbar } = this.store.get()
-					isNew ? Snackbar.success('Blog created') : Snackbar.info('Blog updated')
+					isNew ? this.store.get().Snackbar.success('Blog created') : this.store.get().Snackbar.info('Blog updated')
 				} catch (err) {
           this.store.get().Banner.danger(err)
 					this.set({ nextSlug: null, prevSlug: null })

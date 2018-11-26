@@ -45,12 +45,23 @@
 		},
 
 		oncreate() {
-			// we add these components to the store so we can access their methods/properties from all over the app
+			// we expose to the store the methods of the components that we want to use site wide
 			// like so this.store.get().Banner.info('a message')
-      this.store.set({
-        Banner: this.refs.banner,
-        Snackbar: this.refs.snackbar
-      })
-    },
+
+			this.store.set({
+				Snackbar: {
+					danger: this.refs.snackbar.danger,
+					info: this.refs.snackbar.info,
+					success: this.refs.snackbar.success,
+					warning: this.refs.snackbar.warning
+				},
+				Banner: {
+					danger: this.refs.banner.danger,
+					info: this.refs.banner.info,
+					success: this.refs.banner.success,
+					warning: this.refs.banner.warning
+				}
+			})
+		}
 	}
 </script>

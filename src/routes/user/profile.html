@@ -3,7 +3,7 @@
 </svelte:head>
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-  <h3 class="w3-text-teal">{form && form.username}'s profile</h3>
+  <h3 class="w3-text-teal">{$user && $user.username}'s profile</h3>
 
   <form on:submit="handleSave(event)">
     <label for="username" class="{form.username ? 'active' : ''}">Name (will be displayed)</label>
