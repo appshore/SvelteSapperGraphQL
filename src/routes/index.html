@@ -89,14 +89,6 @@
 	</div>
 </div>
 
-<script>
-	export default {
-		oncreate() {
-			(typeof M !== 'undefined') && M.Parallax.init(document.querySelectorAll('.parallax'))
-		}
-	}
-</script>
-
 <style>
 		/* Create a Parallax Effect */
 		.bgimg-1, .bgimg-2, .bgimg-3 {
@@ -137,3 +129,12 @@
 				}
 		}
 		</style>
+
+
+<script>
+		export default {
+			oncreate() {
+				(typeof M !== 'undefined') && M.Parallax.init(document.querySelectorAll('.parallax'))
+			}
+		}
+	</script>

@@ -1,0 +1,41 @@
+{#if show }
+	<span class="fa-stack fa-2x" on:click="top()">
+		<i class="fas fa-circle fa-stack-2x w3-text-black"></i>
+		<i class="fas fa-arrow-up fa-stack-1x fa-inverse w3-text-teal"></i>
+	</span>
+{/if}
+
+<style>
+	.fa-stack,
+	.fa-stack:hover {
+		position: fixed;
+	  bottom: 15px;
+	  right: 15px;
+	  cursor: pointer;
+	}
+</style>
+
+<script>
+	export default {
+		data() {
+			return {
+				show: false
+			}
+		},
+
+		oncreate() {
+			window.onscroll = () => {
+				let height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 1.5
+				let show = document.body.scrollTop > height || document.documentElement.scrollTop > height
+				this.set({ show })
+			}
+		},
+
+		methods: {
+			top() {
+				document.body.scrollTop = 0; // For Safari
+				document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+			}
+		}
+	}
+</script>
