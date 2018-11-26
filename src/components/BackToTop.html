@@ -1,3 +1,5 @@
+<svelte:window on:scroll="scroll()"/>
+
 {#if show }
 	<span class="fa-stack fa-2x" on:click="top()">
 		<i class="fas fa-circle fa-stack-2x w3-text-black"></i>
@@ -23,18 +25,16 @@
 			}
 		},
 
-		oncreate() {
-			window.onscroll = () => {
-				let height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 1.5
-				let show = document.body.scrollTop > height || document.documentElement.scrollTop > height
-				this.set({ show })
-			}
-		},
-
 		methods: {
 			top() {
 				document.body.scrollTop = 0; // For Safari
 				document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+			},
+
+			scroll() {
+				let height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0) / 1.5
+				let show = document.body.scrollTop > height || document.documentElement.scrollTop > height
+				this.set({ show })
 			}
 		}
 	}
