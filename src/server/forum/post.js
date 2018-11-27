@@ -32,7 +32,7 @@ export const findPost = (req, res) => {
       // retrieve the user whom authored a post
       let [user] = await findUsersByIds([result.createdBy])
 
-      // the slug of the next and previous articles
+      // the slug of the next and previous posts
       let nextSlug = await postModel
         .findOne({ createdAt: { $gt: new Date(result.createdAt) } }, { slug: 1 })
         .sort({ createdAt: 1 })
@@ -74,7 +74,7 @@ export const savePost = async (req, res) => {
       // retrieve the user whom authored a post
       let [user] = await findUsersByIds([result.createdBy])
 
-      // the slug of the next and previous articles
+      // the slug of the next and previous posts
       let nextSlug = await postModel
         .findOne({ createdAt: { $gt: new Date(result.createdAt) } }, { slug: 1 })
         .sort({ createdAt: 1 })

@@ -1,16 +1,12 @@
 <svelte:head>
-	<title>{blog.title}</title>
+	<title>{post.title}</title>
 </svelte:head>
 
-{#if Boolean(blog)}
+{#if Boolean(post)}
 <div class="w3-container {!$isMobile && 'w3-margin'}">
 	<h3 class="nowrap">
 		<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;<i class="fas fa-chevron-right w3-text-orange"/>
-		{#if editMode }
-			<input type="text" class="title w3-border-0 w3-border-bottom w3-text-teal" bind:value="blog.title"/>
-		{:else}
-			<input type="text" class="title w3-border-0 w3-border-bottom w3-border-white w3-text-teal" value="{blog.title}" disabled/>
-		{/if}
+		<input type="text" class="title w3-border-0 w3-border-bottom w3-border-white w3-text-teal" value="{post.title}" disabled/>
 	</h3>
 	<div class="w3-row w3-margin-bottom">
 		<div class="w3-col s9">
@@ -24,7 +20,7 @@
 						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleSave()">
 							<i class="fas fa-save w3-text-blue"/>
 						</button>
-						{#if blog.slug !== '_new' }
+						{#if editMode === 'Save'}
 							<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
 								<i class="fas fa-trash-alt w3-text-red"/>
 							</button>
@@ -50,26 +46,44 @@
 		</div>
 		<div class="w3-col s3">
 			<span class="w3-right w3-small w3-text-grey w3-right-align">
-					<span class="nowrap">{blog.timestamp}</span>
-					<span class="nowrap"> by <a href="/user/{blog.createdBy}" class="w3-text-blue">{blog.username}</a><span/>
+					<span class="nowrap">{post.timestamp}</span>
+					<span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
 			</span>
 		</div>
 	</div>
 	{#if editMode }
+		<label for="title" class="{post.title ? 'active' : ''}">Title</label>
+		<input
+			class="w3-input w3-border w3-margin-bottom validate"
+			type="text"
+			required="true"
+			bind:value="post.title"
+			id="title"
+		/>
+		<label for="tags" class="{post.tags ? 'active' : ''}">Tags</label>
+		<input
+			class="w3-input w3-border w3-margin-bottom validate"
+			type="text"
+			required="true"
+			bind:value="post.tags"
+			id="tags"
+		/>
+		<span class="helper-text" data-error="Select at least one tag"></span>
 		<!--  $isResize is used to trigger an onupdate -->
+		<label for="content" class="{post.html ? 'active' : ''}">Content</label>
 		<div id="content" resize="{$isResize}"/>
 	{:else}
 		<div id="content">
-				{@html blog.html}
+				{@html post.html}
 		</div>
 		<div class="w3-padding w3-center">
 			<h4>
 					{#if Boolean(nextSlug)}
-						<a href="/blog/{nextSlug}"><i class="fas fa-chevron-left w3-text-orange"/>&nbsp;Next article</a>
+						<a href="/blog/{nextSlug}"><i class="fas fa-chevron-left w3-text-orange"/>&nbsp;Next post</a>
 					{/if}	
 					&nbsp;&nbsp;<a href="/blog" class="w3-text-blue">Blog</a>&nbsp;&nbsp;
 					{#if Boolean(prevSlug)}
-						<a href="/blog/{prevSlug}">Previous article&nbsp;<i class="fas fa-chevron-right w3-text-orange"/></a>
+						<a href="/blog/{prevSlug}">Previous post&nbsp;<i class="fas fa-chevron-right w3-text-orange"/></a>
 					{/if}
 			</h4>
 		</div>
@@ -96,7 +110,7 @@
 	export default {
 		data() {
 			return {
-				blog: {
+				post: {
 					title : '',
 					html: ''
 				},
@@ -111,9 +125,11 @@
 				if( this.store.get().isAuth === false ){
 					return sapper.goto('/blog')
 				}
-				this.set({ 
-					blog: {
-						title: 'New blog',
+				this.set({
+					editMode: 'New',
+					post: {
+						slug: '_new',
+						title: 'New post',
 						html: '',
 						timestamp: '',
 						username: this.store.get().user.username
@@ -135,12 +151,12 @@
 					throw res.error
 				}
 				this.set({ 
-					blog: res.blog, 
+					post: res.post, 
 					nextSlug: res.nextSlug, 
 					prevSlug: res.prevSlug
 				})
 			} catch (err) {
-				this.set({ blog: null, nextSlug: null, prevSlug: null })
+				this.set({ post: null, nextSlug: null, prevSlug: null })
 			}
 		},
 
@@ -151,13 +167,19 @@
 			}
 		},
 
+		ondestroy() {
+			this.store.get().Banner.dismiss()
+		},
+
 		methods: {
 			contentHeight() {
 				return `${Math.max(100, window.innerHeight-(document.getElementById('content').getBoundingClientRect().top+50))}px`
 			},
 
 			handleEdit() {
-				this.set({ editMode: true})
+				this.set({ 
+					editMode: this.get().params.slug === '_new' ? 'New' : 'Save'
+				})
 
 				this.editor = new Editor({
 					// <HTMLElement> required
@@ -175,7 +197,7 @@
 						// default 300px
 						height: this.contentHeight(),
 						// initial html
-						html: this.get().blog.html,
+						html: this.get().post.html,
 						// remove format action clears formatting, but also removes some html tags.
 						// you can specify which tags you want to be removed.
 						// removeFormatTags: ['h1', 'h2', 'blockquote'] // default
@@ -184,19 +206,16 @@
 			},
 
 			handleUndo() {
-				if( this.get().blog.slug === '_new') {
+				this.set({ editMode: false})
+				if( this.get().post.slug === '_new') {
 					return sapper.goto('/blog')
 				}
-				this.set({ editMode: false})
 			},
 
 			handleClone() {
 			},
 
 			async handleDelete() {
-				if( this.get().blog.slug === '_new') {
-					return sapper.goto('/blog')
-				}
 				try {
 					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog/${this.get().params.slug}`, {
 						method: 'DELETE',
@@ -215,9 +234,8 @@
 					Snackbar.warning('Blog deleted')
 					
 					return sapper.goto('/blog')
-
 				} catch (err) {
-					this.set({ blog: null, nextSlug: null, prevSlug: null })
+					this.set({ post: null, nextSlug: null, prevSlug: null })
 				}
 			},
 
@@ -226,8 +244,7 @@
       },
 			
 			async handleSave() {
-				let isNew = this.get().params.slug === '_new'
-				let formData = Object.assign({}, this.get().blog, {html:this.editor.getHtml()})
+				let formData = Object.assign({}, this.get().post, {html:this.editor.getHtml()})
 
 				if( Boolean(formData.title) === false ) {
 					this.store.get().Banner.danger('Title is required')
@@ -239,8 +256,8 @@
 				this.store.get().Banner.dismiss()
 
 				try {
-					let apiUrl = isNew ? '' : `/${this.get().params.slug}`
-					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog${apiUrl}`, {
+					let isNew = this.get().params.slug === '_new'
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog${isNew ? '' : `/${this.get().params.slug}`}`, {
 						method: 'POST',
 						credentials: 'same-origin',
 						headers: {
@@ -254,14 +271,14 @@
 						throw res.error
 					}
 					this.set({ 
-						blog: res.blog, 
+						post: res.post, 
 						nextSlug: res.nextSlug, 
 						prevSlug: res.prevSlug,
 						params: {
-							slug:res.blog.slug
+							slug:res.post.slug
 						}
 					})
-					history.replaceState(history.state, 'blog', `/blog/${res.blog.slug}`)
+					history.replaceState(history.state, 'blog', `/blog/${res.post.slug}`)
 
 					isNew ? this.store.get().Snackbar.success('Blog created') : this.store.get().Snackbar.info('Blog updated')
 				} catch (err) {

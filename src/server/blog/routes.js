@@ -2,17 +2,17 @@ import express from 'express'
 
 import withAuth from '../auth/withAuth'
 
-import {findBlogs} from './blogs'
-import {deleteBlog, findBlog, saveBlog, updateBlog} from './blog'
+import {findPosts} from './posts'
+import {deletePost, findPost, savePost, updatePost} from './post'
 
 let routes = express.Router()
 
-routes.delete('/:slug', withAuth, deleteBlog)
+routes.delete('/:slug', withAuth, deletePost)
 
-routes.post('/:slug', withAuth, updateBlog)
-routes.post('/', withAuth, saveBlog)
+routes.post('/:slug', withAuth, updatePost)
+routes.post('/', withAuth, savePost)
 
-routes.get('/:slug', findBlog)
-routes.get('/', findBlogs)
+routes.get('/:slug', findPost)
+routes.get('/', findPosts)
 
 export default routes

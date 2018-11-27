@@ -7,7 +7,7 @@
 				<i on:click="dismiss(snack.id)" class="fas fa-times-circle" />
 			</div>
 			{/if}
-			<h6 class="w3-padding-16">{@html snack.html}</h6>
+			<h6 class="w3-section">{@html snack.html}</h6>
 		</div>
 		{/each}
 	{/if}
@@ -25,6 +25,10 @@
 		top: 50px;
 		right: 0;
 		width: 300px;
+	}
+
+	.w3-panel {
+		margin-bottom: 0px;
 	}
 </style>
 
