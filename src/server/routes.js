@@ -2,6 +2,7 @@ import express from 'express'
 
 import authRoutes from './auth/routes'
 import blogRoutes from './blog/routes'
+import forumRoutes from './forum/routes'
 import userRoutes from './user/routes'
 
 let routes = express.Router()
@@ -25,6 +26,7 @@ routes.use('*', (req, res, next) => {
 
 routes.use('/auth', authRoutes)
 routes.use('/blog', blogRoutes)
+routes.use('/forum', forumRoutes)
 routes.use('/user', userRoutes)
 
 // default and catchall route for API

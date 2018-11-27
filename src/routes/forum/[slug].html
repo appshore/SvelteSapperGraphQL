@@ -2,41 +2,272 @@
 	<title>{post.title}</title>
 </svelte:head>
 
+{#if Boolean(post)}
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-		<h3 class="w3-text-teal">Forum</h3>
-
-	<h5>{post.title}</h5>
-
-	<div class='content'>
-		{@html post.html}
+	<h3 class="nowrap">
+		<a href="/forum" class="w3-text-blue">Forum</a>&nbsp;<i class="fas fa-chevron-right w3-text-orange"/>
+		{#if editMode }
+			<input type="text" class="title w3-border-0 w3-border-bottom w3-text-teal" bind:value="post.title"/>
+		{:else}
+			<input type="text" class="title w3-border-0 w3-border-bottom w3-border-white w3-text-teal" value="{post.title}" disabled/>
+		{/if}
+	</h3>
+	<div class="w3-row w3-margin-bottom">
+		<div class="w3-col s9">
+			{#if $isAuth }
+				<!-- menu items that required to be auth -->
+				<span class="w3-bar">
+					{#if editMode }
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleUndo()">
+							<i class="fas fa-undo w3-text-orange"/>
+						</button>
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleSave()">
+							<i class="fas fa-save w3-text-blue"/>
+						</button>
+						{#if post.slug !== '_new' }
+							<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
+								<i class="fas fa-trash-alt w3-text-red"/>
+							</button>
+						{/if}
+					{:else}
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleEdit()">
+							<i class="fas fa-edit w3-text-blue"/>
+						</button>
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleClone()">
+							<i class="fas fa-clone w3-text-orange"/>
+						</button>
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleDelete()">
+							<i class="fas fa-trash-alt w3-text-red"/>
+						</button>					
+						<button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+							<i class="fas fa-plus w3-text-teal"/>
+						</button>
+					{/if}
+				</span>
+			{:else}
+				&nbsp;
+			{/if}
+		</div>
+		<div class="w3-col s3">
+			<span class="w3-right w3-small w3-text-grey w3-right-align">
+					<span class="nowrap">{post.timestamp}</span>
+					<span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
+			</span>
+		</div>
 	</div>
+	{#if editMode }
+		<!--  $isResize is used to trigger an onupdate -->
+		<div id="content" resize="{$isResize}"/>
+	{:else}
+		<div id="content">
+				{@html post.html}
+		</div>
+		<div class="w3-padding w3-center">
+			<h4>
+					{#if Boolean(nextSlug)}
+						<a href="/forum/{nextSlug}"><i class="fas fa-chevron-left w3-text-orange"/>&nbsp;Next article</a>
+					{/if}	
+					&nbsp;&nbsp;<a href="/forum" class="w3-text-blue">Post</a>&nbsp;&nbsp;
+					{#if Boolean(prevSlug)}
+						<a href="/forum/{prevSlug}">Previous article&nbsp;<i class="fas fa-chevron-right w3-text-orange"/></a>
+					{/if}
+			</h4>
+		</div>
+	{/if}
 </div>
+{/if}
 
 <style>
-	.content :global(pre) {
-		background-color: #f9f9f9;
-		box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.05);
-		padding: 0.5em;
-		border-radius: 2px;
-		overflow-x: auto;
+	.nowrap {
+		white-space:nowrap;
 	}
 
-	.content :global(pre) :global(code) {
-		background-color: transparent;
-		padding: 0;
+	.title {
+		min-width:75%;
 	}
 </style>
 
 <script>
-	export default {
-		async preload({ params, query }) {
-			const res = await this.fetch(`forum/${params.slug}.json`)
-			const data = await res.json()
+	import Editor from 'cl-editor'
+	import * as sapper from '../../../__sapper__/client'
 
-			if (res.status === 200) {
-				return { post: data }
-			} else {
-				this.error(res.status, data.message)
+	let editor
+
+	export default {
+		data() {
+			return {
+				post: {
+					title : '',
+					html: ''
+				},
+				nextSlug: null,
+				prevSlug: null,
+				editMode: false
+			}
+		},
+
+		async oncreate() {
+			if( this.get().params.slug === '_new' ) {
+				if( this.store.get().isAuth === false ){
+					return sapper.goto('/forum')
+				}
+				this.set({ 
+					post: {
+						title: 'New post',
+						html: '',
+						timestamp: '',
+						username: this.store.get().user.username
+					}
+				})
+				return this.handleEdit()
+			}
+			try {
+				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/${this.get().params.slug}`, {
+					method: 'GET',
+					credentials: 'same-origin',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					}
+				}).then(res => res.json())
+
+				if (res.error) {
+					throw res.error
+				}
+				this.set({ 
+					post: res.post, 
+					nextSlug: res.nextSlug, 
+					prevSlug: res.prevSlug
+				})
+			} catch (err) {
+				this.set({ post: null, nextSlug: null, prevSlug: null })
+			}
+		},
+
+		onupdate({changed, current}) {
+			if( changed.$isResize && current.editMode) {
+				// set new height for editor editable content
+				this.editor.set({height: this.contentHeight()})
+			}
+		},
+
+		methods: {
+			contentHeight() {
+				return `${Math.max(100, window.innerHeight-(document.getElementById('content').getBoundingClientRect().top+50))}px`
+			},
+
+			handleEdit() {
+				this.set({ editMode: true})
+
+				this.editor = new Editor({
+					// <HTMLElement> required
+					target: document.getElementById('content'),
+					// optional
+					data: {
+						// <Array[string | Object]> string if overwriting, object if customizing/creating
+						// available actions:
+						// 'viewHtml', 'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
+						// 'ol', 'ul', 'hr', 'left', 'right', 'center', 'justify', 'a', 'image', 'forecolor', 'backcolor', 'removeFormat'
+						actions: [
+						'undo', 'redo', 'b', 'i', 'u', 'strike', 'sup', 'sub', 'h1', 'h2', 'p', 'blockquote', 
+						'ol', 'ul', 'hr', 'left', 'right', 'center', 'justify', 'a', 'image', 'forecolor', 'backcolor', 'removeFormat', 'viewHtml'
+						],
+						// default 300px
+						height: this.contentHeight(),
+						// initial html
+						html: this.get().post.html,
+						// remove format action clears formatting, but also removes some html tags.
+						// you can specify which tags you want to be removed.
+						// removeFormatTags: ['h1', 'h2', 'blockquote'] // default
+					}
+				})
+			},
+
+			handleUndo() {
+				if( this.get().post.slug === '_new') {
+					return sapper.goto('/forum')
+				}
+				this.set({ editMode: false})
+			},
+
+			handleClone() {
+			},
+
+			async handleDelete() {
+				if( this.get().post.slug === '_new') {
+					return sapper.goto('/forum')
+				}
+				try {
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/${this.get().params.slug}`, {
+						method: 'DELETE',
+						credentials: 'same-origin',
+						headers: {
+							Accept: 'application/json',
+							'Content-Type': 'application/json',
+						},
+					}).then(res => res.json())
+
+					if (res.error) {
+						throw res.error
+					}
+
+					let { Snackbar } = this.store.get()
+					Snackbar.warning('Post deleted')
+					
+					return sapper.goto('/forum')
+
+				} catch (err) {
+					this.set({ post: null, nextSlug: null, prevSlug: null })
+				}
+			},
+
+			handleNew() {
+        sapper.goto('/forum/_new')
+      },
+			
+			async handleSave() {
+				let isNew = this.get().params.slug === '_new'
+				let formData = Object.assign({}, this.get().post, {html:this.editor.getHtml()})
+
+				if( Boolean(formData.title) === false ) {
+					this.store.get().Banner.danger('Title is required')
+					return
+				} else if( Boolean(formData.html) === false ) {
+					this.store.get().Banner.danger('Content is required')
+					return
+				} 
+				this.store.get().Banner.dismiss()
+				
+				try {
+					let apiUrl = isNew ? '' : `/${this.get().params.slug}`
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum${apiUrl}`, {
+						method: 'POST',
+						credentials: 'same-origin',
+						headers: {
+							Accept: 'application/json',
+							'Content-Type': 'application/json',
+						},
+      			body: JSON.stringify(formData),
+					}).then(res => res.json())
+
+					if (res.error) {
+						throw res.error
+					}
+					this.set({ 
+						post: res.post, 
+						nextSlug: res.nextSlug, 
+						prevSlug: res.prevSlug,
+						params: {
+							slug:res.post.slug
+						}
+					})
+					history.replaceState(history.state, 'forum', `/forum/${res.post.slug}`)
+
+					isNew ? this.store.get().Snackbar.success('Post created') : this.store.get().Snackbar.info('Post updated')
+				} catch (err) {
+          this.store.get().Banner.danger(err)
+					this.set({ nextSlug: null, prevSlug: null })
+				}
 			}
 		}
 	}

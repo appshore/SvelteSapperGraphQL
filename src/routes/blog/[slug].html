@@ -228,7 +228,16 @@
 			async handleSave() {
 				let isNew = this.get().params.slug === '_new'
 				let formData = Object.assign({}, this.get().blog, {html:this.editor.getHtml()})
-				
+
+				if( Boolean(formData.title) === false ) {
+					this.store.get().Banner.danger('Title is required')
+					return
+				} else if( Boolean(formData.html) === false ) {
+					this.store.get().Banner.danger('Content is required')
+					return
+				} 
+				this.store.get().Banner.dismiss()
+
 				try {
 					let apiUrl = isNew ? '' : `/${this.get().params.slug}`
 					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog${apiUrl}`, {

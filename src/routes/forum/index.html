@@ -1,28 +1,75 @@
 <svelte:head>
-	<title>Forum</title>
+  <title>Forum</title>
 </svelte:head>
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-		<h3 class="w3-text-teal">Forum</h3>
-	<ul class="w3-collection">
-		{#each posts as post}
-		<!-- we're using the non-standard `rel=prefetch` attribute to
-						tell Sapper to load the data for the page as soon as
-						the user hovers over the link or taps it, instead of
-						waiting for the 'click' event -->
-		<li class="w3-collection-item">
-			<a rel='prefetch' href='forum/{post.slug}'>{post.title}</a>
-		</li>
-		{/each}
-	</ul>
+  <h3 class="w3-text-teal">Forum</h3>
+  
+  {#if $isAuth }
+    <!-- menu items that required to be auth -->
+    <button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+      <i class="fas fa-plus w3-text-teal"/>
+    </button>
+  {/if}
+  {#if Boolean(posts)} 
+    <div class="w3-margin-top">
+      {#each posts as post}
+      <div class="w3-row">
+        <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="/forum/{post.slug}">{post.title}</a></div>
+        <div class="w3-col m4 s3">
+          <span class="w3-right w3-small w3-text-grey w3-right-align">
+              <span class="nowrap">{post.timestamp}</span>
+              <span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
+          </span>
+        </div>
+      </div>
+      <div><a href="/forum/{post.slug}">{@html post.html}</a></div>
+      <hr />
+      {/each}
+    </div>
+  {/if}
 </div>
 
+<style>
+  .nowrap {
+    white-space:nowrap;
+  }
+</style>
+
 <script>
-	export default {
-		preload({ params, query }) {
-			return this.fetch(`forum.json`).then(r => r.json()).then(posts => {
-				return { posts }
-			})
-		}
-	}
+  import * as sapper from '../../../__sapper__/client'
+
+  export default {
+    data() {
+      return {
+        posts: []
+      }
+    },
+    
+    async oncreate() {
+      try {
+        let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum`, {
+          method: 'GET',
+          credentials: 'same-origin',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }).then(res => res.json())
+        if (res.error) {
+          throw res.error
+        }
+        this.set({ posts: res.posts })
+      } catch (err) {
+        this.set({ posts: [] })
+      }
+    },
+
+    methods: {
+			handleNew() {
+        sapper.goto('/forum/_new')
+      }
+    }
+
+  }
 </script>
