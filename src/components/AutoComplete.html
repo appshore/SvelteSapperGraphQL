@@ -1,0 +1,143 @@
+<input ref:AutoCompleteInput type="text" placeholder="Type a letter or space to display tags" class="{inputClass}">
+<div ref:AutoCompleteTagsList class="{tagsListClass}"/>
+<script>
+		//  An array containing all the country names in the world
+		function autocomplete(inputField, tagsList, arr) {
+			// the autocomplete function takes two arguments,
+			// the text field element and an array of possible autocompleted values
+			let currentFocus 
+
+			// execute a function when someone writes in the text field
+			inputField.addEventListener("input", e => {
+				console.log('AC/input', e)
+				let val = inputField.value
+				// close any already open lists of autocompleted value
+				closeAllLists()
+				if (!val) { 
+					return false
+				}
+				currentFocus = 0
+				// create a DIV element that will contain the items (values)
+				let a = document.createElement("div")
+				a.setAttribute("class", "autocomplete-taglist w3-section")
+				// append the DIV element as a child of the autocomplete container
+				tagsList.appendChild(a)
+
+				// for each item in the array..
+				for (let i = 0; i < arr.length; i++) {
+					// check if the item starts with the same letters as the text field value
+					if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+						// create a DIV element for each matching element
+						let b = document.createElement("span")
+						b.setAttribute('class', 'autocomplete-tag w3-tag w3-margin-right w3-round w3-blue w3-center')
+						// make the matching letters bold
+						b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>"
+						b.innerHTML += arr[i].substr(val.length)
+						// // insert a input field that will hold the current array item's value
+						// b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>"
+						// execute a function when someone clicks on the item value (DIV element)
+						b.addEventListener("click", e => {
+							console.log('AC/click', e)
+							// insert the value for the autocomplete text field
+							inputField.value = e.target.innerText
+							// close the list of autocompleted values, or any other open lists of autocompleted values
+							closeAllLists()
+						})
+						a.appendChild(b)
+					}
+				}
+				
+				// make the first of the tags list active by default
+				addActive(tagsList.getElementsByClassName('autocomplete-tag'))
+			})
+
+			// execute a function presses a key on the keyboard
+			inputField.addEventListener('keydown', e => {
+				let x = tagsList.getElementsByClassName('autocomplete-tag')
+				if (e.keyCode == 39 || e.keyCode == 40) {
+					// If the arrow RIGHT or DOWN key is pressed, increase the currentFocus variable
+					currentFocus++
+					// and and make the current item more visible
+					addActive(x)
+				} else if (e.keyCode == 37 || e.keyCode == 38) { // up
+					// If the arrow LEFt or UP key is pressed, decrease the currentFocus variable
+					currentFocus--
+					// and and make the current item more visible
+					addActive(x)
+				} else if (e.keyCode == 9 || e.keyCode == 13) {
+					// If the TAB or ENTER key is pressed, prevent the form from being submitted
+					e.preventDefault()
+					if (currentFocus > -1) {
+						// and simulate a click on the "active" item
+						x && x[currentFocus].click()
+					}
+				}
+			})
+
+			function addActive(x) {
+				// a function to classify an item as "active"
+				if (!x) {
+					return false
+				}
+				// start by removing the "active" class on all items
+				removeActive(x)
+
+				if (currentFocus >= x.length) {
+					currentFocus = 0
+				}
+
+				if (currentFocus < 0) {
+					currentFocus = (x.length - 1)
+				}
+
+				// add class "autocomplete-active"
+				x[currentFocus].classList.add('w3-green')
+			}
+
+			function removeActive(x) {
+				// a function to remove the "active" class from all autocomplete items
+				for (let i = 0; i < x.length; i++) {
+					x[i].classList.remove('w3-green')
+				}
+			}
+
+			function closeAllLists(elmnt) {
+				// close all autocomplete lists in the document, except the one passed as an argument
+				let x = tagsList.getElementsByClassName('autocomplete-taglist')
+				for (let i = 0; i < x.length; i++) {
+					if (elmnt != x[i] && elmnt != inputField) {
+						x[i].parentNode.removeChild(x[i])
+					}
+				}
+			}
+
+			// execute a function when someone clicks in the document
+			document.addEventListener('click', e => {
+				closeAllLists(e.target)
+			})
+		}
+	
+	export default {
+		data() {
+			return {
+				show: false
+			}
+		},
+
+		oncreate() {
+			// initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values
+			console.log('AC/oncreate', this.get())
+			autocomplete(this.refs.AutoCompleteInput, this.refs.AutoCompleteTagsList, this.get().tagsList)
+		},
+
+		methods: {
+			accept() {
+				this.set({ show: false })
+			},
+
+			decline() {
+				this.set({ show: false })
+			}
+		}
+	}
+</script>

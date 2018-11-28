@@ -61,12 +61,11 @@
 			id="title"
 		/>
 		<label for="tags" class="{post.tags ? 'active' : ''}">Tags</label>
-		<input
-			class="w3-input w3-border w3-margin-bottom validate"
-			type="text"
-			required="true"
+		<AutoComplete
+			inputClass="w3-input w3-border w3-margin-bottom validate"
+			tagsListClass="w3-margin-bottom"
+			tagsList="{tagsList}"
 			bind:value="post.tags"
-			id="tags"
 		/>
 		<span class="helper-text" data-error="Select at least one tag"></span>
 		<!--  $isResize is used to trigger an onupdate -->
@@ -105,15 +104,29 @@
 	import Editor from 'cl-editor'
 	import * as sapper from '../../../__sapper__/client'
 
+	const countries = ["Andorra", "Austria", "Belgium", "Bosnia & Herzegovina", "Bulgaria", "Croatia", 
+		"Cyprus", "Czech Republic", "Denmark", "Estonia", "Faroe Islands", 
+		"Finland", "France", "Germany", "Gibraltar", "Greece", "Guernsey", "Hungary", "Iceland", "Ireland", 
+		"Isle of Man", "Italy", "Jersey", "Kosovo", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg", "Macedonia",
+		"Malta", "Moldova", "Monaco", "Montenegro", "Montserrat", "Netherlands",  
+		"Norway", "Poland", "Portugal", "Romania", "San Marino", "Serbia", "Slovakia", "Slovenia", "Spain", 
+		"Sweden", "Switzerland", "Ukraine", "United Kingdom", "Vatican City"]
+
 	let editor
 
 	export default {
+		components: {
+			AutoComplete: '../../components/AutoComplete.html'
+		},
+
 		data() {
 			return {
 				post: {
 					title : '',
-					html: ''
+					html: '',
+					tags: []
 				},
+				tagsList: countries,
 				nextSlug: null,
 				prevSlug: null,
 				editMode: false
@@ -130,10 +143,12 @@
 					post: {
 						slug: '_new',
 						title: 'New post',
+						tags: [],
 						html: '',
 						timestamp: '',
 						username: this.store.get().user.username
 					}
+
 				})
 				return this.handleEdit()
 			}
