@@ -1,8 +1,24 @@
-<input ref:AutoCompleteInput type="text" placeholder="Type a letter or space to display tags" class="{inputClass}">
-<div ref:AutoCompleteTagsList class="{tagsListClass}"/>
+<div class="{inputClass}">
+	<span ref:AutoCompleteTags/>
+	<input ref:AutoCompleteInput type="text" class="w3-border-0" placeholder="Type a letter or space">
+</div>
+<div ref:AutoCompleteTagsList class="w3-container w3-card-4 w3-white {tagsListClass}"/>
+
+<style>
+	input {
+		outline: none;
+	}
+
+	.w3-card-4 {
+		position: absolute;
+		margin-top: -16px;
+		z-index: 10;
+	}
+</style>
+
 <script>
 		//  An array containing all the country names in the world
-		function autocomplete(inputField, tagsList, arr) {
+		function autocomplete(inputField, tags, tagsList, arr) {
 			// the autocomplete function takes two arguments,
 			// the text field element and an array of possible autocompleted values
 			let currentFocus 
@@ -13,7 +29,7 @@
 				let val = inputField.value
 				// close any already open lists of autocompleted value
 				closeAllLists()
-				if (!val) { 
+				if (!val || !arr.find( tag => tag.substr(0, val.length).toUpperCase() === val.toUpperCase())) { 
 					return false
 				}
 				currentFocus = 0
@@ -39,7 +55,8 @@
 						b.addEventListener("click", e => {
 							console.log('AC/click', e)
 							// insert the value for the autocomplete text field
-							inputField.value = e.target.innerText
+							inputField.value = ''
+							tags.innerHTML += `<span class="w3-tag w3-margin-right w3-round w3-blue w3-center" value="${e.target.innerText}">${e.target.innerText}&nbsp;<i onclick="this.parentNode.parentNode.removeChild(this.parentNode)" class="fas fa-times-circle" /></span>`
 							// close the list of autocompleted values, or any other open lists of autocompleted values
 							closeAllLists()
 						})
@@ -69,7 +86,7 @@
 					e.preventDefault()
 					if (currentFocus > -1) {
 						// and simulate a click on the "active" item
-						x && x[currentFocus].click()
+						x && x[currentFocus] && x[currentFocus].click()
 					}
 				}
 			})
@@ -88,6 +105,10 @@
 
 				if (currentFocus < 0) {
 					currentFocus = (x.length - 1)
+				}
+
+				if (!x[currentFocus]) {
+					return false
 				}
 
 				// add class "autocomplete-active"
@@ -127,13 +148,10 @@
 		oncreate() {
 			// initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values
 			console.log('AC/oncreate', this.get())
-			autocomplete(this.refs.AutoCompleteInput, this.refs.AutoCompleteTagsList, this.get().tagsList)
+			autocomplete(this.refs.AutoCompleteInput, this.refs.AutoCompleteTags, this.refs.AutoCompleteTagsList, this.get().tagsList)
 		},
 
 		methods: {
-			accept() {
-				this.set({ show: false })
-			},
 
 			decline() {
 				this.set({ show: false })
