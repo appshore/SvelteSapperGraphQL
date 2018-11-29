@@ -1,15 +1,21 @@
 <div class="{inputClass}">
 	<span ref:AutoCompleteTags/>
-	<input ref:AutoCompleteInput type="text" class="w3-border-0" placeholder="Type a letter or space">
+	<input ref:AutoCompleteInput 
+		type="text" class="w3-border-0" placeholder="Type a letter or space"
+		on:input="input(event)"
+		on:keydown="keydown(event)"
+		>
 </div>
-<div ref:AutoCompleteTagsList class="w3-container w3-card-4 w3-white {tagsListClass}"/>
+<div class="popup" style="margin-right:{$isMobile ? '16px' : '32px'}">
+	<div ref:AutoCompleteTagsList class="w3-container w3-card-4 w3-white"/>
+</div>
 
 <style>
 	input {
 		outline: none;
 	}
 
-	.w3-card-4 {
+	.popup {
 		position: absolute;
 		margin-top: -16px;
 		z-index: 10;
@@ -17,110 +23,128 @@
 </style>
 
 <script>
-		//  An array containing all the country names in the world
-		function autocomplete(inputField, tags, tagsList, arr) {
-			// the autocomplete function takes two arguments,
-			// the text field element and an array of possible autocompleted values
-			let currentFocus 
+	export default {
+		data() {
+			return {
+				inputField: {},
+				tagsList: {},
+				currentFocus: 0
+			}
+		},
 
-			// execute a function when someone writes in the text field
-			inputField.addEventListener("input", e => {
-				console.log('AC/input', e)
-				let val = inputField.value
+		oncreate() {
+			// initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values
+			console.log('AC/oncreate', this.get())
+			// autocomplete(this.refs.AutoCompleteInput, this.refs.AutoCompleteTags, this.refs.AutoCompleteTagsList, this.get().tagsList)
+			this.inputField = this.refs.AutoCompleteInput
+			this.tagsList = this.refs.AutoCompleteTagsList
+		},
+
+		methods: {
+
+			input(evt) {
+				console.log('AC/input')
+				let val = this.inputField.value
 				let upperCaseList, filteredList
 
 				// close any already open lists of autocompleted value
-				closeTagsList()
+				this.closeTagsList()
 				if( !val ) {
 					return false
 				}
 
-				if( val.length == 1 && val[0] === ' ') { 
+				if( val.length == 1 && evt.key === ' ') { 
 					// SPACE key pressed in first position, return all tags
-					filteredList = arr
+					filteredList = this.get().tagsList
 				} else {
 					// remove spaces
 					val = val.trim()
 					// Keep only the matching tags
-					filteredList = arr.filter( tag => tag.substr(0, val.length).toUpperCase() === val.toUpperCase() )
+					filteredList = this.get().tagsList.filter( ({name}) => name.substr(0, val.length).toUpperCase() === val.toUpperCase())
 				}
 
-				currentFocus = 0
+				this.currentFocus = 0
 
 				// built the tags container
 				let a = document.createElement("div")
-				a.setAttribute("class", "autocomplete-taglist w3-section")
-				tagsList.appendChild(a)
+				a.setAttribute("class", "autocomplete-taglist w3-margin-bottom")
+				this.tagsList.appendChild(a)
 
-				filteredList.map( tag => {
+				filteredList.map( ({code, name}) => {
 					// check if the item starts with the same letters as the text field value
 						// create a DIV element for each matching element
 						let b = document.createElement("span")
-						b.setAttribute('class', 'autocomplete-tag w3-tag w3-margin-right w3-round w3-blue w3-center')
+						b.setAttribute('class', 'autocomplete-tag w3-tag w3-margin-right w3-margin-top w3-round w3-blue w3-center')
 						// make the matching letters bold
-						b.innerHTML = "<strong>" + tag.substr(0, val.length) + "</strong>"
-						b.innerHTML += tag.substr(val.length)
+						b.innerHTML = "<strong>" + name.substr(0, val.length) + "</strong>"
+						b.innerHTML += name.substr(val.length)
 
 						// execute a function when someone clicks on the item value (DIV element)
 						b.addEventListener("click", e => {
-							console.log('AC/click', e)
 							// insert the value for the autocomplete text field
-							inputField.value = ''
-							tags.innerHTML += `<span class="w3-tag w3-margin-right w3-round w3-blue w3-center" value="${e.target.innerText}">${e.target.innerText}&nbsp;<i onclick="this.parentNode.parentNode.removeChild(this.parentNode)" class="fas fa-times-circle" /></span>`
+							this.inputField.value = ''
+							this.refs.AutoCompleteTags.innerHTML += `<span class="w3-tag w3-margin-right w3-round w3-blue w3-center" value="${e.target.innerText}">${e.target.innerText}&nbsp;<i onclick="this.parentNode.parentNode.removeChild(this.parentNode)" class="fas fa-times-circle" /></span>`
 							// close the list of autocompleted values, or any other open lists of autocompleted values
-							closeTagsList()
+							this.closeTagsList()
 						})
 						a.appendChild(b)
 				})
 				
 				// make the first of the tags list active by default
-				addActive(tagsList.getElementsByClassName('autocomplete-tag'))
-			})
+				this.addActive(this.tagsList.getElementsByClassName('autocomplete-tag'))
+			},
 
-			// execute a function presses a key on the keyboard
-			inputField.addEventListener('keydown', e => {
-				let x = tagsList.getElementsByClassName('autocomplete-tag')
-				console.log('AC/keydown keycode', e.keyCode)
-				switch (e.keyCode) {
-					case 8 : // BACKSPACE
-					console.log('AC/keydown inputField.value', inputField.value)
+			keydown(evt) {
+				let tags = this.tagsList.getElementsByClassName('autocomplete-tag')
+				console.log('AC/keydown key', evt.key)
+				switch (evt.key) {
+					case 'Backspace' :
+					console.log('AC/keydown inputField.value', this.inputField.value)
 
-						if( inputField.value.length == 0) {
-							e.preventDefault()
-							closeTagsList()
+						if( this.inputField.value.length == 0) {
+							evt.preventDefault()
+							this.closeTagsList()
 							
 						}
 						break
 
-					case 27: // ESC
-						e.preventDefault()
-						closeTagsList()
+					case 'Escape': 
+						evt.preventDefault()
+						this.closeTagsList()
 						break
 
-					case 39: // RIGHT
-					case 40: // DOWN
-						currentFocus++
-						addActive(x)
+					case 'ArrowRight': 
+						this.currentFocus++
+						this.addActive(tags)
 						break
 
-					case 37: // LEFT
-					case 38: // UP
-						currentFocus--
-						addActive(x)
+					case 'ArrowDown': 
+						this.currentFocus += 10
+						this.addActive(tags)
 						break
 
-					case 9: // TAB
-					case 13: // ENTER
-						e.preventDefault()
-						if (currentFocus > -1) {
+					case 'ArrowLeft': 
+						this.currentFocus--
+						this.addActive(tags)
+						break
+
+					case 'ArrowUp':
+						this.currentFocus -= 10
+						this.addActive(tags)
+						break
+
+					case 'Tab': 
+					case 'Enter': 
+						evt.preventDefault()
+						if (this.currentFocus > -1) {
 							// simulate a click on the "active" item
-							x && x[currentFocus] && x[currentFocus].click()
+							tags && tags[this.currentFocus] && tags[this.currentFocus].click()
 						}
 						break
 				}
-			})
+			},
 
-			const addActive = tags => {
+			addActive(tags) {
 				// a function to classify an item as "active"
 				if (!tags) {
 					return false
@@ -129,53 +153,29 @@
 				// convert the HTMLcollection to array to remove the "active" class on all tags
 				Array.from(tags).map(tag => tag.classList.remove('w3-green'))
 
-				if (currentFocus >= tags.length) {
-					currentFocus = 0
+				if (this.currentFocus >= tags.length) {
+					this.currentFocus = 0
 				}
 
-				if (currentFocus < 0) {
-					currentFocus = (tags.length - 1)
+				if (this.currentFocus < 0) {
+					this.currentFocus = (tags.length - 1)
 				}
 
-				if (!tags[currentFocus]) {
+				if (!tags[this.currentFocus]) {
 					return false
 				}
 
 				// add class "autocomplete-active" to the active tag
-				tags[currentFocus].classList.add('w3-green')
-			}
+				tags[this.currentFocus].classList.add('w3-green')
+			},
 
-			const closeTagsList = () => {
+			closeTagsList() {
 				// close all autocomplete lists in the document, except the one passed as an argument
-				while (tagsList.hasChildNodes()) {   
-					tagsList.removeChild(tagsList.firstChild)
+				while (this.tagsList.hasChildNodes()) {   
+					this.tagsList.removeChild(this.tagsList.firstChild)
 				}
 			}
 
-			// when leaving the AC field, close list
-			document.addEventListener('click', e => {
-				closeTagsList()
-			})
-		}
-	
-	export default {
-		data() {
-			return {
-				show: false
-			}
-		},
-
-		oncreate() {
-			// initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values
-			console.log('AC/oncreate', this.get())
-			autocomplete(this.refs.AutoCompleteInput, this.refs.AutoCompleteTags, this.refs.AutoCompleteTagsList, this.get().tagsList)
-		},
-
-		methods: {
-
-			decline() {
-				this.set({ show: false })
-			}
 		}
 	}
 </script>
