@@ -1,13 +1,13 @@
 <div class="{inputClass}">
-	<span ref:AutoCompleteTags/>
-	<input ref:AutoCompleteInput 
+	<span ref:ACSelectedTags/>
+	<input ref:ACInput 
 		type="text" class="w3-border-0" placeholder="Type a letter or space"
 		on:input="input(event)"
 		on:keydown="keydown(event)"
 		>
 </div>
 <div class="popup" style="margin-right:{$isMobile ? '16px' : '32px'}">
-	<div ref:AutoCompleteTagsList class="w3-container w3-card-4 w3-white"/>
+	<div ref:ACTags class="w3-container w3-card-4 w3-white"/>
 </div>
 
 <style>
@@ -35,16 +35,14 @@
 		oncreate() {
 			// initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values
 			console.log('AC/oncreate', this.get())
-			// autocomplete(this.refs.AutoCompleteInput, this.refs.AutoCompleteTags, this.refs.AutoCompleteTagsList, this.get().tagsList)
-			this.inputField = this.refs.AutoCompleteInput
-			this.tagsList = this.refs.AutoCompleteTagsList
+			// autocomplete(this.refs.ACInput, this.refs.ACSelectedTags, this.refs.ACTagsList, this.get().data)
 		},
 
 		methods: {
 
 			input(evt) {
 				console.log('AC/input')
-				let val = this.inputField.value
+				let val = this.refs.ACInput.value
 				let upperCaseList, filteredList
 
 				// close any already open lists of autocompleted value
@@ -55,12 +53,17 @@
 
 				if( val.length == 1 && evt.key === ' ') { 
 					// SPACE key pressed in first position, return all tags
-					filteredList = this.get().tagsList
+					filteredList = this.get().data
 				} else {
 					// remove spaces
 					val = val.trim()
 					// Keep only the matching tags
-					filteredList = this.get().tagsList.filter( ({name}) => name.substr(0, val.length).toUpperCase() === val.toUpperCase())
+					filteredList = this.get().data.filter( ({name}) => name.substr(0, val.length).toUpperCase() === val.toUpperCase())
+				}
+
+				if( filteredList.length === 0 ) {
+					// list is empty, no need to display popup container
+					return
 				}
 
 				this.currentFocus = 0
@@ -68,7 +71,7 @@
 				// built the tags container
 				let a = document.createElement("div")
 				a.setAttribute("class", "autocomplete-taglist w3-margin-bottom")
-				this.tagsList.appendChild(a)
+				this.refs.ACTags.appendChild(a)
 
 				filteredList.map( ({code, name}) => {
 					// check if the item starts with the same letters as the text field value
@@ -76,14 +79,14 @@
 						let b = document.createElement("span")
 						b.setAttribute('class', 'autocomplete-tag w3-tag w3-margin-right w3-margin-top w3-round w3-blue w3-center')
 						// make the matching letters bold
-						b.innerHTML = "<strong>" + name.substr(0, val.length) + "</strong>"
+						b.innerHTML = `<strong>${name.substr(0, val.length)}</strong>`
 						b.innerHTML += name.substr(val.length)
 
 						// execute a function when someone clicks on the item value (DIV element)
 						b.addEventListener("click", e => {
 							// insert the value for the autocomplete text field
-							this.inputField.value = ''
-							this.refs.AutoCompleteTags.innerHTML += `<span class="w3-tag w3-margin-right w3-round w3-blue w3-center" value="${e.target.innerText}">${e.target.innerText}&nbsp;<i onclick="this.parentNode.parentNode.removeChild(this.parentNode)" class="fas fa-times-circle" /></span>`
+							this.refs.ACInput.value = ''
+							this.refs.ACSelectedTags.innerHTML += `<span class="w3-tag w3-margin-right w3-round w3-blue w3-center" value="${e.target.innerText}">${e.target.innerText}&nbsp;<i onclick="this.parentNode.parentNode.removeChild(this.parentNode)" class="fas fa-times-circle" /></span>`
 							// close the list of autocompleted values, or any other open lists of autocompleted values
 							this.closeTagsList()
 						})
@@ -91,20 +94,19 @@
 				})
 				
 				// make the first of the tags list active by default
-				this.addActive(this.tagsList.getElementsByClassName('autocomplete-tag'))
+				this.addActive(this.refs.ACTags.getElementsByClassName('autocomplete-tag'))
 			},
 
 			keydown(evt) {
-				let tags = this.tagsList.getElementsByClassName('autocomplete-tag')
-				console.log('AC/keydown key', evt.key)
+				let tagsContainer = Array.from(this.refs.ACTags.getElementsByClassName('autocomplete-taglist'))[0]
+				let tagsContainerLines = tagsContainer ? tagsContainer.clientHeight/40 : 1
+				let tags = this.refs.ACTags.getElementsByClassName('autocomplete-tag')
+				console.log('AC/keydown key', evt.key, tagsContainerLines)
 				switch (evt.key) {
 					case 'Backspace' :
-					console.log('AC/keydown inputField.value', this.inputField.value)
-
-						if( this.inputField.value.length == 0) {
+						if( evt.target.value.length == 0) {
 							evt.preventDefault()
 							this.closeTagsList()
-							
 						}
 						break
 
@@ -114,22 +116,38 @@
 						break
 
 					case 'ArrowRight': 
+						evt.preventDefault()
 						this.currentFocus++
 						this.addActive(tags)
 						break
 
-					case 'ArrowDown': 
-						this.currentFocus += 10
-						this.addActive(tags)
-						break
-
 					case 'ArrowLeft': 
+						evt.preventDefault()
 						this.currentFocus--
 						this.addActive(tags)
 						break
 
-					case 'ArrowUp':
-						this.currentFocus -= 10
+					case 'ArrowDown': 
+						evt.preventDefault()
+						this.currentFocus += Math.round(tags.length/tagsContainerLines)-1
+						this.addActive(tags)
+						break
+
+					case 'ArrowUp': 
+						evt.preventDefault()
+						this.currentFocus -= Math.round(tags.length/tagsContainerLines)-1
+						this.addActive(tags)
+						break
+
+					case 'Home':
+						evt.preventDefault()
+						this.currentFocus = 0
+						this.addActive(tags)
+						break
+
+					case 'End':
+						evt.preventDefault()
+						this.currentFocus = tags.length-1
 						this.addActive(tags)
 						break
 
@@ -171,8 +189,8 @@
 
 			closeTagsList() {
 				// close all autocomplete lists in the document, except the one passed as an argument
-				while (this.tagsList.hasChildNodes()) {   
-					this.tagsList.removeChild(this.tagsList.firstChild)
+				while (this.refs.ACTags.hasChildNodes()) {   
+					this.refs.ACTags.removeChild(this.refs.ACTags.firstChild)
 				}
 			}
 

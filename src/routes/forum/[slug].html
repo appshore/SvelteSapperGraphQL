@@ -63,7 +63,7 @@
 		<label for="tags" class="{post.tags ? 'active' : ''}">Tags</label>
 		<AutoComplete
 			inputClass="w3-input w3-border w3-margin-bottom validate"
-			tagsList="{tagsList}"
+			data="{ACData}"
 			bind:value="post.tags"
 		/>
 		<span class="helper-text" data-error="Select at least one tag"></span>
@@ -186,7 +186,7 @@
 					html: '',
 					tags: []
 				},
-				tagsList: countries,
+				ACData: countries,
 				nextSlug: null,
 				prevSlug: null,
 				editMode: false
