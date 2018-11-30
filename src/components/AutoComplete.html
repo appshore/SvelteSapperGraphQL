@@ -1,14 +1,31 @@
 <div class="{inputClass}">
-	<span ref:ACSelectedTags/>
-	<input ref:ACInput 
+	{#each selectedTags as tag}
+		<span class="w3-tag w3-margin-right w3-round w3-green w3-center">
+			{tag.name}
+			&nbsp;
+			<i on:click="deselectTag(event, tag)" class="fas fa-times-circle" />
+		</span>
+	{/each}
+	<input 
 		type="text" class="w3-border-0" placeholder="Type a letter or space"
 		on:input="input(event)"
 		on:keydown="keydown(event)"
 		>
 </div>
+{#if filteredTags && filteredTags.length}
 <div class="popup" style="margin-right:{$isMobile ? '16px' : '32px'}">
-	<div ref:ACTags class="w3-container w3-card-4 w3-white"/>
+	<div ref:FTags class="w3-container w3-card-4 w3-white w3-padding">
+		{#each filteredTags as tag}
+			<span
+				class="w3-tag w3-margin-right w3-margin-top w3-round w3-light-gray w3-center"
+				on:click="selectTag(event, tag)"
+			>
+				{@html tag.html}
+			</span>
+		{/each}
+	</div>
 </div>
+{/if}
 
 <style>
 	input {
@@ -26,27 +43,27 @@
 	export default {
 		data() {
 			return {
-				inputField: {},
-				tagsList: {},
-				currentFocus: 0
+				currentTag: 0,
+				filteredTags: [],
+				selectedTags: []
 			}
 		},
 
 		oncreate() {
-			// initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values
-			console.log('AC/oncreate', this.get())
-			// autocomplete(this.refs.ACInput, this.refs.ACSelectedTags, this.refs.ACTagsList, this.get().data)
+			document.addEventListener("click", evt => {
+				this.closePopup()
+			})
 		},
 
 		methods: {
 
 			input(evt) {
-				console.log('AC/input')
-				let val = this.refs.ACInput.value
-				let upperCaseList, filteredList
+				console.log('input', evt)
+				let val = evt.target.value
+				let filteredList
 
 				// close any already open lists of autocompleted value
-				this.closeTagsList()
+				this.closePopup()
 				if( !val ) {
 					return false
 				}
@@ -66,132 +83,131 @@
 					return
 				}
 
-				this.currentFocus = 0
-
-				// built the tags container
-				let a = document.createElement("div")
-				a.setAttribute("class", "autocomplete-taglist w3-margin-bottom")
-				this.refs.ACTags.appendChild(a)
-
-				filteredList.map( ({code, name}) => {
-					// check if the item starts with the same letters as the text field value
-						// create a DIV element for each matching element
-						let b = document.createElement("span")
-						b.setAttribute('class', 'autocomplete-tag w3-tag w3-margin-right w3-margin-top w3-round w3-blue w3-center')
-						// make the matching letters bold
-						b.innerHTML = `<strong>${name.substr(0, val.length)}</strong>`
-						b.innerHTML += name.substr(val.length)
-
-						// execute a function when someone clicks on the item value (DIV element)
-						b.addEventListener("click", e => {
-							// insert the value for the autocomplete text field
-							this.refs.ACInput.value = ''
-							this.refs.ACSelectedTags.innerHTML += `<span class="w3-tag w3-margin-right w3-round w3-blue w3-center" value="${e.target.innerText}">${e.target.innerText}&nbsp;<i onclick="this.parentNode.parentNode.removeChild(this.parentNode)" class="fas fa-times-circle" /></span>`
-							// close the list of autocompleted values, or any other open lists of autocompleted values
-							this.closeTagsList()
-						})
-						a.appendChild(b)
+				this.set({
+					filteredTags: filteredList.map( ({code, name}) => {
+						let html = val.length ? `<strong>${name.substr(0, val.length)}</strong>` : ''
+						return {
+							code,
+							name,
+							html: `${html}${name.substr(val.length)}`
+						}
+					})
 				})
-				
+
+				this.currentTag = 0
 				// make the first of the tags list active by default
-				this.addActive(this.refs.ACTags.getElementsByClassName('autocomplete-tag'))
+				this.setActiveTag(this.refs.FTags.getElementsByClassName('w3-tag'))
 			},
 
 			keydown(evt) {
-				let tagsContainer = Array.from(this.refs.ACTags.getElementsByClassName('autocomplete-taglist'))[0]
-				let tagsContainerLines = tagsContainer ? tagsContainer.clientHeight/40 : 1
-				let tags = this.refs.ACTags.getElementsByClassName('autocomplete-tag')
-				console.log('AC/keydown key', evt.key, tagsContainerLines)
+				let tags = this.refs.FTags && this.refs.FTags.getElementsByClassName('w3-tag')
+				// if (!tags || !tags[this.currentTag]) {
+				// 	return false
+				// }
+
 				switch (evt.key) {
 					case 'Backspace' :
 						if( evt.target.value.length == 0) {
 							evt.preventDefault()
-							this.closeTagsList()
+							this.closePopup()
+							// remove the last of the selected tags
+							this.set( {selectedTags: this.get().selectedTags.slice(0,-1)})
 						}
 						break
 
 					case 'Escape': 
 						evt.preventDefault()
-						this.closeTagsList()
+						this.closePopup()
 						break
 
 					case 'ArrowRight': 
 						evt.preventDefault()
-						this.currentFocus++
-						this.addActive(tags)
+						this.currentTag = this.currentTag === tags.length-1 ? 0 : this.currentTag+1
+						this.setActiveTag(tags)
 						break
 
 					case 'ArrowLeft': 
 						evt.preventDefault()
-						this.currentFocus--
-						this.addActive(tags)
+						this.currentTag = this.currentTag === 0 ? tags.length-1 : this.currentTag-1
+						this.setActiveTag(tags)
 						break
 
 					case 'ArrowDown': 
 						evt.preventDefault()
-						this.currentFocus += Math.round(tags.length/tagsContainerLines)-1
-						this.addActive(tags)
+						let CuDown = tags[this.currentTag].getBoundingClientRect()
+						this.currentTag = Array.from(tags).findIndex( tag => {
+							let {x, y} = tag.getBoundingClientRect()
+							if( CuDown.x-80 <= x && y > CuDown.y+32) {
+								return true
+							}
+						})
+						this.currentTag = this.currentTag === -1 ? 0 : this.currentTag
+						this.setActiveTag(tags)
 						break
 
 					case 'ArrowUp': 
 						evt.preventDefault()
-						this.currentFocus -= Math.round(tags.length/tagsContainerLines)-1
-						this.addActive(tags)
+						let CuUp = tags[this.currentTag].getBoundingClientRect()
+						let newFocus = Array.from(tags).findIndex( tag => {
+							let {x, y} = tag.getBoundingClientRect()
+							if( CuUp.x-80 <= x && y > CuUp.y-40) {
+								return true
+							}
+						})
+						this.currentTag = newFocus === this.currentTag ? tags.length-1 : newFocus
+						this.setActiveTag(tags)
 						break
 
 					case 'Home':
 						evt.preventDefault()
-						this.currentFocus = 0
-						this.addActive(tags)
+						this.currentTag = 0
+						this.setActiveTag(tags)
 						break
 
 					case 'End':
 						evt.preventDefault()
-						this.currentFocus = tags.length-1
-						this.addActive(tags)
+						this.currentTag = tags.length-1
+						this.setActiveTag(tags)
 						break
 
 					case 'Tab': 
 					case 'Enter': 
 						evt.preventDefault()
-						if (this.currentFocus > -1) {
-							// simulate a click on the "active" item
-							tags && tags[this.currentFocus] && tags[this.currentFocus].click()
-						}
+						tags[this.currentTag].click()
 						break
 				}
 			},
 
-			addActive(tags) {
-				// a function to classify an item as "active"
-				if (!tags) {
-					return false
-				}
+			selectTag(evt, tag) {
+				evt.preventDefault()
+				evt.stopPropagation()
 
-				// convert the HTMLcollection to array to remove the "active" class on all tags
-				Array.from(tags).map(tag => tag.classList.remove('w3-green'))
-
-				if (this.currentFocus >= tags.length) {
-					this.currentFocus = 0
-				}
-
-				if (this.currentFocus < 0) {
-					this.currentFocus = (tags.length - 1)
-				}
-
-				if (!tags[this.currentFocus]) {
-					return false
-				}
-
-				// add class "autocomplete-active" to the active tag
-				tags[this.currentFocus].classList.add('w3-green')
+				// add new tag to list
+				this.get().selectedTags.push(tag)
+				
+				// remove duplicate publish it
+				this.set({selectedTags: [...new Set(this.get().selectedTags)]})
 			},
 
-			closeTagsList() {
-				// close all autocomplete lists in the document, except the one passed as an argument
-				while (this.refs.ACTags.hasChildNodes()) {   
-					this.refs.ACTags.removeChild(this.refs.ACTags.firstChild)
-				}
+			deselectTag(evt, tag) {
+				evt.preventDefault()
+				evt.stopPropagation()
+
+				// filter out the deselected tag from the selected list then publish
+				this.set({selectedTags: this.get().selectedTags.filter(t => t.code != tag.code)})
+			},
+
+			setActiveTag(tags) {
+				Array.from(tags).map(tag => {
+					tag.classList.remove('w3-blue')
+					tag.classList.add('w3-light-gray')
+				})
+				tags[this.currentTag].classList.remove('w3-light-gray')
+				tags[this.currentTag].classList.add('w3-blue')
+			},
+
+			closePopup() {
+				this.set({filteredTags:[]})
 			}
 
 		}
