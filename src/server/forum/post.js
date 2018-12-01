@@ -61,10 +61,13 @@ export const savePost = async (req, res) => {
     _id: new mongoose.Types.ObjectId(),
     slug: `${Date.now().toString(36)}-${slug(req.body.title, { lower: true })}`,
     title: req.body.title,
+    tags: req.body.tags,
     html: sanitizeHtml(req.body.html, {allowedTags: false, allowedAttributes: false}),
     createdAt: new Date(),
     createdBy: req.user._id
   })
+
+  console.log('savePost', post, req.body)
 
   post
     .save()
@@ -84,6 +87,8 @@ export const savePost = async (req, res) => {
         .sort({ createdAt: -1 })
         .exec()
 
+      console.log('savePost return', filterPost(result, user))
+
       return res.status(200).json({
         post: filterPost(result, user),
         nextSlug: nextSlug && nextSlug.slug,
@@ -91,6 +96,8 @@ export const savePost = async (req, res) => {
       })
     })
     .catch(error => {
+      console.log('savePost error', error)
+
       return res.status(500).json({
         error
       })
@@ -101,6 +108,7 @@ export const updatePost = async (req, res, next) => {
   let dataSet = {
     slug: slug(req.body.title, { lower: true }),
     title: req.body.title,
+    tags: req.body.tags,
     html: sanitizeHtml(req.body.html, {allowedTags: false, allowedAttributes: false}),
     updatedAt: new Date(),
     updatedBy: req.user._id

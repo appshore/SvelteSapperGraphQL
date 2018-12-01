@@ -6,12 +6,12 @@ export const filterPostInList = (post, user) => {
   return {
     title: post.title,
     slug: post.slug,
-    html:
-      post.html
-        .substring(0, 200)
-        .split('</')
-        .splice(0, 2)
-        .join('</') + '...',
+    html: post.html
+      .substring(0, 200)
+      .split('</')
+      .splice(0, 2)
+      .join('</') + '...',
+    tags: post.tags,
     timestamp: formatRelative(post.createdAt, new Date(), { locale: enGB }),
     createdBy: user._id,
     username: user.username,
@@ -24,6 +24,7 @@ export const filterPost = (post, user) => {
     title: post.title,
     slug: post.slug,
     html: post.html,
+    tags: post.tags,
     timestamp: formatRelative(post.createdAt, new Date(), { locale: enGB }),
     createdBy: user._id,
     username: user.username,

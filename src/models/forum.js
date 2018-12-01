@@ -7,7 +7,7 @@ export const postSchema = mongoose.Schema({
   title: { type: String, required: true },
   slug: { type: String, required: true },
   html: { type: String, required: true },
-  tags: [mongoose.Schema.Types.ObjectId],
+  tags: [mongoose.Schema.Types.Mixed],
   createdAt: { type: Date, required: true},
   createdBy: { type: mongoose.Schema.Types.ObjectId, required: true},
   updatedAt: { type: Date},

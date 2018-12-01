@@ -64,7 +64,7 @@
 		<AutoComplete
 			inputClass="w3-input w3-border w3-margin-bottom validate"
 			data="{ACData}"
-			bind:value="post.tags"
+			bind:selectedTags="post.tags"
 		/>
 		<span class="helper-text" data-error="Select at least one tag"></span>
 		<!--  $isResize is used to trigger an onupdate -->
@@ -225,6 +225,7 @@
 				if (res.error) {
 					throw res.error
 				}
+				console.log('slug/fetch', res.post)
 				this.set({ 
 					post: res.post, 
 					nextSlug: res.nextSlug, 
@@ -320,6 +321,9 @@
 			
 			async handleSave() {
 				let formData = Object.assign({}, this.get().post, {html:this.editor.getHtml()})
+				// no need to send timestamp back
+				delete formData.timestamp
+				console.log('handleSave', formData)
 
 				if( Boolean(formData.title) === false ) {
 					this.store.get().Banner.danger('Title is required')
@@ -357,6 +361,8 @@
 
 					isNew ? this.store.get().Snackbar.success('Post created') : this.store.get().Snackbar.info('Post updated')
 				} catch (err) {
+					console.log('handleSave error', err)
+
           this.store.get().Banner.danger(err)
 					this.set({ nextSlug: null, prevSlug: null })
 				}

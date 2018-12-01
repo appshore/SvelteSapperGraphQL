@@ -11,20 +11,39 @@
       <i class="fas fa-plus w3-text-teal"/>
     </button>
   {/if}
+  {#if filterByTags}
+    <div class="w3-margin-top">
+      {#each filterByTags as tag}
+        <span class="tag w3-tag w3-round w3-margin-right w3-blue w3-center">
+          {tag.name}
+          &nbsp;
+          <i on:click="removeFilterByTag(event, tag)" class="fas fa-times-circle pointer" />
+        </span>
+      {/each}
+    </div>
+  {/if}
   {#if Boolean(posts)} 
     <div class="w3-margin-top">
       {#each posts as post}
-      <div class="w3-row">
-        <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="/forum/{post.slug}">{post.title}</a></div>
-        <div class="w3-col m4 s3">
-          <span class="w3-right w3-small w3-text-grey w3-right-align">
+        <div class="w3-row">
+          <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="/forum/{post.slug}">{post.title}</a></div>
+          <div class="w3-col m4 s3">
+            <span class="w3-right w3-small w3-text-grey w3-right-align">
               <span class="nowrap">{post.timestamp}</span>
               <span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
-          </span>
+            </span>
+          </div>
         </div>
-      </div>
-      <div><a href="/forum/{post.slug}">{@html post.html}</a></div>
-      <hr />
+        <div><a href="/forum/{post.slug}">{@html post.html}</a></div>
+        {#if post.tags}
+          <div class="w3-row w3-margin-top">
+            {#each post.tags as tag}
+              <span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-gray w3-center" 
+                on:click="addFilterByTag(event, tag)">{tag.name}</span>
+            {/each}
+          </div>
+        {/if}
+        <hr />
       {/each}
     </div>
   {/if}
@@ -42,7 +61,8 @@
   export default {
     data() {
       return {
-        posts: []
+        posts: [],
+        filterByTags: []
       }
     },
     
@@ -68,7 +88,28 @@
     methods: {
 			handleNew() {
         sapper.goto('/forum/_new')
-      }
+      },
+
+			addFilterByTag(evt, tag) {
+        evt.preventDefault()
+        evt.stopPropagation()
+        console.log('forum/addFilterByTag', tag)
+        let tags = this.get().filterByTags || []
+				if( !tags.find(t => t.code === tag.code) ) {
+					tags.push({
+						code: tag.code,
+						name: tag.name
+					})
+        }
+        this.set({filterByTags: tags})
+      },
+
+			removeFilterByTag(evt, tag) {
+				evt.preventDefault()
+        evt.stopPropagation()
+        console.log('forum/removeFilterByTag', tag)
+				this.set({filterByTags: this.get().filterByTags.filter(t => t.code != tag.code)})
+			},
     }
 
   }
