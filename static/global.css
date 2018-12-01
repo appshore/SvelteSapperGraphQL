@@ -9,5 +9,10 @@ a:link {
 }
 
 *:focus {
-	outline-width: 1px;
+	outline: none;
+	/* outline-width: 1px; */
+}
+
+.pointer {
+	cursor: pointer;
 }
