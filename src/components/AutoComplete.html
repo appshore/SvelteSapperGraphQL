@@ -1,11 +1,11 @@
 <div class="{inputClass}">
-	{#each selectedTags as tag}
-		<span class="w3-tag w3-margin-right w3-round w3-green w3-center">
-			{tag.name}
-			&nbsp;
-			<i on:click="deselectTag(event, tag)" class="fas fa-times-circle" />
-		</span>
-	{/each}
+		{#each selectedTags as tag}
+			<span class="tag w3-tag w3-round w3-green w3-center">
+				{tag.name}
+				&nbsp;
+				<i on:click="removeTag(event, tag)" class="fas fa-times-circle pointer" />
+			</span>
+		{/each}
 	<input 
 		type="text" class="w3-border-0" placeholder="Type a letter or space"
 		on:input="input(event)"
@@ -14,11 +14,11 @@
 </div>
 {#if filteredTags && filteredTags.length}
 <div class="popup" style="margin-right:{$isMobile ? '16px' : '32px'}">
-	<div ref:FTags class="w3-container w3-card-4 w3-white w3-padding">
+	<div ref:FTags class="filtered w3-container w3-card-4 w3-white">
 		{#each filteredTags as tag}
 			<span
-				class="w3-tag w3-margin-right w3-margin-top w3-round w3-light-gray w3-center"
-				on:click="selectTag(event, tag)"
+				class="tag pointer w3-tag w3-round w3-light-gray w3-center"
+				on:click="addTag(event, tag)"
 			>
 				{@html tag.html}
 			</span>
@@ -30,6 +30,14 @@
 <style>
 	input {
 		outline: none;
+	}
+
+	.tag {
+		margin: 4px 8px 4px 0px;
+	}
+
+	.filtered {
+		padding: 8px;
 	}
 
 	.popup {
@@ -45,7 +53,7 @@
 			return {
 				currentTag: 0,
 				filteredTags: [],
-				selectedTags: []
+				selectedTags: [],
 			}
 		},
 
@@ -56,9 +64,7 @@
 		},
 
 		methods: {
-
 			input(evt) {
-				console.log('input', evt)
 				let val = evt.target.value
 				let filteredList
 
@@ -101,20 +107,21 @@
 
 			keydown(evt) {
 				let tags = this.refs.FTags && this.refs.FTags.getElementsByClassName('w3-tag')
-				// if (!tags || !tags[this.currentTag]) {
-				// 	return false
-				// }
+				
+				// special case for backspace before checking for no popup
+				if (evt.key === 'Backspace' && evt.target.value.length == 0) {
+					evt.preventDefault()
+					this.closePopup()
+					this.set( {selectedTags: this.get().selectedTags.slice(0,-1)})
+					return
+				}
+				
+				// no tags popup
+				if (!tags || !tags[this.currentTag]) {
+					return
+				}
 
 				switch (evt.key) {
-					case 'Backspace' :
-						if( evt.target.value.length == 0) {
-							evt.preventDefault()
-							this.closePopup()
-							// remove the last of the selected tags
-							this.set( {selectedTags: this.get().selectedTags.slice(0,-1)})
-						}
-						break
-
 					case 'Escape': 
 						evt.preventDefault()
 						this.closePopup()
@@ -178,18 +185,23 @@
 				}
 			},
 
-			selectTag(evt, tag) {
+			addTag(evt, tag) {
 				evt.preventDefault()
 				evt.stopPropagation()
 
 				// add new tag to list
-				this.get().selectedTags.push(tag)
-				
+				let selected = this.get().selectedTags || []
+				if( !selected.find(t => t.code === tag.code) ) {
+					selected.push({
+						code: tag.code,
+						name: tag.name
+					})
+				}
 				// remove duplicate publish it
-				this.set({selectedTags: [...new Set(this.get().selectedTags)]})
+				this.set({selectedTags: selected})
 			},
 
-			deselectTag(evt, tag) {
+			removeTag(evt, tag) {
 				evt.preventDefault()
 				evt.stopPropagation()
 
