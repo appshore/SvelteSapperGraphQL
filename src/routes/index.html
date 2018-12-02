@@ -90,42 +90,42 @@
 </div>
 
 <style>
-		/* Create a Parallax Effect */
-		.bgimg-1, .bgimg-2, .bgimg-3 {
-				background-attachment: fixed;
-				background-position: center;
-				background-repeat: no-repeat;
-				background-size: cover;
+	/* Create a Parallax Effect */
+	.bgimg-1, .bgimg-2, .bgimg-3 {
+			background-attachment: fixed;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+	}
+	
+	/* First image (Logo. Full height) */
+	.bgimg-1 {
+			background-image: url("/background5.jpg");
+			top: -4px;
+			min-height: 500px;
+	}
+	
+	/* Second image (Portfolio) */
+	.bgimg-2 {
+			background-image: url("/background3.jpg");
+			min-height: 500px;
+	}
+	
+	/* Third image (Contact) */
+	.bgimg-3 {
+			background-image: url("/background4.jpg");
+			min-height: 500px;
+	}
+	
+	.w3-wide {
+		letter-spacing: 10px;
 		}
-		
-		/* First image (Logo. Full height) */
-		.bgimg-1 {
-				background-image: url("/background5.jpg");
-				top: -4px;
-				min-height: 500px;
-		}
-		
-		/* Second image (Portfolio) */
-		.bgimg-2 {
-				background-image: url("/background3.jpg");
-				min-height: 500px;
-		}
-		
-		/* Third image (Contact) */
-		.bgimg-3 {
-				background-image: url("/background4.jpg");
-				min-height: 500px;
-		}
-		
-		.w3-wide {
-			letter-spacing: 10px;
-			}
 
-		/* Turn off parallax scrolling for tablets and phones */
-		@media only screen and (max-device-width: 1600px) {
-				.bgimg-1, .bgimg-2, .bgimg-3 {
-						background-attachment: scroll;
-						min-height: 400px;
-				}
-		}
-		</style>
+	/* Turn off parallax scrolling for tablets and phones */
+	@media only screen and (max-device-width: 1600px) {
+			.bgimg-1, .bgimg-2, .bgimg-3 {
+					background-attachment: scroll;
+					min-height: 400px;
+			}
+	}
+</style>

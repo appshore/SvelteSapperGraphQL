@@ -3,25 +3,32 @@
 </svelte:head>
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-  <h3 class="w3-text-teal">Forum</h3>
-  
-  {#if $isAuth }
-    <!-- menu items that required to be auth -->
-    <button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
-      <i class="fas fa-plus w3-text-teal"/>
-    </button>
-  {/if}
-  {#if filterByTags}
-    <div class="w3-margin-top">
-      {#each filterByTags as tag}
-        <span class="tag w3-tag w3-round w3-margin-right w3-blue w3-center">
-          {tag.name}
-          &nbsp;
-          <i on:click="removeFilterByTag(event, tag)" class="fas fa-times-circle pointer" />
-        </span>
-      {/each}
+
+  <div class="w3-row">
+    <div class="w3-col l1 s2">
+      <h3 class="w3-text-teal">Forum</h3>
     </div>
-  {/if}
+    
+    {#if $isAuth }
+      <div class="w3-col l1 s3">
+        <button class="w3-button w3-middle w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+          <i class="fas fa-plus w3-text-teal"/>
+        </button>
+      </div>
+    {/if}
+
+    <div class="w3-col l10 s7">
+      <SearchWithTags
+        componentClass="w3-margin-bottom"
+        inputClass="w3-input"
+        popupClass=""
+        placeholder="Search... spacebar for Tags"
+        on:click="searchForum(event, test)"
+        data="{countries}"
+        bind:selectedTags="filterByTags"
+      />
+    </div>
+  </div>
   {#if Boolean(posts)} 
     <div class="w3-margin-top">
       {#each posts as post}
@@ -58,11 +65,18 @@
 <script>
   import * as sapper from '../../../__sapper__/client'
 
+  import countries from './countries.json'
+  
   export default {
+    components: {
+			SearchWithTags: '../../components/SearchWithTags.html'
+    },
+    
     data() {
       return {
         posts: [],
-        filterByTags: []
+        filterByTags: [],
+        countries,
       }
     },
     
@@ -109,6 +123,13 @@
         evt.stopPropagation()
         console.log('forum/removeFilterByTag', tag)
 				this.set({filterByTags: this.get().filterByTags.filter(t => t.code != tag.code)})
+			},
+
+			searchForum({event, test}) {
+				event.preventDefault()
+        event.stopPropagation()
+        console.log('forum/searchForum', test)
+				// this.set({filterByTags: this.get().filterByTags.filter(t => t.code != tag.code)})
 			},
     }
 

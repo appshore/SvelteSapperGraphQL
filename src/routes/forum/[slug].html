@@ -54,16 +54,18 @@
 	{#if editMode }
 		<label for="title" class="{post.title ? 'active' : ''}">Title</label>
 		<input
-			class="w3-input w3-border w3-margin-bottom validate"
+			class="w3-input w3-margin-bottom validate"
 			type="text"
 			required="true"
 			bind:value="post.title"
 			id="title"
 		/>
 		<label for="tags" class="{post.tags ? 'active' : ''}">Tags</label>
-		<AutoComplete
-			inputClass="w3-input w3-border w3-margin-bottom validate"
-			data="{ACData}"
+		<InputTags
+			componentClass="w3-margin-bottom"
+			inputClass="w3-input"
+			popupClass=""
+			data="{countries}"
 			bind:selectedTags="post.tags"
 		/>
 		<span class="helper-text" data-error="Select at least one tag"></span>
@@ -103,80 +105,13 @@
 	import Editor from 'cl-editor'
 	import * as sapper from '../../../__sapper__/client'
 
-	const countries = [
-		{"code": "AT", "name": "Austria"},
-		{"code": "BE", "name": "Belgium"},
-		{"code": "BG", "name": "Bulgaria"},
-		{"code": "HR", "name": "Croatia"},
-		{"code": "CY", "name": "Cyprus"},
-		{"code": "CZ", "name": "Czech Republic"},
-		{"code": "DK", "name": "Denmark"},
-		{"code": "EE", "name": "Estonia"},
-		{"code": "FI", "name": "Finland"},
-		{"code": "FR", "name": "France"},
-		{"code": "DE", "name": "Germany"},
-		{"code": "GR", "name": "Greece"},
-		{"code": "HU", "name": "Hungary"},
-		{"code": "IE", "name": "Ireland"},
-		{"code": "IT", "name": "Italy"},
-		{"code": "LV", "name": "Latvia"},
-		{"code": "LT", "name": "Lithuania"},
-		{"code": "LU", "name": "Luxembourg"},
-		{"code": "MT", "name": "Malta"},
-		{"code": "NL", "name": "Netherlands"},
-		{"code": "PL", "name": "Poland"},
-		{"code": "PT", "name": "Portugal"},
-		{"code": "RO", "name": "Romania"},
-		{"code": "SK", "name": "Slovakia"},
-		{"code": "SI", "name": "Slovenia"},
-		{"code": "ES", "name": "Spain"},
-		{"code": "SE", "name": "Sweden"},
-		{"code": "GB", "name": "United Kingdom"},
-		{"code": "GF", "name": "French Guiana"},
-		{"code": "GP", "name": "Guadeloupe"},
-		{"code": "MQ", "name": "Martinique"},
-		{"code": "ME", "name": "Montenegro"},
-		{"code": "YT", "name": "Mayotte"},
-		{"code": "RE", "name": "Réunion"},
-		{"code": "MF", "name": "Saint Martin"},
-		{"code": "GI", "name": "Gibraltar"},
-		{"code": "AX", "name": "Åland Islands"},
-		{"code": "PM", "name": "Saint Pierre and Miquelon"},
-		{"code": "GL", "name": "Greenland"},
-		{"code": "BL", "name": "Saint Bartelemey"},
-		{"code": "SX", "name": "Sint Maarten"},
-		{"code": "AW", "name": "Aruba"},
-		{"code": "CW", "name": "Curacao"},
-		{"code": "WF", "name": "Wallis and Futuna"},
-		{"code": "PF", "name": "French Polynesia"},
-		{"code": "NC", "name": "New Caledonia"},
-		{"code": "TF", "name": "French Southern Territories"},
-		{"code": "AI", "name": "Anguilla"},
-		{"code": "BM", "name": "Bermuda"},
-		{"code": "IO", "name": "British Indian Ocean Territory"},
-		{"code": "VG", "name": "British Virgin Islands"},
-		{"code": "KY", "name": "Cayman Islands"},
-		{"code": "FK", "name": "Falkland Islands"},
-		{"code": "MS", "name": "Montserrat"},
-		{"code": "PN", "name": "Pitcairn"},
-		{"code": "SH", "name": "Saint Helena"},
-		{"code": "GS", "name": "South Georgia and the South Sandwich Islands"},
-		{"code": "TC", "name": "Turks and Caicos Islands"},
-		{"code": "AD", "name": "Andorra"},
-		{"code": "LI", "name": "Liechtenstein"},
-		{"code": "MC", "name": "Monaco"},
-		{"code": "SM", "name": "San Marino"},
-		{"code": "VA", "name": "Vatican City"},
-		{"code": "JE", "name": "Jersey"},
-		{"code": "GG", "name": "Guernsey"},
-		{"code": "GI", "name": "Gibraltar"}
-	]
+  import countries from './countries.json'
 
 	let editor
 
 	export default {
 		components: {
-			AutoComplete: '../../components/AutoComplete.html'
+			InputTags: '../../components/InputTags.html'
 		},
 
 		data() {
@@ -186,7 +121,7 @@
 					html: '',
 					tags: []
 				},
-				ACData: countries,
+				countries,
 				nextSlug: null,
 				prevSlug: null,
 				editMode: false

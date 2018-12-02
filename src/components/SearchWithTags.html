@@ -1,0 +1,236 @@
+<div class="{componentClass}">
+	{#if selectedTags && selectedTags.length}
+	<div class="selectedTags">
+		{#each selectedTags as tag}
+			<span class="selectedTag w3-tag w3-round w3-green w3-center">
+				{tag.name}
+				&nbsp;
+				<i on:click="removeTag(event, tag)" class="fas fa-times-circle pointer" />
+			</span>
+		{/each}
+	</div>
+	{/if}
+	<input 
+		type="text" class="{inputClass}"
+		placeholder="{placeholder || 'Type a letter or space'}"
+		on:keydown="handleKeydown(event)"
+	>
+	<div class="buttonContainer">
+		<button class="{buttonClass}" on:click="fire('click', {event, test: 'test1'})" >
+			<i class="{buttonIconClass}"/>
+		</button>
+	</div>
+</div>
+{#if filteredTags && filteredTags.length}
+<div class="popup {popupClass}">
+	<div ref:FTags class="filteredTags w3-card-4 w3-white">
+		{#each filteredTags as tag, idx}
+			<span
+				class="filteredTag pointer w3-tag w3-round w3-light-gray w3-center"
+				on:click="addTag(event, tag, idx)"
+			>
+				{@html tag.html}
+			</span>
+		{/each}
+	</div>
+</div>
+{/if}
+
+<style>
+	input {
+		outline: none;
+	}
+
+	.selectedTag, 
+	.filteredTag {
+		margin: 4px 8px 4px 0px;
+	}
+
+	.selectedTags {
+		padding-top: 8px;
+	}
+
+	.filteredTags {
+		padding: 8px;
+	}
+
+	.popup {
+		position: absolute;
+		margin-top: -16px;
+		left: 5%;
+		width: 90%;
+		z-index: 10;
+	}
+</style>
+
+<script>
+	export default {
+		data() {
+			return {
+				currentTag: 0,
+				filteredTags: [],
+				selectedTags: [],
+			}
+		},
+
+		oncreate() {
+			document.addEventListener("click", evt => {
+				this.closePopup()
+			})
+		},
+
+		methods: {
+
+			handleKeydown(evt) {
+				let tags = this.refs.FTags && this.refs.FTags.getElementsByClassName('w3-tag') || []
+
+				// keys to move between tags in the popup
+				switch (evt.key) {
+					case 'Escape': 
+						evt.preventDefault()
+						this.closePopup()
+						return
+
+					case 'ArrowRight': 
+						evt.preventDefault()
+						this.currentTag = this.currentTag === tags.length-1 ? 0 : this.currentTag+1
+						this.setActiveTag(tags)
+						return
+
+					case 'ArrowLeft': 
+						evt.preventDefault()
+						this.currentTag = this.currentTag === 0 ? tags.length-1 : this.currentTag-1
+						this.setActiveTag(tags)
+						return
+
+					case 'ArrowDown': 
+						evt.preventDefault()
+						let CuDown = tags[this.currentTag].getBoundingClientRect()
+						this.currentTag = Array.from(tags).findIndex( tag => {
+							let {x, y, height} = tag.getBoundingClientRect()
+							if( CuDown.x-80 <= x && y > CuDown.y+height) {
+								return true
+							}
+						})
+						this.currentTag = this.currentTag === -1 ? 0 : this.currentTag
+						this.setActiveTag(tags)
+						return
+
+					case 'ArrowUp': 
+						evt.preventDefault()
+						let CuUp = tags[this.currentTag].getBoundingClientRect()
+						let newFocus = Array.from(tags).findIndex( tag => {
+							let {x, y, height} = tag.getBoundingClientRect()
+							if( CuUp.x-80 <= x && y > CuUp.y-(height*2)) {
+								return true
+							}
+						})
+						this.currentTag = newFocus === this.currentTag ? tags.length-1 : newFocus
+						this.setActiveTag(tags)
+						return
+
+					case 'Home':
+						evt.preventDefault()
+						this.currentTag = 0
+						this.setActiveTag(tags)
+						return
+
+					case 'End':
+						evt.preventDefault()
+						this.currentTag = tags.length-1
+						this.setActiveTag(tags)
+						return
+
+					case 'Enter': 
+						evt.preventDefault()
+						tags[this.currentTag].click()
+						return
+				}
+
+				// keys in the input field
+				let val = ''
+				if( evt.key == ' ' && evt.target.value.length == 0 ) {
+					evt.preventDefault()
+				} else if( evt.key == 'Backspace' ) {
+					if (evt.target.value.length == 0) {
+						// remove the last selected Tag
+						evt.preventDefault()
+						this.closePopup()
+						this.set( {selectedTags: this.get().selectedTags.slice(0,-1)})
+						return
+					} else {
+						// remove the last character entered
+						val = evt.target.value.slice(0,-1)
+					}
+				} else {
+					val = evt.target.value+evt.key
+				}
+
+				// Keep only the matching tags
+				let filteredList = this.get().data.filter( ({name}) => name.substr(0, val.length).toUpperCase() === val.toUpperCase())
+				if( filteredList.length === 0 ) {
+					// list is empty, no need to display popup
+					this.closePopup()
+					return
+				}
+
+				// build the tags list
+				this.set({
+					filteredTags: filteredList.map( ({code, name}) => {
+						let html = val.length ? `<strong>${name.substr(0, val.length)}</strong>` : ''
+						return {
+							code,
+							name,
+							html: `${html}${name.substr(val.length)}`
+						}
+					})
+				})
+
+				this.currentTag = 0
+				// make the first of the tags list active by default
+				this.setActiveTag(this.refs.FTags.getElementsByClassName('w3-tag'))
+			},
+
+			addTag(evt, tag, idx) {
+				evt.preventDefault()
+				evt.stopPropagation()
+
+				// add new tag to list
+				let selected = this.get().selectedTags || []
+				if( !selected.find(t => t.code === tag.code) ) {
+					selected.push({
+						code: tag.code,
+						name: tag.name
+					})
+				}
+				this.set({selectedTags: selected})
+
+				// set last selected as active
+				this.currentTag = idx
+				this.setActiveTag(this.refs.FTags.getElementsByClassName('w3-tag'))
+			},
+
+			removeTag(evt, tag) {
+				evt.preventDefault()
+				evt.stopPropagation()
+
+				// filter out the deselected tag from the selected list then publish
+				this.set({selectedTags: this.get().selectedTags.filter(t => t.code != tag.code)})
+			},
+
+			setActiveTag(tags) {
+				Array.from(tags).map(tag => {
+					tag.classList.remove('w3-blue')
+					tag.classList.add('w3-light-gray')
+				})
+				tags[this.currentTag].classList.remove('w3-light-gray')
+				tags[this.currentTag].classList.add('w3-blue')
+			},
+
+			closePopup() {
+				this.set({filteredTags:[]})
+			}
+
+		}
+	}
+</script>
