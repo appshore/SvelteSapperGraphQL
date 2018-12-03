@@ -1,4 +1,4 @@
-<div class="{componentClass}">
+<div class="inputTags {componentClass}">
 	{#if selectedTags && selectedTags.length}
 	<div class="selectedTags">
 		{#each selectedTags as tag}
@@ -12,27 +12,27 @@
 	{/if}
 	<input 
 		type="text" class="{inputClass}"
-		placeholder="{placeholder || 'Type a letter or space'}"
+		placeholder="Type a letter or space to display available tags"
 		on:keydown="handleKeydown(event)"
 	>
-</div>
-{#if filteredTags && filteredTags.length}
-<div class="popup {popupClass}">
-	<div ref:FTags class="filteredTags w3-card-4 w3-white">
-		{#each filteredTags as tag, idx}
-			<span
-				class="filteredTag pointer w3-tag w3-round w3-light-gray w3-center"
-				on:click="addTag(event, tag, idx)"
-			>
-				{@html tag.html}
-			</span>
-		{/each}
+	{#if filteredTags && filteredTags.length}
+	<div class="popup {popupClass}">
+		<div ref:FTags class="filteredTags w3-card-4 w3-white">
+			{#each filteredTags as tag, idx}
+				<span
+					class="filteredTag pointer w3-tag w3-round w3-light-gray w3-center"
+					on:click="addTag(event, tag, idx)"
+				>
+					{@html tag.html}
+				</span>
+			{/each}
+		</div>
 	</div>
+	{/if}
 </div>
-{/if}
 
 <style>
-	input {
+	.inputTags {
 		outline: none;
 	}
 
@@ -51,7 +51,6 @@
 
 	.popup {
 		position: absolute;
-		margin-top: -16px;
 		left: 5%;
 		width: 90%;
 		z-index: 10;
@@ -189,6 +188,7 @@
 			addTag(evt, tag, idx) {
 				evt.preventDefault()
 				evt.stopPropagation()
+				this.keepInputFocused(evt)
 
 				// add new tag to list
 				let selected = this.get().selectedTags || []
@@ -208,6 +208,7 @@
 			removeTag(evt, tag) {
 				evt.preventDefault()
 				evt.stopPropagation()
+				this.keepInputFocused(evt)
 
 				// filter out the deselected tag from the selected list then publish
 				this.set({selectedTags: this.get().selectedTags.filter(t => t.code != tag.code)})
@@ -224,6 +225,11 @@
 
 			closePopup() {
 				this.set({filteredTags:[]})
+			},
+
+			keepInputFocused(evt) {
+				// keep focus on the input field
+				evt.target.closest('.inputTags').querySelector('input').focus()
 			}
 
 		}
