@@ -73,6 +73,12 @@
 		<label for="content" class="{post.html ? 'active' : ''}">Content</label>
 		<div id="content" resize="{$isResize}"/>
 	{:else}
+		<div class="w3-margin-bottom">
+			{#each post.tags as tag}
+				<span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-gray w3-center" 
+					on:click="addFilterByTag(event, tag)">{tag.name}</span>
+			{/each}
+		</div>
 		<div id="content">
 				{@html post.html}
 		</div>
@@ -186,6 +192,20 @@
 			contentHeight() {
 				return `${Math.max(100, window.innerHeight-(document.getElementById('content').getBoundingClientRect().top+50))}px`
 			},
+
+			addFilterByTag(evt, tag) {
+        evt.preventDefault()
+        evt.stopPropagation()
+        console.log('forum/addFilterByTag', tag)
+        let tags = this.get().filterByTags || []
+				if( !tags.find(t => t.code === tag.code) ) {
+					tags.push({
+						code: tag.code,
+						name: tag.name
+					})
+        }
+        this.set({filterByTags: tags})
+      },
 
 			handleEdit() {
 				this.set({ 

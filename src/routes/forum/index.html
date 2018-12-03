@@ -18,16 +18,16 @@
     {/if}
 
     <div class="w3-col l10 s7">
-      <SearchWithTags
-        componentClass="w3-margin-bottom"
-        inputClass="w3-input"
-        popupClass=""
-        placeholder="Search... spacebar for Tags"
-        on:click="searchForum(event, test)"
-        data="{countries}"
-        bind:selectedTags="filterByTags"
+      <input class="w3-input w3-margin-bottom"
+        placeholder="Search... select tags below to add them to search"
       />
     </div>
+  </div>
+  <div class="w3-margin-top">
+    {#each tags as tag}
+      <span class="pointer w3-tag w3-round w3-margin-right w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+        on:click="setFilterByTag(event, tag)">{tag.name}</span>
+    {/each}
   </div>
   {#if Boolean(posts)} 
     <div class="w3-margin-top">
@@ -43,10 +43,10 @@
         </div>
         <div><a href="/forum/{post.slug}">{@html post.html}</a></div>
         {#if post.tags}
-          <div class="w3-row w3-margin-top">
+          <div class="w3-margin-top">
             {#each post.tags as tag}
               <span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-gray w3-center" 
-                on:click="addFilterByTag(event, tag)">{tag.name}</span>
+                on:click="setFilterByTag(event, tag)">{tag.name}</span>
             {/each}
           </div>
         {/if}
@@ -68,15 +68,11 @@
   import countries from './countries.json'
   
   export default {
-    components: {
-			SearchWithTags: '../../components/SearchWithTags.html'
-    },
-    
     data() {
       return {
         posts: [],
         filterByTags: [],
-        countries,
+        tags: countries,
       }
     },
     
@@ -104,26 +100,18 @@
         sapper.goto('/forum/_new')
       },
 
-			addFilterByTag(evt, tag) {
+			setFilterByTag(evt, tag) {
         evt.preventDefault()
         evt.stopPropagation()
         console.log('forum/addFilterByTag', tag)
-        let tags = this.get().filterByTags || []
-				if( !tags.find(t => t.code === tag.code) ) {
-					tags.push({
-						code: tag.code,
-						name: tag.name
-					})
-        }
-        this.set({filterByTags: tags})
+        let tags = this.get().tags || []
+				tags.map(t => {
+          if( t.code === tag.code) {
+            t.selected = !Boolean(t.selected)
+          }
+        })
+        this.set({tags})
       },
-
-			removeFilterByTag(evt, tag) {
-				evt.preventDefault()
-        evt.stopPropagation()
-        console.log('forum/removeFilterByTag', tag)
-				this.set({filterByTags: this.get().filterByTags.filter(t => t.code != tag.code)})
-			},
 
 			searchForum({event, test}) {
 				event.preventDefault()
