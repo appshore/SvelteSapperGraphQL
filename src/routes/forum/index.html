@@ -10,24 +10,29 @@
     </div>
     
     {#if $isAuth }
-      <div class="w3-col l1 s3">
-        <button class="w3-button w3-middle w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
+      <div class="w3-col w3-right l1 s2">
+        <button class="w3-button w3-right w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
           <i class="fas fa-plus w3-text-teal"/>
         </button>
       </div>
     {/if}
 
-    <div class="w3-col l10 s7">
+    <div class="w3-col l10 s8">
       <input class="w3-input w3-margin-bottom"
-        placeholder="Search... select tags below to add them to search"
+        placeholder="Search...  select tags below to filter"
       />
     </div>
   </div>
-  <div class="w3-margin-top">
-    {#each tags as tag}
-      <span class="pointer w3-tag w3-round w3-margin-right w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-        on:click="setFilterByTag(event, tag)">{tag.name}</span>
-    {/each}
+  <div class="tags w3-display-container">
+    <div class="w3-container w3-card w3-padding w3-white">
+      {#each tags as tag}
+        <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+          on:click="setFilterByTag(event, tag)">{tag.name}</span>
+      {/each}
+      <div class="w3-display-topright w3-text-orange">
+        <i class="fas fa-angle-down" />
+      </div>
+    </div>
   </div>
   {#if Boolean(posts)} 
     <div class="w3-margin-top">
@@ -45,21 +50,55 @@
         {#if post.tags}
           <div class="w3-margin-top">
             {#each post.tags as tag}
-              <span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-gray w3-center" 
+              <span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-grey w3-center" 
                 on:click="setFilterByTag(event, tag)">{tag.name}</span>
             {/each}
           </div>
         {/if}
-        <hr />
+        <hr/>
       {/each}
     </div>
   {/if}
 </div>
 
 <style>
+  hr {
+    border-style: dashed;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
   .nowrap {
     white-space:nowrap;
   }
+
+  .tags {
+    min-height: 3rem;
+  }
+
+  .tags .w3-card {
+    position: absolute;
+    height: 2.6rem;
+    overflow-y: hidden;
+  }
+
+  .tags:hover .w3-card {
+    height: unset;
+    overflow-y: unset;
+    z-index: 10;
+  }
+
+  .tags i {
+	  margin: 8px 8px;
+	}
+
+  .tag {
+		margin: 4px 8px 8px 0px;
+	}
+
+  .tag:hover {
+		margin: 4px 8px 4px 0px;
+	}
 </style>
 
 <script>
@@ -72,7 +111,7 @@
       return {
         posts: [],
         filterByTags: [],
-        tags: countries,
+        tags: [],
       }
     },
     
@@ -89,10 +128,14 @@
         if (res.error) {
           throw res.error
         }
+
+        res.posts.map( post => post.tags = this.sortTags(post.tags))
         this.set({ posts: res.posts })
       } catch (err) {
         this.set({ posts: [] })
       }
+
+      this.set({tags: this.sortTags(countries)})
     },
 
     methods: {
@@ -100,17 +143,32 @@
         sapper.goto('/forum/_new')
       },
 
+      // toggle tag as selected/unselected
 			setFilterByTag(evt, tag) {
         evt.preventDefault()
         evt.stopPropagation()
-        console.log('forum/addFilterByTag', tag)
         let tags = this.get().tags || []
 				tags.map(t => {
           if( t.code === tag.code) {
             t.selected = !Boolean(t.selected)
           }
         })
+        tags = this.sortTags(tags)
         this.set({tags})
+      },
+
+      //  sort tags by selected/unselected then name
+      sortTags(tags) {
+        let selected = []
+        let rest = []
+
+        tags.map( t => Boolean(t.selected) ? selected.push(t) : rest.push(t))
+
+        const compare = (a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+        selected.sort(compare)
+        rest.sort(compare)
+
+        return selected.concat(rest)
       },
 
 			searchForum({event, test}) {
