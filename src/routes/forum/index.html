@@ -30,7 +30,7 @@
           on:click="setFilterByTag(event, tag)">{tag.name}</span>
       {/each}
       <div class="w3-display-topright w3-text-orange">
-        <i class="fas fa-angle-down" />
+        <i class="fas fa-angle-down" on:click="toggleTags(event)"/>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@
         {#if post.tags}
           <div class="w3-margin-top">
             {#each post.tags as tag}
-              <span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-grey w3-center" 
+              <span class="pointer w3-tag w3-round w3-margin-right w3-tiny w3-light-grey w3-center" 
                 on:click="setFilterByTag(event, tag)">{tag.name}</span>
             {/each}
           </div>
@@ -89,7 +89,7 @@
   }
 
   .tags i {
-	  margin: 8px 8px;
+	  margin: 12px 10px;
 	}
 
   .tag {
@@ -157,7 +157,7 @@
         this.set({tags})
       },
 
-      //  sort tags by selected/unselected then name
+      // sort tags by selected/unselected then name
       sortTags(tags) {
         let selected = []
         let rest = []
@@ -171,12 +171,19 @@
         return selected.concat(rest)
       },
 
-			searchForum({event, test}) {
-				event.preventDefault()
-        event.stopPropagation()
-        console.log('forum/searchForum', test)
-				// this.set({filterByTags: this.get().filterByTags.filter(t => t.code != tag.code)})
-			},
+      // if mobile
+			toggleTags(evt) {
+				evt.preventDefault()
+        evt.stopPropagation()
+        let card = document.querySelector('.tags .w3-card')
+        if( card.style.height === 'unset') {
+          card.style['height'] = '2.6em'
+          card.style['overflow-y'] = 'hidden'
+        } else {
+          card.style['height'] = 'unset'
+          card.style['overflow-y'] = 'unset'
+        }
+			}
     }
 
   }

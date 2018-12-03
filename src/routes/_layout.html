@@ -8,7 +8,7 @@
 </div>
 <!-- {/if} -->
 
-<main>
+<main style="padding-top:{$isMobile?'64px':'42px'}">
 	<Banner ref:banner/>
 	<svelte:component this={child.component} {...child.props} />
 </main>
@@ -28,7 +28,6 @@
 <style>
 	main {
 		flex: 1 0 auto;
-    padding-top: 42px; /* to offset the fixed navbar */
 	}
 </style>
 
