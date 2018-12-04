@@ -15,7 +15,6 @@
 
 			if ( res.status ) {
 				let { user, Snackbar } = this.store.get()
-				// console.log('login/handleSubmit auth', this.get(), this.store.get())
 				Snackbar.info('You are now signed off')
 			} else {
         this.store.get().Banner.danger(res.msg)

@@ -12,8 +12,6 @@ export const validPassword = (clear, hashed) => {
 }
 
 export const generateToken = data => {
-  // console.log('generateToken', data)
-  // return jwt.sign(data, CFGSRV.SECRET)
   return jwt.sign(data, CFGSRV.SECRET, { expiresIn: CFGSRV.TOKEN_TIMEOUT })
 }
 
@@ -25,7 +23,6 @@ export const verifyToken = (token, timeout = false) => {
     if (timeout && Math.round(Date.now() / 1000) - decoded.iat > timeout) {
       return false
     }
-    // console.log('verifyToken decoded', decoded)
   } catch (err) {
     return false
   }

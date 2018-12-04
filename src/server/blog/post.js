@@ -103,7 +103,6 @@ export const savePost = async (req, res) => {
       })
     })
     .catch(error => {
-      console.log('blog/savePost/catch', error._message)
       return res.status(500).json({
         error: error._message
       })

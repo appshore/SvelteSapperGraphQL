@@ -61,8 +61,6 @@
         evt.preventDefault()
 
         let formData = this.get().form
-        // console.log("login submit", formData, this.store)
-
         let res = await login(this.store, formData)
 
         if ( res.status ) {

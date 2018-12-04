@@ -1,7 +1,6 @@
 import Cookie from 'js-cookie'
 
 export const checkAuth = async store => {
-  // console.log('store/auth/check')
   let CFG = store.get().CFG
 
   if (Boolean(Cookie.get('token')) === false) {

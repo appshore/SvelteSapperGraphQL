@@ -166,7 +166,6 @@
 				if (res.error) {
 					throw res.error
 				}
-				console.log('slug/fetch', res.post)
 				this.set({ 
 					post: res.post, 
 					nextSlug: res.nextSlug, 
@@ -196,7 +195,6 @@
 			addFilterByTag(evt, tag) {
         evt.preventDefault()
         evt.stopPropagation()
-        console.log('forum/addFilterByTag', tag)
         let tags = this.get().filterByTags || []
 				if( !tags.find(t => t.code === tag.code) ) {
 					tags.push({
@@ -278,7 +276,6 @@
 				let formData = Object.assign({}, this.get().post, {html:this.editor.getHtml()})
 				// no need to send timestamp back
 				delete formData.timestamp
-				console.log('handleSave', formData)
 
 				if( Boolean(formData.title) === false ) {
 					this.store.get().Banner.danger('Title is required')
@@ -316,8 +313,6 @@
 
 					isNew ? this.store.get().Snackbar.success('Post created') : this.store.get().Snackbar.info('Post updated')
 				} catch (err) {
-					console.log('handleSave error', err)
-
           this.store.get().Banner.danger(err)
 					this.set({ nextSlug: null, prevSlug: null })
 				}
