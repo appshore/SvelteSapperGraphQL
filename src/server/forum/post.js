@@ -2,8 +2,8 @@ import mongoose from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
 import slug from 'slug'
 
-import { postModel } from '../../models/forum'
-import { filterPost } from './filter'
+import { postModel } from '../../models/forumPost'
+import { filterPost } from './postFilter'
 import { findUsersByIds } from '../user/users'
 
 export const deletePost = (req, res) => {

@@ -1,5 +1,5 @@
-import { postModel } from '../../models/forum'
-import { filterPostInList } from './filter'
+import { postModel } from '../../models/forumPost'
+import { filterPostInList } from './postFilter'
 import { findUsersByIds } from '../user/users'
 
 export const findPosts = (req, res) => {
