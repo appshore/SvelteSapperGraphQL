@@ -50,7 +50,7 @@
         {#if post.tags}
           <div class="w3-margin-top">
             {#each post.tags as tag}
-              <span class="pointer w3-tag w3-round w3-margin-right w3-tiny w3-light-grey w3-center" 
+              <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
                 on:click="setFilterByTag(event, tag)">{tag.name}</span>
             {/each}
           </div>
@@ -114,6 +114,13 @@
         tags: [],
       }
     },
+
+    helpers: {
+      selected: (code, tags) => {
+        let tag = tags.find(t => t.code === code)
+        return tag && tag.selected
+      }
+    },
     
     async oncreate() {
       try {
@@ -153,8 +160,7 @@
             t.selected = !Boolean(t.selected)
           }
         })
-        tags = this.sortTags(tags)
-        this.set({tags})
+        this.set({tags: this.sortTags(tags)})
       },
 
       // sort tags by selected/unselected then name
