@@ -104,13 +104,13 @@
 <script>
   import * as sapper from '../../../__sapper__/client'
 
-  import countries from './countries.json'
+  import {fetchPosts} from './_post'
+  import {fetchTags} from './_tag'
   
   export default {
     data() {
       return {
         posts: [],
-        filterByTags: [],
         tags: [],
       }
     },
@@ -123,26 +123,13 @@
     },
     
     async oncreate() {
-      try {
-        let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum`, {
-          method: 'GET',
-          credentials: 'same-origin',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }).then(res => res.json())
-        if (res.error) {
-          throw res.error
-        }
-
-        res.posts.map( post => post.tags = this.sortTags(post.tags))
-        this.set({ posts: res.posts })
-      } catch (err) {
-        this.set({ posts: [] })
-      }
-
-      this.set({tags: this.sortTags(countries)})
+      let posts = await fetchPosts(this.store)
+      posts.forEach( post => post.tags = this.sortTags(post.tags))
+      let tags = await fetchTags(this.store)
+      this.set({
+        posts: posts, 
+        tags: this.sortTags(tags)
+      })
     },
 
     methods: {
@@ -168,7 +155,7 @@
         let selected = []
         let rest = []
 
-        tags.map( t => Boolean(t.selected) ? selected.push(t) : rest.push(t))
+        tags.map(t => Boolean(t.selected) ? selected.push(t) : rest.push(t))
 
         const compare = (a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
         selected.sort(compare)

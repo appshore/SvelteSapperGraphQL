@@ -111,8 +111,6 @@
 	import Editor from 'cl-editor'
 	import * as sapper from '../../../__sapper__/client'
 
-  import countries from './countries.json'
-
 	let editor
 
 	export default {
@@ -127,7 +125,6 @@
 					html: '',
 					tags: []
 				},
-				countries,
 				nextSlug: null,
 				prevSlug: null,
 				editMode: false
@@ -154,7 +151,7 @@
 				return this.handleEdit()
 			}
 			try {
-				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/${this.get().params.slug}`, {
+				let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/post/${this.get().params.slug}`, {
 					method: 'GET',
 					credentials: 'same-origin',
 					headers: {
@@ -246,7 +243,7 @@
 
 			async handleDelete() {
 				try {
-					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/${this.get().params.slug}`, {
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/post/${this.get().params.slug}`, {
 						method: 'DELETE',
 						credentials: 'same-origin',
 						headers: {
@@ -288,7 +285,7 @@
 				
 				try {
 					let isNew = this.get().params.slug === '_new'
-					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum${isNew ? '' : `/${this.get().params.slug}`}`, {
+					let res = await fetch(`/${this.store.get().CFG.API_VERSION}/forum/post${isNew ? '' : `/${this.get().params.slug}`}`, {
 						method: 'POST',
 						credentials: 'same-origin',
 						headers: {
