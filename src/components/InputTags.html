@@ -20,7 +20,7 @@
 		<div ref:FTags class="filteredTags w3-card-4 w3-white">
 			{#each filteredTags as tag, idx}
 				<span
-					class="filteredTag pointer w3-tag w3-round w3-light-gray w3-center"
+					class="filteredTag pointer w3-tag w3-round { idx === currentTag ? 'w3-blue' : 'w3-light-grey'} w3-center"
 					on:click="addTag(event, tag, idx)"
 				>
 					{@html tag.html}
@@ -77,6 +77,7 @@
 
 			handleKeydown(evt) {
 				let tags = this.refs.FTags && this.refs.FTags.getElementsByClassName('w3-tag') || []
+				let currentTag = this.get().currentTag
 
 				// keys to move between tags in the popup
 				switch (evt.key) {
@@ -87,57 +88,51 @@
 
 					case 'ArrowRight': 
 						evt.preventDefault()
-						this.currentTag = this.currentTag === tags.length-1 ? 0 : this.currentTag+1
-						this.setActiveTag(tags)
+						this.set({currentTag:currentTag === tags.length-1 ? 0 : currentTag+1})
 						return
 
 					case 'ArrowLeft': 
 						evt.preventDefault()
-						this.currentTag = this.currentTag === 0 ? tags.length-1 : this.currentTag-1
-						this.setActiveTag(tags)
+						this.set({currentTag:currentTag === 0 ? tags.length-1 : currentTag-1})
 						return
 
 					case 'ArrowDown': 
 						evt.preventDefault()
-						let CuDown = tags[this.currentTag].getBoundingClientRect()
-						this.currentTag = Array.from(tags).findIndex( tag => {
+						let CuDown = tags[currentTag].getBoundingClientRect()
+						currentTag = Array.from(tags).findIndex( tag => {
 							let {x, y, height} = tag.getBoundingClientRect()
 							if( CuDown.x-80 <= x && y > CuDown.y+height) {
 								return true
 							}
 						})
-						this.currentTag = this.currentTag === -1 ? 0 : this.currentTag
-						this.setActiveTag(tags)
+						this.set({currentTag:currentTag === -1 ? 0 : currentTag})
 						return
 
 					case 'ArrowUp': 
 						evt.preventDefault()
-						let CuUp = tags[this.currentTag].getBoundingClientRect()
+						let CuUp = tags[currentTag].getBoundingClientRect()
 						let newFocus = Array.from(tags).findIndex( tag => {
 							let {x, y, height} = tag.getBoundingClientRect()
 							if( CuUp.x-80 <= x && y > CuUp.y-(height*2)) {
 								return true
 							}
 						})
-						this.currentTag = newFocus === this.currentTag ? tags.length-1 : newFocus
-						this.setActiveTag(tags)
+						this.set({currentTag:newFocus === currentTag ? tags.length-1 : newFocus})
 						return
 
 					case 'Home':
 						evt.preventDefault()
-						this.currentTag = 0
-						this.setActiveTag(tags)
+						this.set({currentTag:0})
 						return
 
 					case 'End':
 						evt.preventDefault()
-						this.currentTag = tags.length-1
-						this.setActiveTag(tags)
+						this.set({currentTag:tags.length-1})
 						return
 
 					case 'Enter': 
 						evt.preventDefault()
-						tags[this.currentTag].click()
+						tags[currentTag].click()
 						return
 				}
 
@@ -150,7 +145,7 @@
 						// remove the last selected Tag
 						evt.preventDefault()
 						this.closePopup()
-						this.set( {selectedTags: this.get().selectedTags.slice(0,-1)})
+						this.set({selectedTags: this.get().selectedTags.slice(0,-1)})
 						return
 					} else {
 						// remove the last character entered
@@ -180,9 +175,7 @@
 					})
 				})
 
-				this.currentTag = 0
-				// make the first of the tags list active by default
-				this.setActiveTag(this.refs.FTags.getElementsByClassName('w3-tag'))
+				this.set({currentTag:0})
 			},
 
 			addTag(evt, tag, idx) {
@@ -198,11 +191,10 @@
 						name: tag.name
 					})
 				}
-				this.set({selectedTags: selected})
-
-				// set last selected as active
-				this.currentTag = idx
-				this.setActiveTag(this.refs.FTags.getElementsByClassName('w3-tag'))
+				this.set({
+					selectedTags: selected,
+					currentTag: idx
+				})
 			},
 
 			removeTag(evt, tag) {
@@ -212,15 +204,6 @@
 
 				// filter out the deselected tag from the selected list then publish
 				this.set({selectedTags: this.get().selectedTags.filter(t => t.code != tag.code)})
-			},
-
-			setActiveTag(tags) {
-				Array.from(tags).map(tag => {
-					tag.classList.remove('w3-blue')
-					tag.classList.add('w3-light-gray')
-				})
-				tags[this.currentTag].classList.remove('w3-light-gray')
-				tags[this.currentTag].classList.add('w3-blue')
 			},
 
 			closePopup() {
