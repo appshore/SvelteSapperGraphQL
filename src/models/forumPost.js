@@ -1,7 +1,5 @@
 import mongoose from 'mongoose'
 
-import {tagSchema} from './tag'
-
 export const postSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   title: { type: String, required: true },
@@ -15,4 +13,3 @@ export const postSchema = mongoose.Schema({
 })
 
 export const postModel = mongoose.model('Post', postSchema, 'forumPosts')
-export const tagModel = mongoose.model('Tag', tagSchema, 'forumTags')
