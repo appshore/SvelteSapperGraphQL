@@ -3,31 +3,68 @@
 </svelte:head>
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
-  <h3 class="w3-text-teal">Blog</h3>
+
+  <div class="w3-row">
+    <div class="w3-col m2 s3">
+      <div class="w3-text-teal w3-xlarge">Blog</div>
+    </div>
+
+    <div class="w3-col s6">
+      <div class="w3-row">
+        <button class="w3-button w3-left w3-light-grey w3-hover-orange w3-text-grey" on:click="setSearchFilter()">
+          <i class="fas fa-search"/>
+        </button>
+        <div class="w3-rest">
+          <input class="w3-input w3-border-0 w3-light-grey"
+            placeholder="Search..."
+            bind:value="search"
+            on:keydown="setSearchFilter(event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    {#if $isAuth }
+      <div class="w3-col w3-right s2">
+        <button class="w3-right w3-button w3-card w3-teal w3-hover-orange w3-hover-text-black" on:click="handleNew()">
+          <i class="fas fa-plus"/><span class="w3-hide-small">&nbsp;New post</span>
+        </button>
+      </div>
+    {/if}
+
+  </div>
+
+  <div class="tags w3-display-container w3-margin-top">
+    <div class="w3-container w3-border w3-border-light-grey w3-padding w3-white">
+      {#each tags as tag}
+        <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+          on:click="setTagFilter(event, tag)">{tag.name}</span>
+      {/each}
+      <div class="w3-display-topright w3-text-orange">
+        <i class="fas fa-angle-down" on:click="toggleTags(event)"/>
+      </div>
+    </div>
+  </div>
   
-  {#if $isAuth }
-    <!-- menu items that required to be auth -->
-    <button class="w3-button w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
-      <i class="fas fa-plus w3-text-teal"/>
-    </button>
-  {/if}
-  {#if Boolean(posts)} 
-    <div class="w3-margin-top">
+    
+  <div class="w3-margin-top">
+    {#if posts.length }
       {#each posts as post}
       <div class="w3-row">
         <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="/blog/{post.slug}">{post.title}</a></div>
         <div class="w3-col m4 s3">
           <span class="w3-right w3-small w3-text-grey w3-right-align">
-              <span class="nowrap">{post.timestamp}</span>
-              <span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
+            <span class="nowrap">{post.timestamp}</span>
+            <span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
           </span>
         </div>
       </div>
       <div><a href="/blog/{post.slug}">{@html post.html}</a></div>
       <hr />
       {/each}
-    </div>
-  {/if}
+    {/if}
+  </div>
+
 </div>
 
 <style>
@@ -42,10 +79,11 @@
   export default {
     data() {
       return {
-        posts: []
+        posts: [],
+        search: ''
       }
     },
-    
+
     async oncreate() {
       try {
         let res = await fetch(`/${this.store.get().CFG.API_VERSION}/blog`, {
@@ -66,10 +104,75 @@
     },
 
     methods: {
-			handleNew() {
+      handleNew() {
         sapper.goto('/blog/_new')
+      },
+
+      // toggle tag as selected/unselected
+			async setTagFilter(evt, tag) {
+        evt.preventDefault()
+        evt.stopPropagation()
+        let tags = this.get().tags || []
+        let selectedTags = []
+				tags.map(t => {
+          if( t.code === tag.code) {
+            t.selected = !t.selected
+          }
+          t.selected && selectedTags.push(t.code)
+        })
+
+        let posts = await fetchPosts(this.store, {search: this.get().search, tags: selectedTags})
+        posts.forEach( post => post.tags = this.sortTags(post.tags))
+        this.set({
+          posts, 
+          selectedTags,
+          tags: this.sortTags(tags)
+        })
+      },
+      
+      // toggle tag as selected/unselected
+      async setSearchFilter(evt = null) {
+        if (evt && evt.key !== 'Enter') {
+          return
+        }
+
+        console.log('search', this.get().search)
+
+
+        let posts = await fetchPosts(this.store, { search: this.get().search, tags: this.get().selectedTags })
+        posts.forEach(post => post.tags = this.sortTags(post.tags))
+        this.set({
+          posts
+        })
+      },
+
+      // sort tags by selected/unselected then name
+      sortTags(tags) {
+        let selected = []
+        let rest = []
+
+        tags.map(t => Boolean(t.selected) ? selected.push(t) : rest.push(t))
+
+        const compare = (a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+        selected.sort(compare)
+        rest.sort(compare)
+
+        return selected.concat(rest)
+      },
+
+      // if mobile
+      toggleTags(evt) {
+        evt.preventDefault()
+        evt.stopPropagation()
+        let card = document.querySelector('.tags .w3-card')
+        if (card.style.height === 'unset') {
+          card.style['height'] = '2.6em'
+          card.style['overflow-y'] = 'hidden'
+        } else {
+          card.style['height'] = 'unset'
+          card.style['overflow-y'] = 'unset'
+        }
       }
     }
-
   }
 </script>

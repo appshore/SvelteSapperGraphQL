@@ -3,8 +3,21 @@ import { filterPostInList } from './postFilter'
 import { findUsersByIds } from '../user/users'
 
 export const findPosts = (req, res) => {
+
+  let cond = {}
+  if( req.query.tags ) {
+    cond = {'tags.code': { $in: req.query.tags }}
+  }
+
+  if( req.query.search ) {
+    cond = Object.assign({}, cond, {'title': { $regex: req.query.search, $options: 'i' }})
+  }
+
+  console.log('findPosts', req.query, cond)
+
+
   postModel
-    .find()
+    .find(cond)
     .sort({createdAt:-1})
     .exec()
     .then(async posts => {

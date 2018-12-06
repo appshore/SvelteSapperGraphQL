@@ -4,61 +4,124 @@
 
 <div class="w3-container {!$isMobile && 'w3-margin'}">
 
+  <!-- Search  -->
   <div class="w3-row">
-    <div class="w3-col l1 s2">
-      <h3 class="w3-text-teal">Forum</h3>
+    <div class="w3-col m2 s3">
+      <div class="w3-text-teal w3-xlarge">Forum</div>
     </div>
-    
+
+    <div class="w3-col s6">
+      <div class="w3-row">
+        <button class="w3-button w3-left w3-light-grey w3-hover-orange w3-text-grey" on:click="setSearchFilter()">
+          <i class="fas fa-search"/>
+        </button>
+        <div class="w3-rest">
+          <input class="w3-input w3-border-0 w3-light-grey"
+            placeholder="Search..."
+            bind:value="search"
+            on:keydown="setSearchFilter(event)"
+          />
+        </div>
+      </div>
+    </div>
+
     {#if $isAuth }
-      <div class="w3-col w3-right l1 s2">
-        <button class="w3-button w3-right w3-card w3-round w3-hover-light-grey" on:click="handleNew()">
-          <i class="fas fa-plus w3-text-teal"/>
+      <div class="w3-col w3-right s2">
+        <button class="w3-right w3-button w3-card w3-teal w3-hover-orange w3-hover-text-black" on:click="handleNew()">
+          <i class="fas fa-plus"/><span class="w3-hide-small">&nbsp;New post</span>
         </button>
       </div>
     {/if}
 
-    <div class="w3-col l10 s8">
-      <input class="w3-input w3-margin-bottom"
-        placeholder="Search...  select tags below to filter"
-      />
-    </div>
   </div>
-  <div class="tags w3-display-container">
-    <div class="w3-container w3-card w3-padding w3-white">
+
+<!-- Tags -->
+<div class="tags w3-display-container w3-margin-top w3-hide-large w3-hide-medium">
+    <div class="w3-container w3-border w3-border-light-grey w3-padding w3-white">
       {#each tags as tag}
         <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-          on:click="setFilterByTag(event, tag)">{tag.name}</span>
+          on:click="setTagFilter(event, tag)">{tag.name}</span>
       {/each}
       <div class="w3-display-topright w3-text-orange">
         <i class="fas fa-angle-down" on:click="toggleTags(event)"/>
       </div>
     </div>
   </div>
-  {#if Boolean(posts)} 
-    <div class="w3-margin-top">
-      {#each posts as post}
-        <div class="w3-row">
-          <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="/forum/{post.slug}">{post.title}</a></div>
-          <div class="w3-col m4 s3">
-            <span class="w3-right w3-small w3-text-grey w3-right-align">
-              <span class="nowrap">{post.timestamp}</span>
-              <span class="nowrap"> by <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a><span/>
-            </span>
+
+  <div class="w3-row">
+      <div class="w3-col w3-right s3 w3-hide-small">
+        <!-- Tags -->
+        <div class="w3-display-container w3-margin-top w3-border w3-border-light-grey w3-light-grey">
+          <div class="w3-container w3-lightgrey">
+            Tags
           </div>
-        </div>
-        <div><a href="/forum/{post.slug}">{@html post.html}</a></div>
-        {#if post.tags}
-          <div class="w3-margin-top">
-            {#each post.tags as tag}
-              <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-                on:click="setFilterByTag(event, tag)">{tag.name}</span>
+          <div class="w3-container w3-padding w3-white">
+            {#each tags as tag}
+              <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+                on:click="setTagFilter(event, tag)">{tag.name}</span>
             {/each}
           </div>
-        {/if}
-        <hr/>
-      {/each}
+        </div>
+      </div>
+
+      <div class="w3-col m9 s12">
+        <!-- Posts -->
+        <div class="w3-margin-right w3-margin-top">
+          {#if posts.length }
+            {#each posts as post}
+              <div class="w3-section">
+                <a class="w3-large w3-text-orange" href="/forum/{post.slug}">{post.title}</a>
+                <div class="w3-text-grey">
+                  {post.html}
+                </div>
+              </div>
+              <div class="w3-row">
+                  <div class="w3-col l1 m2 s4">
+                    <div class="w3-small w3-text-teal">
+                      <i class="far fa-star"/>&nbsp;<span class="w3-text-grey">22</span><br/>
+                      <i class="far fa-eye"/>&nbsp;<span class="w3-text-grey">456</span><br/>
+                      <i class="far fa-comment-alt"/>&nbsp;<span class="w3-text-grey">3</span><br/>
+                    </div>
+                  </div>
+                  <div class="w3-col l7 m5 w3-hide-small">
+                    {#each post.tags as tag}
+                      <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+                        on:click="setTagFilter(event, tag)">{tag.name}</span>
+                    {/each}
+                  </div>
+                  <div class="w3-col l4 m5 s8 w3-right">
+                    <div class="w3-small w3-right-align w3-text-grey">{post.timestamp}</div>
+                    <div class="w3-small w3-right-align">
+                      <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a>
+                    </div>
+                    <div class="w3-tiny w3-right-align w3-text-grey">
+                        <i class="far fa-comment-alt"/>&nbsp;129&nbsp;&nbsp;
+                      <i class="fas fa-trophy w3-text-amber"/>&nbsp;456&nbsp;&nbsp;
+                      <i class="far fa-thumbs-up w3-text-light-green"/>&nbsp;22&nbsp;&nbsp;
+                      <i class="far fa-flag w3-text-purple"/>&nbsp;3
+                    </div>
+                  </div>
+                </div>
+              <div class="w3-hide-large w3-hide-medium">
+                {#each post.tags as tag}
+                  <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+                    on:click="setTagFilter(event, tag)">{tag.name}</span>
+                {/each}
+                </div>
+              <hr/>
+            {/each}
+          {:else}
+            <div class="w3-padding-64">
+              <h4 class="w3-center w3-text-grey">
+                Refine the search to display some posts
+              </h4>
+            </div>
+          {/if}
+        </div>
+      </div>
     </div>
-  {/if}
+
+
 </div>
 
 <style>
@@ -76,13 +139,13 @@
     min-height: 3rem;
   }
 
-  .tags .w3-card {
+  .tags .w3-container {
     position: absolute;
     height: 2.6rem;
     overflow-y: hidden;
   }
 
-  .tags:hover .w3-card {
+  .tags:hover .w3-container {
     height: unset;
     overflow-y: unset;
     z-index: 10;
@@ -110,8 +173,10 @@
   export default {
     data() {
       return {
+        search: '',
         posts: [],
         tags: [],
+        selectedTags: []
       }
     },
 
@@ -123,11 +188,11 @@
     },
     
     async oncreate() {
-      let posts = await fetchPosts(this.store)
+      let posts = await fetchPosts(this.store, {search:'', tags:[]})
       posts.forEach( post => post.tags = this.sortTags(post.tags))
       let tags = await fetchTags(this.store)
       this.set({
-        posts: posts, 
+        posts, 
         tags: this.sortTags(tags)
       })
     },
@@ -138,16 +203,42 @@
       },
 
       // toggle tag as selected/unselected
-			setFilterByTag(evt, tag) {
+			async setTagFilter(evt, tag) {
         evt.preventDefault()
         evt.stopPropagation()
         let tags = this.get().tags || []
+        let selectedTags = []
 				tags.map(t => {
           if( t.code === tag.code) {
-            t.selected = !Boolean(t.selected)
+            t.selected = !t.selected
           }
+          t.selected && selectedTags.push(t.code)
         })
-        this.set({tags: this.sortTags(tags)})
+
+        let posts = await fetchPosts(this.store, {search: this.get().search, tags: selectedTags})
+        posts.forEach( post => post.tags = this.sortTags(post.tags))
+        this.set({
+          posts, 
+          selectedTags,
+          tags: this.sortTags(tags)
+        })
+      },
+
+      // toggle tag as selected/unselected
+			async setSearchFilter(evt = null) {
+
+        if( evt && evt.key !== 'Enter') {
+          return
+        }
+
+        console.log('search', this.get().search)
+
+
+        let posts = await fetchPosts(this.store, {search: this.get().search, tags: this.get().selectedTags})
+        posts.forEach( post => post.tags = this.sortTags(post.tags))
+        this.set({
+          posts
+        })
       },
 
       // sort tags by selected/unselected then name
@@ -176,7 +267,7 @@
           card.style['height'] = 'unset'
           card.style['overflow-y'] = 'unset'
         }
-			}
+      }
     }
 
   }
