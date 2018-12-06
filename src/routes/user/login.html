@@ -12,16 +12,26 @@
 			<form class="w3-container" on:submit="handleSubmit(event)">
 				<div class="w3-padding-16">
 					<label for="email" class="w3-left {form.email ? 'active' : ''}">Email</label>
-					<input class="w3-input w3-border w3-margin-bottom validate" type="email" required bind:value="form.email" id="email" />
+          <input class="w3-input w3-margin-bottom validate" 
+            type="email" 
+            required 
+            bind:value="form.email"
+            placeholder="Enter your email"
+          />
 					<label for="password" class="w3-left {form.password ? 'active' : ''}">Password</label>
-					<input class="w3-input w3-border w3-margin-bottom validate" type="password" required="true" bind:value="form.password"
-					 id="password" minlength="8" />
+          <input class="w3-input w3-margin-bottom validate" 
+            type="password" 
+            required="true" 
+            bind:value="form.password"
+            minlength="8" maxlength="8"
+            placeholder="Enter your password"
+            />
 					<span class="helper-text" data-error="8 characters minimum"></span>
 					<span class="w3-right w3-small w3-text-blue"><a href="/user/resetpassword">Forgot password?</a></span>
 				</div>
         <!-- <button class="w3-button w3-card w3-round w3-hover-light-grey w3-block w3-teal w3-section" type="submit">Login</button> -->
         <div class="w3-section w3-center">
-          <button class="w3-button w3-card w3-round w3-hover-light-grey w3-teal w3-text-white" type="submit">
+          <button class="w3-button w3-card w3-teal w3-hover-orange w3-hover-text-black" type="submit">
               <i class="fas fa-sign-in-alt" />&nbsp;Login
           </button>
         </div>

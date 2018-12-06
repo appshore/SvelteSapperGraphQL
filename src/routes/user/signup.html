@@ -10,32 +10,33 @@
 
       <form class="w3-container" on:submit="handleSubmit(event)">
         <div class="w3-padding-16">
-          <label for="username" class="w3-left {form.username ? 'active' : ''}">Name (will be displayed)</label>
+          <label for="username" class="w3-left {form.username ? 'active' : ''}">Name</label>
           <input
-            class="w3-input w3-border w3-margin-bottom validate"
+            class="w3-input w3-margin-bottom validate"
             type="text"
             required="true"
             bind:value="form.username"
-            id="username"
+            placeholder="Enter a name, it will be public"
           />
           <span class="helper-text" data-error="4 characters minimum"></span>
-          <label for="email" class="w3-left {form.email ? 'active' : ''}">Email (will stay private)</label>
+          <label for="email" class="w3-left {form.email ? 'active' : ''}">Email</label>
           <input
-            class="w3-input w3-border w3-margin-bottom validate"
+            class="w3-input w3-margin-bottom validate"
             type="email"
             required="true"
             bind:value="form.email"
-            id="email"
+            placeholder="Enter your email, it will stay private"
           />
           <span class="helper-text" data-error="Enter a valid email address"></span>
           <label for="password" class="w3-left {form.password ? 'active' : ''}">Password</label>
           <input
-            class="w3-input w3-border w3-margin-bottom validate"
+            class="w3-input w3-margin-bottom validate"
             type="password"
             required="true"
             bind:value="form.password"
-            id="password"
             minlength="8"
+            maxlength="16"
+            placeholder="Enter a password between 8 to 16 characters"
           />
           <span class="helper-text" data-error="8 characters minimum"></span>
         </div>
@@ -47,7 +48,7 @@
         </div>
 
         <div class="w3-section w3-center">
-            <button class="w3-button w3-card w3-round w3-hover-light-grey w3-teal w3-text-white" type="submit">
+            <button class="w3-button w3-card w3-teal w3-hover-orange w3-hover-text-black" type="submit">
                 <i class="fas fa-user-plus" />&nbsp;Sign Up
             </button>
           </div>
