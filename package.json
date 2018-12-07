@@ -16,6 +16,7 @@
     "dump": "mongodump --db=sapeur --out=dump/$npm_package_version"
   },
   "dependencies": {
+    "apollo-server-express": "^2.2.6",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
@@ -25,6 +26,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.0.0-alpha.25",
     "express": "^4.16.4",
+    "graphql": "^14.0.2",
     "html-to-text": "^4.0.0",
     "http": "0.0.0",
     "js-cookie": "^2.2.0",

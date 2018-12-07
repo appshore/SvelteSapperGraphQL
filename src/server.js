@@ -7,6 +7,10 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import mongoose from 'mongoose'
 
+// Apollo GraphQL
+import { ApolloServer } from 'apollo-server-express'
+import { typeDefs, resolvers } from './graphQL/test'
+
 import * as sapper from '../__sapper__/server'
 
 import AppStore from './store'
@@ -57,6 +61,15 @@ mongoose.connect(CFGSRV.DB_URL, mongoOptions)
 
 // if user isAuth then retrieve profile
 app.use(withUser)
+
+// Apollo
+const apollo = new ApolloServer({
+  // These will be defined for both new or existing servers
+  typeDefs,
+  resolvers,
+})
+
+apollo.applyMiddleware({ app })
 
 // api routes
 app.use(`/${CFG.API_VERSION}`, routes)

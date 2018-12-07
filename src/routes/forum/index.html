@@ -95,8 +95,8 @@
                       <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a>
                     </div>
                     <div class="w3-tiny w3-right-align w3-text-grey">
-                        <i class="far fa-comment-alt"/>&nbsp;129&nbsp;&nbsp;
-                      <i class="fas fa-trophy w3-text-amber"/>&nbsp;456&nbsp;&nbsp;
+                        <i class="far fa-comment-alt"/>&nbsp;{post.comments}&nbsp;&nbsp;
+                      <i class="fas fa-trophy w3-text-amber"/>&nbsp;{post.timestamp}&nbsp;&nbsp;
                       <i class="far fa-thumbs-up w3-text-light-green"/>&nbsp;22&nbsp;&nbsp;
                       <i class="far fa-flag w3-text-purple"/>&nbsp;3
                     </div>
@@ -107,7 +107,7 @@
                   <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
                     on:click="setTagFilter(event, tag)">{tag.name}</span>
                 {/each}
-                </div>
+              </div>
               <hr/>
             {/each}
           {:else}

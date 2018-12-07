@@ -15,7 +15,9 @@ module.exports = {
       chunkFilename: '[hash]/[id].js'
     }),
     resolve: {
-      extensions: ['.js', '.json', '.html'],
+      // extensions: ['.js', '.json', '.html'],
+      // replace above for graphql issue
+      extensions: ['.webpack.js', '.web.js', '.mjs', '.js', '.json', '.html'],
       mainFields: ['svelte', 'module', 'browser', 'main']
     },
     module: {
@@ -40,6 +42,12 @@ module.exports = {
             },
             'css-loader'
           ]
+        },
+        // added for graphql issue
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto",
         }
       ]
     },
