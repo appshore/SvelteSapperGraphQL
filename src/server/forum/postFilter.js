@@ -7,11 +7,6 @@ export const filterPostInList = (post, user) => {
   return {
     title: post.title,
     slug: post.slug,
-    // html: post.html
-    //   .substring(0, 200)
-    //   .split('</')
-    //   .splice(0, 2)
-    //   .join('</') + '...',
     html: htmlToText.fromString(post.html).substring(0, 200),
     tags: post.tags,
     timestamp: formatRelative(post.createdAt, new Date(), { locale: enGB }),

@@ -9,7 +9,8 @@ import mongoose from 'mongoose'
 
 // Apollo GraphQL
 import { ApolloServer } from 'apollo-server-express'
-import { typeDefs, resolvers } from './graphQL/test'
+import typeDefs from './server/graphql/typeDefs'
+import resolvers from './server/graphql/resolvers'
 
 import * as sapper from '../__sapper__/server'
 
@@ -62,13 +63,12 @@ mongoose.connect(CFGSRV.DB_URL, mongoOptions)
 // if user isAuth then retrieve profile
 app.use(withUser)
 
-// Apollo
+// Apollo preempt the /graphql route
 const apollo = new ApolloServer({
   // These will be defined for both new or existing servers
   typeDefs,
   resolvers,
 })
-
 apollo.applyMiddleware({ app })
 
 // api routes
