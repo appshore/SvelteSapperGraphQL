@@ -12,14 +12,14 @@
 
     <div class="w3-col s6">
       <div class="w3-row">
-        <button class="w3-button w3-left w3-light-grey w3-hover-orange w3-text-grey" on:click="setSearchFilter()">
+        <button class="w3-button w3-left w3-light-grey w3-hover-orange w3-text-grey" on:click="applySearchFilter()">
           <i class="fas fa-search"/>
         </button>
         <div class="w3-rest">
           <input class="w3-input w3-border-0 w3-light-grey"
             placeholder="Search..."
             bind:value="search"
-            on:keydown="setSearchFilter(event)"
+            on:keydown="applySearchFilter(event)"
           />
         </div>
       </div>
@@ -40,7 +40,7 @@
     <div class="w3-container w3-border w3-border-light-grey w3-padding w3-white">
       {#each tags as tag}
         <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-          on:click="setTagFilter(event, tag)">{tag.name}</span>
+          on:click="applyTagFilter(event, tag)">{tag.name}</span>
       {/each}
       <div class="w3-display-topright w3-text-orange">
         <i class="fas fa-angle-down" on:click="toggleTags(event)"/>
@@ -58,7 +58,7 @@
           <div class="w3-container w3-padding w3-white">
             {#each tags as tag}
               <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-                on:click="setTagFilter(event, tag)">{tag.name}</span>
+                on:click="applyTagFilter(event, tag)">{tag.name}</span>
             {/each}
           </div>
         </div>
@@ -67,7 +67,7 @@
       <div class="w3-col m9 s12">
         <!-- Posts -->
         <div class="w3-margin-right w3-margin-top">
-          {#if posts.length }
+          {#if Boolean(posts) }
             {#each posts as post}
               <div class="w3-section">
                 <a class="w3-large w3-text-orange" href="/forum/{post.slug}">{post.title}</a>
@@ -85,14 +85,14 @@
                   </div>
                   <div class="w3-col l7 m5 w3-hide-small">
                     {#each post.tags as tag}
-                      <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-                        on:click="setTagFilter(event, tag)">{tag.name}</span>
+                      <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+                        on:click="applyTagFilter(event, tag)">{tag.name}</span>
                     {/each}
                   </div>
                   <div class="w3-col l4 m5 s8 w3-right">
                     <div class="w3-small w3-right-align w3-text-grey">{post.timestamp}</div>
                     <div class="w3-small w3-right-align">
-                      <a href="/user/{post.createdBy}" class="w3-text-blue">{post.username}</a>
+                      <a href="/user/{post.createdBy}" class="w3-text-blue">{post.createdBy.username}</a>
                     </div>
                     <div class="w3-tiny w3-right-align w3-text-grey">
                         <i class="far fa-comment-alt"/>&nbsp;{post.comments}&nbsp;&nbsp;
@@ -104,8 +104,8 @@
                 </div>
               <div class="w3-hide-large w3-hide-medium">
                 {#each post.tags as tag}
-                  <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {selected(tag.code, tags) ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-                    on:click="setTagFilter(event, tag)">{tag.name}</span>
+                  <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+                    on:click="applyTagFilter(event, tag)">{tag.name}</span>
                 {/each}
               </div>
               <hr/>
@@ -167,9 +167,8 @@
 <script>
   import * as sapper from '../../../__sapper__/client'
 
-  import {fetchPosts} from './_post'
-  import {fetchTags} from './_tag'
-  
+  import {FORUM_POSTS, FORUM_TAGS} from '../../graphql/forum'
+
   export default {
     data() {
       return {
@@ -179,22 +178,10 @@
         selectedTags: []
       }
     },
-
-    helpers: {
-      selected: (code, tags) => {
-        let tag = tags.find(t => t.code === code)
-        return tag && tag.selected
-      }
-    },
     
     async oncreate() {
-      let posts = await fetchPosts(this.store, {search:'', tags:[]})
-      posts.forEach( post => post.tags = this.sortTags(post.tags))
-      let tags = await fetchTags(this.store)
-      this.set({
-        posts, 
-        tags: this.sortTags(tags)
-      })
+      this.queryPosts()
+      this.queryTags()
     },
 
     methods: {
@@ -203,41 +190,67 @@
       },
 
       // toggle tag as selected/unselected
-			async setTagFilter(evt, tag) {
+			async applyTagFilter(evt, tag) {
         evt.preventDefault()
         evt.stopPropagation()
-        let tags = this.get().tags || []
+
+        // find the selected tags
         let selectedTags = []
-				tags.map(t => {
+        let tags = this.get().tags || []
+				tags.forEach(t => {
           if( t.code === tag.code) {
             t.selected = !t.selected
           }
           t.selected && selectedTags.push(t.code)
         })
 
-        let posts = await fetchPosts(this.store, {search: this.get().search, tags: selectedTags})
-        posts.forEach( post => post.tags = this.sortTags(post.tags))
         this.set({
-          posts, 
           selectedTags,
           tags: this.sortTags(tags)
         })
+
+        this.queryPosts()
       },
 
       // toggle tag as selected/unselected
-			async setSearchFilter(evt = null) {
-
+			async applySearchFilter(evt = null) {
         if( evt && evt.key !== 'Enter') {
           return
         }
 
-        console.log('search', this.get().search)
+        this.queryPosts()
+      },
 
+			async queryPosts() {
+        let posts = await this.store.get().graphql
+          .query({
+            query: FORUM_POSTS,
+            variables: {search: this.get().search, tags: this.get().selectedTags}
+          })
+          .then(result => result.data.forumPosts)
 
-        let posts = await fetchPosts(this.store, {search: this.get().search, tags: this.get().selectedTags})
-        posts.forEach( post => post.tags = this.sortTags(post.tags))
+        // set selected flag and sort tags for each post
+        posts.forEach(p => {
+          p.tags && p.tags.forEach(t => t.selected = this.get().selectedTags.includes(t.code))
+          p.tags = this.sortTags(p.tags)
+        })
+
         this.set({
           posts
+        })
+      },
+
+			async queryTags() {
+        let tags = await this.store.get().graphql
+          .query({
+            query: FORUM_TAGS
+          })
+          .then(result => result.data.forumTags)
+
+        tags = this.sortTags(tags)
+
+        this.set({
+          tags
         })
       },
 
@@ -246,13 +259,16 @@
         let selected = []
         let rest = []
 
-        tags.map(t => Boolean(t.selected) ? selected.push(t) : rest.push(t))
-
+        // split tags in 2 arrays
+        tags.forEach(t => Boolean(t.selected) ? selected.push(t) : rest.push(t))
+        
+        // define compare fct to sort tags a to Z in each array
         const compare = (a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
         selected.sort(compare)
         rest.sort(compare)
 
-        return selected.concat(rest)
+        // return a concat of the 2 arrays
+        return [...selected, ...rest]
       },
 
       // if mobile

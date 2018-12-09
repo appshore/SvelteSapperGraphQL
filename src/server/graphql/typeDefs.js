@@ -13,6 +13,13 @@ const typeDefs = gql`
     html: String
     timestamp: String
     createdBy: User
+    tags: [ForumTag]
+  }
+
+  type ForumTag {
+    _id: String!
+    code: String
+    name: String
   }
 
   type User {
@@ -30,6 +37,8 @@ const typeDefs = gql`
     forumPost(_id: String!): ForumPost
     forumPostBySlug(cond: String!): ForumPost
     forumPosts: [ForumPost]
+    forumTag(code: String!): ForumTag
+    forumTags(cond: String): [ForumTag]
   }
 `
 

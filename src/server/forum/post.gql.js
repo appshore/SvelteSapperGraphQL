@@ -5,7 +5,7 @@ import htmlToText from 'html-to-text'
 import { postModel } from '../../models/forumPost'
 
 // Only the info that we want to send to the client
-export const filterPost = post => {
+export const filterForumPost = post => {
   return {
     _id: post._id,
     title: post.title,
@@ -17,7 +17,7 @@ export const filterPost = post => {
   }
 }
 
-export const filterPostInList = post => {
+export const filterForumPostInList = post => {
   return {
     _id: post._id,
     title: post.title,
@@ -29,19 +29,18 @@ export const filterPostInList = post => {
   }
 }
 
-export const findPost = async (cond = {}) => {
+export const findForumPost = async (cond = {}) => {
   console.log('forum/gql/findPost', cond, JSON.stringify(cond), JSON.parse(cond))
-
   return await postModel
     .findOne(JSON.parse(cond))
     .exec()
-    .then(post => filterPost(JSON.parse(JSON.stringify(post))))
+    .then(post => filterForumPost(JSON.parse(JSON.stringify(post))))
     .catch(error => {
       error
     })
 }
 
-export const findPosts = async (cond = {}, sort = { createdAt: -1 }) => {
+export const findForumPosts = async (cond = {}, sort = { createdAt: -1 }) => {
   console.log('forum/gql/findPosts', cond, sort)
   return await postModel
     .find(cond)
@@ -50,7 +49,7 @@ export const findPosts = async (cond = {}, sort = { createdAt: -1 }) => {
     .then(posts => {
       posts = JSON.parse(JSON.stringify(posts))
       console.log('forum/gql/findPosts posts', posts)
-      return posts.map(post => filterPostInList(post))
+      return posts.map(post => filterForumPostInList(post))
     })
     .catch(error => {
       error
