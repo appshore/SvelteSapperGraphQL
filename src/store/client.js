@@ -1,6 +1,10 @@
 import { Store } from 'svelte/store'
+
+import CFG from '../config'
+
 import * as auth from './auth'
 import * as ui from './ui'
+import graphql from './graphql'
 
 class AppStore extends Store {
   periodicCheckAuth() {
@@ -16,4 +20,10 @@ class AppStore extends Store {
   }
 }
 
-export default AppStore
+export default new AppStore({
+  CFG,
+  isAuth: false,
+  isMobile: false,
+  isResize: new Date(),
+  graphql
+})

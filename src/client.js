@@ -1,25 +1,17 @@
 import * as sapper from '../__sapper__/client'
 
-import AppStore from './store'
-import CFG from './config'
-
-let store = new AppStore({
-  CFG,
-  isAuth: false,
-  isMobile: false,
-  isResize: new Date()
-})
+import AppStore from './store/client'
 
 // we check for auth before running sapper
 // this allow to start potentially with an authentified user
 // bit slower but better user experience
-store.checkAuth().then(() => {
+AppStore.checkAuth().then(() => {
   sapper.start({
     target: document.querySelector('#sapper'),
-    store: () => store,
+    store: () => AppStore,
   })
 })
 
 // run some event handlers
-store.periodicCheckAuth()
-store.listenerResize()
+AppStore.periodicCheckAuth()
+AppStore.listenerResize()

@@ -16,7 +16,7 @@ export const listenerResize = store => {
 
   let resizeTimeout
   const resizeThrottler = () => {
-    // ignore resize events as long as an resizeHandler execution is in the queue
+    // ignore resize events as long as resizeHandler execution is in the queue
     if (!resizeTimeout) {
       resizeTimeout = setTimeout(() => {
         resizeTimeout = null

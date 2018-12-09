@@ -14,7 +14,7 @@ import resolvers from './server/graphql/resolvers'
 
 import * as sapper from '../__sapper__/server'
 
-import AppStore from './store'
+import AppStore from './store/server'
 
 import CFG from './config'
 import CFGSRV from './config.server'
@@ -77,10 +77,7 @@ app.use(`/${CFG.API_VERSION}`, routes)
 // sapper framework with its own routes
 app.use(
   sapper.middleware({
-    store: () =>
-      new AppStore({
-        CFG
-      }),
+    store: () => AppStore
   }),
 )
 
