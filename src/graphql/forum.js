@@ -1,16 +1,21 @@
 import gql from 'graphql-tag'
 
-const forumPosts = `forumPosts(search: $search, tags: $tags)  {
-  slug
-  title
-  html
-  timestamp
-  createdBy {
-    username
-  }
-  tags {
-    code
-    name
+const forumPostsPage = `forumPostsPage(pageSize: $pageSize, pageIdx: $pageIdx, search: $search, tags: $tags)  {
+  count
+  cursor
+  hasMore
+  forumPosts {
+    slug
+    title
+    html
+    timestamp
+    createdBy {
+      username
+    }
+    tags {
+      code
+      name
+    }
   }
 }
 `
@@ -21,9 +26,9 @@ const forumTags = `forumTags {
 }
 `
 
-export const FORUM_POSTS = gql`
-  query forumPosts($search: String = "", $tags: [String] = []){
-    ${forumPosts}
+export const FORUM_POSTS_PAGE = gql`
+  query forumPostsPage($pageSize:Int = 20, $pageIdx: Int = 0, $search: String = "", $tags: [String] = []){
+    ${forumPostsPage}
   }
 `
 
@@ -33,9 +38,9 @@ export const FORUM_TAGS = gql`
   }
 `
 
-export const FORUM_POSTS_AND_TAGS = gql`
-  query forumPostsAndTags($search: String = "", $tags: [String] = []) {
-    ${forumPosts}
+export const FORUM_POSTS_AND_TAGS_PAGE = gql`
+  query forumPostsAndTagsPage($pageSize:Int = 20, $pageIdx: Int = 0, $search: String = "", $tags: [String] = []) {
+    ${forumPostsPage}
     ${forumTags}
   }
 `

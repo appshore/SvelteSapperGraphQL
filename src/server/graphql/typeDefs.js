@@ -6,6 +6,13 @@ const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
 
   # This "Book" type can be used in other type declarations.
+  type ForumPostsPage {
+    count: Int
+    cursor: Int
+    hasMore: Boolean
+    forumPosts: [ForumPost]
+  }
+
   type ForumPost {
     _id: String!
     slug: String
@@ -30,10 +37,20 @@ const typeDefs = gql`
 
   type Query {
     user(_id: String!): User
+
     users: [User]
+
     forumPost(_id: String!): ForumPost
-    forumPosts(search: String, tags: [String]): [ForumPost]
+
+    forumPostsPage(
+      pageSize: Int,
+      pageIdx: Int,
+      search: String, 
+      tags: [String]
+    ): ForumPostsPage
+
     forumTag(code: String!): ForumTag
+
     forumTags: [ForumTag]
   }
 `

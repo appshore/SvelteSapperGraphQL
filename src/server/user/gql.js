@@ -23,27 +23,20 @@ export const filterUserInList = user => {
 }
 
 export const findUser = async (cond = {}) => {
-  console.log('forum/gql/findUser', cond)
   return await userModel
     .findOne(cond)
     .exec()
-    .then(user => filterUser(JSON.parse(JSON.stringify(user))))
-    .catch(error => {
-      error
-    })
+    // .then(user => JSON.parse(JSON.stringify(user)))
+    .then(user => filterUser(user))
+    .catch(error => error)
 }
 
 export const findUsers = async (cond = {}, sort = { createdAt: -1 }) => {
-  console.log('forum/gql/findUsers', cond, sort)
   return await userModel
     .find(cond)
     .sort(sort)
     .exec()
-    .then(users => {
-      users = JSON.parse(JSON.stringify(users))
-      return users.map(user => filterUserInList(user))
-    })
-    .catch(error => {
-      error
-    })
+    // .then(users => JSON.parse(JSON.stringify(users)))
+    .then(users => users.map(user => filterUserInList(user)))
+    .catch(error => error)
 }

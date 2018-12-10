@@ -4,7 +4,6 @@ import htmlToText from 'html-to-text'
 
 import { postModel } from '../../models/forumPost'
 
-// Only the info that we want to send to the client
 export const filterForumPost = post => {
   return {
     _id: post._id,
@@ -40,14 +39,14 @@ export const findForumPost = async ({ _id = '', slug = '' }) => {
   return await postModel
     .findOne(cond)
     .exec()
-    .then(post => filterForumPost(JSON.parse(JSON.stringify(post))))
-    .catch(error => {
-      error
-    })
+    // .then(post => JSON.parse(JSON.stringify(post)))
+    .then(post => filterForumPost(post))
+    .catch(error => error)
 }
 
-export const findForumPosts = async ({ search = '', tags = [], sort = { createdAt: -1 } }) => {
+export const findForumPosts = async ({ pageSize = 20, pageIdx = 0, search = '', tags = [], sort = { createdAt: -1 } }) => {
   let cond = {}
+  let cursor = pageSize * pageIdx
 
   if (search && search.length) {
     cond = {
@@ -62,18 +61,22 @@ export const findForumPosts = async ({ search = '', tags = [], sort = { createdA
     }
   }
 
-  console.log('forum/gql/findPosts', JSON.stringify(cond))
+  console.log('findForumPosts', 'pageSize', pageSize, 'pageIdx', pageIdx, 'cond', cond)
 
   return await postModel
     .find(cond)
     .sort(sort)
+    .skip(cursor)
     .exec()
-    .then(posts => {
-      posts = JSON.parse(JSON.stringify(posts))
-      console.log('forum/gql/findPosts posts', posts.map(p => p.slug))
-      return posts.map(post => filterForumPostInList(post))
+    // .then(posts => JSON.parse(JSON.stringify(posts)))
+    .then(async posts => {
+      let count = await postModel.where(cond).countDocuments()
+      return {
+        count,
+        cursor: cursor,
+        hasMore: cursor < count,
+        forumPosts: posts.map(post => filterForumPostInList(post))
+      }
     })
-    .catch(error => {
-      error
-    })
+    .catch(error => error)
 }
