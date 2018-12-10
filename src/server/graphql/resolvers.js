@@ -6,22 +6,21 @@ import { findUser, findUsers } from '../user/gql'
 // schema.  We'll retrieve books from the "books" array above.
 const resolvers = {
   Query: {
-    user: (_, { _id }) => findUser({ _id : _id }),
+    user: (_, { _id }) => findUser({ _id: _id }),
     users: () => findUsers(),
-    forumPost: (_, { _id }) => findForumPost({_id}),
-    forumPostBySlug: (_, { cond }) => findForumPost(cond),
-    forumPosts: () => findForumPosts(),
-    forumTag: (_, { _id }) => findForumTag({_id}),
-    forumTags: (_, { cond }) => findForumTags(cond),
+    forumPost: (_, { _id, slug }) => findForumPost({ _id, slug }),
+    forumPosts: (_, { search, tags }) => findForumPosts({ search, tags }),
+    forumTag: (_, { code }) => findForumTag({ code }),
+    forumTags: () => findForumTags({})
   },
 
   User: {
-    forumPosts: user => findForumPosts({ createdBy: user._id }),
+    forumPosts: user => findForumPosts({ createdBy: user._id })
   },
 
   ForumPost: {
     createdBy: forumPost => findUser({ _id: forumPost.createdBy }),
-    tags: forumPost => findForumTags({code: { $in: forumPost.tags }}),
+    tags: forumPost => forumPost.tags.length ? findForumTags({ tags: forumPost.tags }) : []
   }
 }
 

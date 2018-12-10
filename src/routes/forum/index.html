@@ -167,7 +167,7 @@
 <script>
   import * as sapper from '../../../__sapper__/client'
 
-  import {FORUM_POSTS, FORUM_TAGS} from '../../graphql/forum'
+  import {FORUM_POSTS, FORUM_TAGS, FORUM_POSTS_AND_TAGS} from '../../graphql/forum'
 
   export default {
     data() {
@@ -180,8 +180,7 @@
     },
     
     async oncreate() {
-      this.queryPosts()
-      this.queryTags()
+      this.queryPostsAndTags()
     },
 
     methods: {
@@ -190,7 +189,7 @@
       },
 
       // toggle tag as selected/unselected
-			async applyTagFilter(evt, tag) {
+			applyTagFilter(evt, tag) {
         evt.preventDefault()
         evt.stopPropagation()
 
@@ -209,49 +208,67 @@
           tags: this.sortTags(tags)
         })
 
+        console.log('forum/index/applyTagFilter', this.get().selectedTags)
+
         this.queryPosts()
       },
 
       // toggle tag as selected/unselected
-			async applySearchFilter(evt = null) {
+			applySearchFilter(evt = null) {
         if( evt && evt.key !== 'Enter') {
           return
         }
+
+        console.log('forum/index/applySearchFilter', this.get().search)
 
         this.queryPosts()
       },
 
 			async queryPosts() {
-        let posts = await this.store.get().graphql
+        let {forumPosts} = await this.store.get().graphql
           .query({
             query: FORUM_POSTS,
             variables: {search: this.get().search, tags: this.get().selectedTags}
           })
-          .then(result => result.data.forumPosts)
-
-        // set selected flag and sort tags for each post
-        posts.forEach(p => {
-          p.tags && p.tags.forEach(t => t.selected = this.get().selectedTags.includes(t.code))
-          p.tags = this.sortTags(p.tags)
-        })
+          .then(result => result.data)
 
         this.set({
-          posts
+          posts: this.sortTagsInPosts(forumPosts)
         })
       },
 
 			async queryTags() {
-        let tags = await this.store.get().graphql
+        let {forumTags} = await this.store.get().graphql
           .query({
             query: FORUM_TAGS
           })
-          .then(result => result.data.forumTags)
-
-        tags = this.sortTags(tags)
+          .then(result => result.data)
 
         this.set({
-          tags
+          tags: this.sortTags(forumTags)
         })
+      },
+
+      async queryPostsAndTags() {
+        let {forumPosts, forumTags} = await this.store.get().graphql
+          .query({
+            query: FORUM_POSTS_AND_TAGS
+          })
+          .then(result => result.data)
+
+        this.set({
+          posts: this.sortTagsInPosts(forumPosts),
+          tags: this.sortTags(forumTags)
+        })
+      },
+
+      // sort tags by selected/unselected then name
+      sortTagsInPosts(posts) {
+        posts.forEach(p => {
+          p.tags && p.tags.forEach(t => t.selected = this.get().selectedTags.includes(t.code))
+          p.tags = this.sortTags(p.tags)
+        })
+        return posts
       },
 
       // sort tags by selected/unselected then name

@@ -17,7 +17,6 @@ const typeDefs = gql`
   }
 
   type ForumTag {
-    _id: String!
     code: String
     name: String
   }
@@ -29,16 +28,13 @@ const typeDefs = gql`
     forumPosts: [ForumPost]
   }
 
-  # The "Query" type is the root of all GraphQL queries.
-  # (A "Mutation" type will be covered later on.)
   type Query {
     user(_id: String!): User
     users: [User]
     forumPost(_id: String!): ForumPost
-    forumPostBySlug(cond: String!): ForumPost
-    forumPosts: [ForumPost]
+    forumPosts(search: String, tags: [String]): [ForumPost]
     forumTag(code: String!): ForumTag
-    forumTags(cond: String): [ForumTag]
+    forumTags: [ForumTag]
   }
 `
 

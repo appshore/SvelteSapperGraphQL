@@ -29,10 +29,16 @@ export const filterForumPostInList = post => {
   }
 }
 
-export const findForumPost = async (cond = {}) => {
-  console.log('forum/gql/findPost', cond, JSON.stringify(cond), JSON.parse(cond))
+export const findForumPost = async ({ _id = '', slug = '' }) => {
+  let cond = {}
+  if (_id && _id.length) {
+    cond = { _id }
+  } else if (slug && slug.length) {
+    cond = { slug }
+  }
+
   return await postModel
-    .findOne(JSON.parse(cond))
+    .findOne(cond)
     .exec()
     .then(post => filterForumPost(JSON.parse(JSON.stringify(post))))
     .catch(error => {
@@ -40,15 +46,31 @@ export const findForumPost = async (cond = {}) => {
     })
 }
 
-export const findForumPosts = async (cond = {}, sort = { createdAt: -1 }) => {
-  console.log('forum/gql/findPosts', cond, sort)
+export const findForumPosts = async ({ search = '', tags = [], sort = { createdAt: -1 } }) => {
+  let cond = {}
+
+  if (search && search.length) {
+    cond = {
+      $or: [{ title: { $regex: search, $options: 'ix' } }, { html: { $regex: search, $options: 'ix' } }]
+    }
+  }
+  if (tags && tags.length) {
+    if (cond != {}) {
+      cond = { $and: [cond, { tags: { $in: tags } }] }
+    } else {
+      cond = { tags: { $in: tags } }
+    }
+  }
+
+  console.log('forum/gql/findPosts', JSON.stringify(cond))
+
   return await postModel
     .find(cond)
     .sort(sort)
     .exec()
     .then(posts => {
       posts = JSON.parse(JSON.stringify(posts))
-      console.log('forum/gql/findPosts posts', posts)
+      console.log('forum/gql/findPosts posts', posts.map(p => p.slug))
       return posts.map(post => filterForumPostInList(post))
     })
     .catch(error => {

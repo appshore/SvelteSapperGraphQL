@@ -7,18 +7,26 @@ import { tagModel } from '../../models/forumTag'
 // Only the info that we want to send to the client
 export const filterForumTag = tag => {
   return {
-    _id: tag._id,
+    // _id: tag._id,
     name: tag.name,
     code: tag.code,
-    timestamp: formatRelative(tag.createdAt, new Date(), { locale: enGB }),
-    createdBy: tag.createdBy
+    // timestamp: formatRelative(tag.createdAt, new Date(), { locale: enGB }),
+    // createdBy: tag.createdBy
   }
 }
 
-export const findForumTag = async (cond = {}) => {
-  console.log('forum/gql/findTag', cond, JSON.stringify(cond), JSON.parse(cond))
+export const findForumTag = async ({code = ''}) => {
+  let cond = {}
+  if (_id && _id.length) {
+    cond = {_id}
+  } 
+  else if (code && code.length) {
+    cond = {code}
+  } 
+
+  console.log('forum/gql/findTag', cond)
   return await tagModel
-    .findOne(JSON.parse(cond))
+    .findOne(cond)
     .exec()
     .then(tag => filterForumTag(JSON.parse(JSON.stringify(tag))))
     .catch(error => {
@@ -26,9 +34,12 @@ export const findForumTag = async (cond = {}) => {
     })
 }
 
-export const findForumTags = async (cond = {}, sort = { createdAt: -1 }) => {
-  console.log('forum/gql/findTags', cond)
-
+export const findForumTags = async ({tags = [], sort = { createdAt: -1 }}) => {
+  let cond = {}
+  if (tags && tags.length) {
+    cond = { code: { $in: tags }}
+  }
+  console.log('forum/tag.gql/findForumTags', cond, tags)
   return await tagModel
     .find(cond)
     .sort(sort)
