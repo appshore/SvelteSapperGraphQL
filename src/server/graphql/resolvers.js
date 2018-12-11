@@ -9,7 +9,7 @@ const resolvers = {
     user: (_, { _id }) => findUser({ _id: _id }),
     users: () => findUsers(),
     forumPost: (_, { _id, slug }) => findForumPost({ _id, slug }),
-    forumPostsPage: (_, { pageSize, pageIdx, search, tags }) => findForumPosts({ pageSize, pageIdx, search, tags }),
+    forumPostsPage: (_, { pageSize, cursor, search, tags }) => findForumPosts({ pageSize, cursor, search, tags }),
     forumTag: (_, { code }) => findForumTag({ code }),
     forumTags: () => findForumTags({})
   },

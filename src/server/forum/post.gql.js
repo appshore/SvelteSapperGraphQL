@@ -44,9 +44,8 @@ export const findForumPost = async ({ _id = '', slug = '' }) => {
     .catch(error => error)
 }
 
-export const findForumPosts = async ({ pageSize = 20, pageIdx = 0, search = '', tags = [], sort = { createdAt: -1 } }) => {
+export const findForumPosts = async ({ pageSize = 20, cursor = 0, search = '', tags = [], sort = { createdAt: -1 } }) => {
   let cond = {}
-  let cursor = pageSize * pageIdx
 
   if (search && search.length) {
     cond = {
@@ -61,20 +60,22 @@ export const findForumPosts = async ({ pageSize = 20, pageIdx = 0, search = '', 
     }
   }
 
-  console.log('findForumPosts', 'pageSize', pageSize, 'pageIdx', pageIdx, 'cond', cond)
+  console.log('findForumPosts', 'pageSize', pageSize, 'cursor', cursor, 'cond', cond)
 
   return await postModel
     .find(cond)
     .sort(sort)
     .skip(cursor)
+    .limit(pageSize)
     .exec()
     // .then(posts => JSON.parse(JSON.stringify(posts)))
     .then(async posts => {
-      let count = await postModel.where(cond).countDocuments()
+      let totalCount = await postModel.where(cond).countDocuments()
       return {
-        count,
-        cursor: cursor,
-        hasMore: cursor < count,
+        totalCount,
+        pageCount: posts.length,
+        cursor: cursor + posts.length,
+        hasMore: (cursor + pageSize) < totalCount,
         forumPosts: posts.map(post => filterForumPostInList(post))
       }
     })

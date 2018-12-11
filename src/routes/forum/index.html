@@ -70,7 +70,7 @@
         {#if posts && posts.length }
           <div class="w3-section">
             <h5 class="w3-text-grey">
-              {postsCount > 1 ? `${postsCount} posts` : 'One post'}
+                {pageCount > 1 ? `${cursor+1} - ${cursor+pageCount}` : '1'} {totalCount > 1 ? `of ${totalCount} posts` : 'of 1 post'}
             </h5>
           </div>
           {#each posts as post}
@@ -177,9 +177,10 @@
   export default {
     data() {
       return {
-        pageSize: 2,
-        pageIdx: 0,
-        postsCount: 0,
+        pageSize: 20,
+        cursor: 0,
+        totalCount: 0,
+        pageCount: 0,
         search: '',
         posts: [],
         tags: [],
@@ -231,12 +232,13 @@
         let {forumPostsPage} = await this.store.get().graphql
           .query({
             query: FORUM_POSTS_PAGE,
-            variables: {pageSize: this.get().pageSize, pageIdx: this.get().pageIdx, search: this.get().search, tags: this.get().selectedTags}
+            variables: {pageSize: this.get().pageSize, cursor: this.get().cursor, search: this.get().search, tags: this.get().selectedTags}
           })
           .then(result => result.data)
 
         this.set({
-          postsCount: forumPostsPage.count,
+          totalCount: forumPostsPage.totalCount,
+          pageCount: forumPostsPage.pageCount,
           posts: this.sortTagsInPosts(forumPostsPage.forumPosts)
         })
       },
@@ -257,14 +259,15 @@
         let {forumPostsPage, forumTags} = await this.store.get().graphql
           .query({
             query: FORUM_POSTS_AND_TAGS_PAGE,
-            variables: {pageSize: this.get().pageSize, pageIdx: this.get().pageIdx, search: this.get().search, tags: this.get().selectedTags}
+            variables: {pageSize: this.get().pageSize, cursor: this.get().cursor, search: this.get().search, tags: this.get().selectedTags}
           })
           .then(result => result.data)
 
           console.log('queryPostsAndTags', forumPostsPage)
 
         this.set({
-          postsCount: forumPostsPage.count,
+          totalCount: forumPostsPage.totalCount,
+          pageCount: forumPostsPage.pageCount,
           posts: this.sortTagsInPosts(forumPostsPage.forumPosts),
           tags: this.sortTags(forumTags)
         })

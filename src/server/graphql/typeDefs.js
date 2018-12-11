@@ -7,7 +7,8 @@ const typeDefs = gql`
 
   # This "Book" type can be used in other type declarations.
   type ForumPostsPage {
-    count: Int
+    totalCount: Int
+    pageCount: Int
     cursor: Int
     hasMore: Boolean
     forumPosts: [ForumPost]
@@ -44,7 +45,7 @@ const typeDefs = gql`
 
     forumPostsPage(
       pageSize: Int,
-      pageIdx: Int,
+      cursor: Int,
       search: String, 
       tags: [String]
     ): ForumPostsPage
