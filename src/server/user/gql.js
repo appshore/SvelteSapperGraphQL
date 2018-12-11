@@ -26,7 +26,7 @@ export const findUser = async (cond = {}) => {
   return await userModel
     .findOne(cond)
     .exec()
-    // .then(user => JSON.parse(JSON.stringify(user)))
+    .then(user => JSON.parse(JSON.stringify(user)))
     .then(user => filterUser(user))
     .catch(error => error)
 }
@@ -36,7 +36,7 @@ export const findUsers = async (cond = {}, sort = { createdAt: -1 }) => {
     .find(cond)
     .sort(sort)
     .exec()
-    // .then(users => JSON.parse(JSON.stringify(users)))
+    .then(users => JSON.parse(JSON.stringify(users)))
     .then(users => users.map(user => filterUserInList(user)))
     .catch(error => error)
 }

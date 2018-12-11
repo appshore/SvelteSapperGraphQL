@@ -22,7 +22,7 @@ export const findForumTag = async ({ code = '' }) => {
   return await tagModel
     .findOne(cond)
     .exec()
-    // .then(tag => JSON.parse(JSON.stringify(tag)))
+    .then(tag => JSON.parse(JSON.stringify(tag)))
     .then(tag => filterForumTag(tag))
     .catch(error => error)
 }
@@ -36,7 +36,7 @@ export const findForumTags = async ({ tags = [], sort = { createdAt: -1 } }) => 
     .find(cond)
     .sort(sort)
     .exec()
-    // .then(tags => JSON.parse(JSON.stringify(tags)))
+    .then(tags => JSON.parse(JSON.stringify(tags)))
     .then(tags => tags.map(tag => filterForumTag(tag)))
     .catch(error => error)
 }

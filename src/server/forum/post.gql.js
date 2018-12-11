@@ -39,7 +39,7 @@ export const findForumPost = async ({ _id = '', slug = '' }) => {
   return await postModel
     .findOne(cond)
     .exec()
-    // .then(post => JSON.parse(JSON.stringify(post)))
+    .then(post => JSON.parse(JSON.stringify(post)))
     .then(post => filterForumPost(post))
     .catch(error => error)
 }
@@ -68,7 +68,7 @@ export const findForumPosts = async ({ pageSize = 20, cursor = 0, search = '', t
     .skip(cursor)
     .limit(pageSize)
     .exec()
-    // .then(posts => JSON.parse(JSON.stringify(posts)))
+    .then(posts => JSON.parse(JSON.stringify(posts)))
     .then(async posts => {
       let totalCount = await postModel.where(cond).countDocuments()
       return {

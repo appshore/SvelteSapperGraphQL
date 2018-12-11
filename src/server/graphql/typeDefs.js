@@ -41,7 +41,7 @@ const typeDefs = gql`
 
     users: [User]
 
-    forumPost(_id: String!): ForumPost
+    forumPost(_id: String, slug: String): ForumPost
 
     forumPostsPage(
       pageSize: Int,
