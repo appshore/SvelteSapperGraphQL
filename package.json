@@ -1,6 +1,6 @@
 {
-  "name": "smartcompany",
-  "description": "SmartCompany",
+  "name": "sapeur",
+  "description": "sapeur",
   "version": "0.0.1",
   "scripts": {
     "dev": "sapper dev",
