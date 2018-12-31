@@ -1,18 +1,18 @@
 # A progressive responsive website for Sapeur Corp, a very private corporation
 
-Sapeur is the French word for Sapper, the server side framework of this project.
+Sapeur is the French word for [Sapper](https://en.wikipedia.org/wiki/Sapper), the server side framework of this project.
 
 This full stack Svelte/Sapper project was bootstrapped with the default [Sapper](https://github.com/sveltejs/sapper) template.
 
 It uses the following stack:
 * Javascript ES6 as scripting language
-* Svelte (https://svelte.technology) as JS client framework
-* NodeJS, Sapper (https://sapper.svelte.technology), Express as JS server framework
-* w3.css (https://www.w3schools.com/w3css/4/w3.css) as css library
-* fontawesome (https://www.fontawesome.com/) for icons
-* Apollo GraphQL stack 
-* MongoDB Database
-* Cypress as test runner
+* [Svelte](https://svelte.technology) as JS client framework
+* NodeJS, [Sapper](https://sapper.svelte.technology), Express as JS server framework
+* [w3.css](https://www.w3schools.com/w3css/4/w3.css) as css library
+* [Fontawesome](https://www.fontawesome.com/) for icons
+* [Apollo GraphQL](https://www.apollographql.com/) stack 
+* [MongoDB](https://www.mongodb.com/) Database
+* [Cypress](https://www.cypress.io/) as test runner
 
 ## Available Scripts
 
