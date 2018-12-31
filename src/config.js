@@ -7,15 +7,15 @@ const config = {
   APP_NAME: '_APS',
   API_VERSION: 'api', // `api/${pjson.version.split('-')[0]}`,
   APP_VERSION: pjson.version,
-  BRAND: 'Svelte and Sapper',
-  COMPANY: 'SvelteSapper',
-  LOGO: 'SvelteSapper.png',
-  WEBSITE: 'https://sveltesapper.com',
+  BRAND: 'SapeurCorp',
+  COMPANY: 'SapeurCorp',
+  LOGO: 'SapeurCorp.png',
+  WEBSITE: 'https://sapeurcorp.com',
   EMAIL: {
-    WEBMASTER: 'webmaster@sveltesapper.com',
-    LEGAL: 'legal@sveltesapper.com',
-    SALES: 'sales@sveltesapper.com',
-    SUPPORT: 'support@sveltesapper.com'
+    WEBMASTER: 'webmaster@sapeurcorp.com',
+    LEGAL: 'legal@sapeurcorp.com',
+    SALES: 'sales@sapeurcorp.com',
+    SUPPORT: 'support@sapeurcorp.com'
   },
   LICENSE: pjson.license,
   MOBILE_WIDTH: '960px', // upper limit to switch between mobile and web interfaces 
