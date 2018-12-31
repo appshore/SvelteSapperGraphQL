@@ -1,4 +1,6 @@
-# A progressive website for Sapeur Corp a fictitious corporation
+# A progressive responsive website for Sapeur Corp, a very private corporation
+
+Sapeur is the French word for Sapper, the server side framework of this project.
 
 This full stack Svelte/Sapper project was bootstrapped with the default [Sapper](https://github.com/sveltejs/sapper) template.
 
