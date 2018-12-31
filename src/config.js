@@ -7,8 +7,8 @@ const config = {
   APP_NAME: '_APS',
   API_VERSION: 'api', // `api/${pjson.version.split('-')[0]}`,
   APP_VERSION: pjson.version,
-  BRAND: 'SapeurCorp',
-  COMPANY: 'SapeurCorp',
+  BRAND: 'Sapeur Corp',
+  COMPANY: 'Sapeur Corp',
   LOGO: 'SapeurCorp.png',
   WEBSITE: 'https://sapeurcorp.com',
   EMAIL: {
