@@ -1,7 +1,13 @@
 {
   "name": "sapeur",
-  "description": "sapeur",
-  "version": "0.0.1",
+  "version": "0.2.1",
+  "description": "Svelte/Sapper/GraphQL web application",
+  "license": "MIT",
+  "author": "bmi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appshore/SvelteSapperGraphQL"
+  },
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build",
