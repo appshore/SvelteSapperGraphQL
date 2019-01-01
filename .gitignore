@@ -4,4 +4,4 @@ yarn-error.log
 cypress
 __sapper__
 db
-dump
+mongoDump

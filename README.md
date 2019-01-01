@@ -1,4 +1,4 @@
-# A progressive responsive website for Sapeur Corp, a very private corporation
+# A progressive responsive website for Sapeur Corp, a fictitious corporation
 
 Sapeur is the French word for [Sapper](https://en.wikipedia.org/wiki/Sapper), the server side framework of this project.
 
@@ -20,7 +20,13 @@ In the project directory, you can run:
 
 ### `yarn mongo or npm run mongo`
 
-will start the mongoDB instance. MongoDb must been installed first with the datafiles in ./db.
+will start the mongoDB instance. A MongoDb must been installed first with the datafiles in ./db or in another location by setting up the DB_URL prop in ,/src/config.server.js
+
+### `yarn mongoDefault or npm run mongoDefault`
+will restore a default dataset in the mongoDb database named sapeur
+
+### `yarn mongoDump or npm run mongoDump`
+will dump/backup the database sapeur in the mongoDump folder with the package version as identifier
 
 ### `yarn dev or npm run dev`
 
@@ -43,3 +49,4 @@ To run tests with Cypress
 ### `yarn cy:open or npm run cy:ruopenn`
 
 To access Cypress dashboard
+

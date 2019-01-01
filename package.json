@@ -19,7 +19,8 @@
     "test": "run-p --race dev cy:run",
     "-- DATABASE --": "",
     "mongo": "mongod --dbpath ./db",
-    "dump": "mongodump --db=sapeur --out=dump/$npm_package_version"
+    "mongoDump": "mongodump --db=sapeur --out=mongoDump/$npm_package_version",
+    "mongoDefault": "mongorestore --d=sapeur ./mongoDefault"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.3.11",
