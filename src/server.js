@@ -30,10 +30,10 @@ app.disable('x-powered-by')
 
 app.use(
   bodyParser.urlencoded({
-    extended: true,
+    extended: true
   }),
   bodyParser.json(),
-  cookieParser(),
+  cookieParser()
 )
 
 if (NODE_ENV === 'production') {
@@ -53,12 +53,14 @@ app.use(function(req, res, next) {
 app.use(express.static('static'))
 
 // set promise lib for Mongo and Mongoose
-let mongoOptions = {
-  promiseLibrary: bluebird,
-  useNewUrlParser: true,
-}
 mongoose.Promise = bluebird
-mongoose.connect(CFGSRV.DB_URL, mongoOptions)
+mongoose.connect(
+  CFGSRV.DB_URL,
+  {
+    promiseLibrary: bluebird,
+    useNewUrlParser: true
+  }
+)
 
 // if user isAuth then retrieve profile
 app.use(withUser)
@@ -67,7 +69,7 @@ app.use(withUser)
 const apollo = new ApolloServer({
   // These will be defined for both new or existing servers
   typeDefs,
-  resolvers,
+  resolvers
 })
 apollo.applyMiddleware({ app })
 
@@ -78,7 +80,7 @@ app.use(`/${CFG.API_VERSION}`, routes)
 app.use(
   sapper.middleware({
     store: () => AppStore
-  }),
+  })
 )
 
 // set http server
@@ -86,6 +88,6 @@ let server = http.createServer(app)
 
 server.listen(PORT, err => {
   if (err) {
-    console.error('error', err)
+    console.error('Http server error', err)
   }
 })

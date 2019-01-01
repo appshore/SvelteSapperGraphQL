@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"sapeur.users"},{"v":2,"unique":true,"key":{"email":1},"name":"email_","ns":"sapeur.users"}],"uuid":"0913832528ec4317818eca8143caf9cf"}

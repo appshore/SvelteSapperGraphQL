@@ -27,6 +27,7 @@ export const login = async (store, credentials) => {
       status: true
     }
   } catch (error) {
+
     store.set({
       isAuth: false,
       user: null

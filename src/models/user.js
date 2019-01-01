@@ -13,6 +13,6 @@ export const userSchema = mongoose.Schema({
   updatedBy: { type: mongoose.Schema.Types.ObjectId}
 })
 
-export const userModel = mongoose.model('User', userSchema)
+export const userModel = mongoose.model('User', userSchema, 'users')
 
 

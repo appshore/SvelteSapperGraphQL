@@ -136,9 +136,6 @@
           return
         }
 
-        console.log('search', this.get().search)
-
-
         let posts = await fetchPosts(this.store, { search: this.get().search, tags: this.get().selectedTags })
         posts.forEach(post => post.tags = this.sortTags(post.tags))
         this.set({

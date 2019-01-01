@@ -60,8 +60,6 @@ export const findForumPosts = async ({ pageSize = 20, cursor = 0, search = '', t
     }
   }
 
-  console.log('findForumPosts', 'pageSize', pageSize, 'cursor', cursor, 'cond', cond)
-
   return await postModel
     .find(cond)
     .sort(sort)

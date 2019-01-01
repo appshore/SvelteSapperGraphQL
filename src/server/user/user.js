@@ -26,30 +26,25 @@ export const findUser = (req, res) => {
   userModel
     .findOne({ _id: req.user._id })
     .exec()
-    .then(user => {
-      return res.status(200).json({
-        user: JSON.parse(JSON.stringify(user))
-      })
-    })
-    .catch(error => {
-      return res.status(500).json({
-        error: error
-      })
-    })
+    .then(user => JSON.parse(JSON.stringify(user)))
+    .then(user => res.status(200).json({user}))
+    .catch(error => res.status(500).json({error}))
 }
 
 export const signup = async (req, res) => {
-  let user = new userModel({
+  let userMdl = new userModel({
     _id: new mongoose.Types.ObjectId(),
     username: req.body.username,
     email: req.body.email,
-    password: hashPassword(req.body.password)
+    password: hashPassword(req.body.password),
+    createdAt: Date()
   })
 
   try {
-    user = await user
+    let user = await userMdl
       .save()
-      .then(usr => filterProfile(JSON.parse(JSON.stringify(usr))))
+      .then(user => JSON.parse(JSON.stringify(user)))
+      .then(user => filterProfile(user))
       .catch(error => error)
 
     let token = generateToken({

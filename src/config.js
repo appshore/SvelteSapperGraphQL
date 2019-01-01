@@ -20,8 +20,7 @@ const config = {
   LICENSE: pjson.license,
   MOBILE_WIDTH: '960px', // upper limit to switch between mobile and web interfaces 
   AUTH_CHECK: 1000 * 60 * 60, // 1000 milliseconds * 60 seconds * 60 minutes = 1 hour
-  COOKIE_TIMEOUT: 7, // 7 days
-  DATA_SERVER: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api/2.1.0' : 'https://localhost:4000/api/2.1.0'
+  COOKIE_TIMEOUT: 7 // 7 days
 }
 
 export default config

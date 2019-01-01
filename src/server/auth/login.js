@@ -6,8 +6,6 @@ const login = async (req, res) => {
   try {
     let user = await findUserByEmail(req.body.email)
 
-    user = JSON.parse(JSON.stringify(user))
-
     if (validPassword(req.body.password, user.password) === false) {
       return res.status(401).json({
         failed: 'Unauthorized Access'
@@ -26,7 +24,7 @@ const login = async (req, res) => {
     })
   } catch (error) {
     return res.status(500).json({
-      error: error
+      error
     })
   }
 }

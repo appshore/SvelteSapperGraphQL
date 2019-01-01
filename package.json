@@ -9,10 +9,10 @@
     "url": "https://github.com/appshore/SvelteSapperGraphQL"
   },
   "scripts": {
-    "dev": "sapper dev",
+    "dev": "PORT=3000 sapper dev",
     "build": "sapper build",
     "export": "sapper export",
-    "start": "node __sapper__/build",
+    "start": "PORT=4000 node __sapper__/build",
     "-- TESTS --": "",
     "cy:run": "cypress run",
     "cy:open": "cypress open",

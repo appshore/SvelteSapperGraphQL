@@ -13,9 +13,6 @@ export const findPosts = (req, res) => {
     cond = Object.assign({}, cond, {'title': { $regex: req.query.search, $options: 'i' }})
   }
 
-  console.log('findPosts', req.query, cond)
-
-
   postModel
     .find(cond)
     .sort({createdAt:-1})
