@@ -1,6 +1,10 @@
 # Progressive responsive web site for the mysterious Sapeur Corp
 
-This is a work in progress.
+This is a work in progress, todos:
+* Remove last bits of REST api with GraphQL
+* Complete Blog, Forum and Support modules
+* Add backoffice for modules management
+* Add RBAC
 
 Sapeur is the French word for [Sapper](https://en.wikipedia.org/wiki/Sapper), the server side framework of this project.
 
