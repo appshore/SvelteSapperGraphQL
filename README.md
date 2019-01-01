@@ -1,4 +1,6 @@
-# A progressive responsive website for Sapeur Corp, a fictitious corporation
+# Progressive responsive web site for the mysterious Sapeur Corp
+
+This is a work in progress.
 
 Sapeur is the French word for [Sapper](https://en.wikipedia.org/wiki/Sapper), the server side framework of this project.
 
