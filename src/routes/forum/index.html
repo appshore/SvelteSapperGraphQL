@@ -35,33 +35,10 @@
 
   </div>
 
-<!-- Tags -->
-<div class="tags w3-display-container w3-margin-top w3-hide-large w3-hide-medium">
-  <div class="w3-container w3-border w3-border-light-grey w3-padding w3-white">
-    {#each tags as tag}
-      <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-        on:click="applyTagFilter(event, tag)">{tag.name}</span>
-    {/each}
-    <div class="w3-display-topright w3-text-orange">
-      <i class="fas fa-angle-down" on:click="toggleTags(event)"/>
-    </div>
-  </div>
-</div>
-
 <div class="w3-row">
     <div class="w3-col w3-right s3 w3-hide-small">
       <!-- Tags -->
-      <div class="w3-display-container w3-margin-top w3-border w3-border-light-grey w3-light-grey">
-        <div class="w3-container w3-lightgrey">
-          Tags
-        </div>
-        <div class="w3-container w3-padding w3-white">
-          {#each tags as tag}
-            <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-              on:click="applyTagFilter(event, tag)">{tag.name}</span>
-          {/each}
-        </div>
-      </div>
+      <TagsBox title="Tags" tags={tags} on:filter="handleTagFilter(event, tag)"/>
     </div>
 
     <div class="w3-col m9 s12">
@@ -89,10 +66,7 @@
                   </div>
                 </div>
                 <div class="w3-col l7 m5 w3-hide-small">
-                  {#each post.tags as tag}
-                    <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-                      on:click="applyTagFilter(event, tag)">{tag.name}</span>
-                  {/each}
+                  <TagsLine tags={post.tags} on:filter="handleTagFilter(event, tag)"/>
                 </div>
                 <div class="w3-col l4 m5 s8 w3-right">
                   <div class="w3-small w3-right-align w3-text-grey">{post.timestamp}</div>
@@ -108,10 +82,7 @@
                 </div>
               </div>
             <div class="w3-hide-large w3-hide-medium">
-              {#each post.tags as tag}
-                <span class="pointer w3-tag w3-round w3-margin-right w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-                  on:click="applyTagFilter(event, tag)">{tag.name}</span>
-              {/each}
+                <TagsLine tags={post.tags} on:filter="handleTagFilter(event, tag)"/>
             </div>
             <hr/>
           {/each}
@@ -135,38 +106,6 @@
     margin-top: 8px;
     margin-bottom: 8px;
   }
-
-  .nowrap {
-    white-space:nowrap;
-  }
-
-  .tags {
-    min-height: 3rem;
-  }
-
-  .tags .w3-container {
-    position: absolute;
-    height: 2.6rem;
-    overflow-y: hidden;
-  }
-
-  .tags:hover .w3-container {
-    height: unset;
-    overflow-y: unset;
-    z-index: 10;
-  }
-
-  .tags i {
-	  margin: 12px 10px;
-	}
-
-  .tag {
-		margin: 4px 8px 8px 0px;
-	}
-
-  .tag:hover {
-		margin: 4px 8px 4px 0px;
-	}
 </style>
 
 <script>
@@ -175,6 +114,11 @@
   import {FORUM_POSTS_PAGE, FORUM_TAGS, FORUM_POSTS_AND_TAGS_PAGE} from '../../graphql/forum'
 
   export default {
+    components: {
+			TagsLine: '../../components/TagsLine.html',
+			TagsBox: '../../components/TagsBox.html'
+    },
+    
     data() {
       return {
         pageSize: 20,
@@ -198,9 +142,10 @@
       },
 
       // toggle tag as selected/unselected
-			applyTagFilter(evt, tag) {
-        evt.preventDefault()
-        evt.stopPropagation()
+			handleTagFilter({event, tag}) {
+        event.preventDefault()
+        event.stopPropagation()
+        console.log( 'handleTagFilter', event, tag)
 
         // find the selected tags
         let selectedTags = []

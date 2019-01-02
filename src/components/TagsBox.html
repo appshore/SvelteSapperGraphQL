@@ -1,0 +1,16 @@
+<div class="w3-display-container w3-margin-top w3-border w3-border-light-grey w3-light-grey">
+	<div class="w3-container w3-lightgrey">
+		{title || 'Tags'}
+	</div>
+	<div class="w3-container w3-padding w3-white">
+		<TagsLine tags={tags} on:filter/>
+	</div>
+</div>
+
+<script>
+	export default {
+		components: {
+			TagsLine: './TagsLine.html'
+		}
+	}
+</script>

@@ -94,7 +94,7 @@
 
         if ( res.status ) {
           let { user, Snackbar } = this.store.get()
-          Snackbar.success(`Hello ${user.username}. Thank you for signing up!`)
+          Snackbar.success(`Hello ${user.username}, welcome to ${$CFG.BRAND} and thank you for signing up!`)
           return sapper.goto('/')
         } else {
           this.store.get().Banner.danger(res.msg)

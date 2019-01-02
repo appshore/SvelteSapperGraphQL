@@ -1,0 +1,14 @@
+{#each tags as tag}
+	<span 
+		class="pointer w3-tag w3-round w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center"
+		on:click="fire('filter', {event, tag})"
+	>
+		{tag.name}
+	</span>
+{/each}
+
+<style>
+	span {
+		margin-right: 4px;
+	}
+</style>

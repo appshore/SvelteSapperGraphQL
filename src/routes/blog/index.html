@@ -36,10 +36,12 @@
 
   <div class="tags w3-display-container w3-margin-top">
     <div class="w3-container w3-border w3-border-light-grey w3-padding w3-white">
-      {#each tags as tag}
-        <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
-          on:click="setTagFilter(event, tag)">{tag.name}</span>
-      {/each}
+      {#if tags && tags.length }
+        {#each tags as tag}
+          <span class="tag pointer w3-tag w3-round w3-small {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center" 
+            on:click="setTagFilter(event, tag)">{tag.name}</span>
+        {/each}
+      {/if}
       <div class="w3-display-topright w3-text-orange">
         <i class="fas fa-angle-down" on:click="toggleTags(event)"/>
       </div>
@@ -48,7 +50,7 @@
   
     
   <div class="w3-margin-top">
-    {#if posts.length }
+    {#if posts && posts.length }
       {#each posts as post}
       <div class="w3-row">
         <div class="w3-col m8 s9"><a class="w3-large w3-text-orange" href="/blog/{post.slug}">{post.title}</a></div>
