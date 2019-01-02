@@ -8,7 +8,7 @@ const login = async (req, res) => {
 
     if (validPassword(req.body.password, user.password) === false) {
       return res.status(401).json({
-        failed: 'Unauthorized Access'
+        error: 'Unauthorized Access'
       })
     }
 

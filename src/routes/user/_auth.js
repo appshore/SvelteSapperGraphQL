@@ -14,9 +14,16 @@ export const login = async (store, credentials) => {
       body: JSON.stringify(credentials)
     }).then(res => res.json())
 
+    console.log('user/_auth/login res', res)
+
     if (res.error) {
       throw res.error
     }
+
+    if (Boolean(res.user) === false) {
+      throw 'Unknown profile'
+    }
+
     Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
 
     store.set({
@@ -27,6 +34,7 @@ export const login = async (store, credentials) => {
       status: true
     }
   } catch (error) {
+    console.log('user/_auth/login error', error)
 
     store.set({
       isAuth: false,
@@ -86,6 +94,11 @@ export const signup = async (store, user) => {
     if (res.error) {
       throw res.error
     }
+
+    if (Boolean(res.user) === false) {
+      throw 'Unknown profile'
+    }
+
     Cookie.set('token', res.token, { path: '/', expires: CFG.COOKIE_TIMEOUT })
 
     store.set({
