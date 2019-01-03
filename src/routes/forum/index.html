@@ -12,14 +12,14 @@
 
     <div class="w3-col s6">
       <div class="w3-row">
-        <button class="w3-button w3-left w3-light-grey w3-hover-orange w3-text-grey" on:click="applySearchFilter()">
+        <button class="w3-button w3-left w3-light-grey w3-hover-orange w3-text-grey" on:click="handleSearchFilter()">
           <i class="fas fa-search"/>
         </button>
         <div class="w3-rest">
           <input class="w3-input w3-border-0 w3-light-grey"
             placeholder="Search..."
             bind:value="search"
-            on:keydown="applySearchFilter(event)"
+            on:keydown="handleSearchFilter(event)"
           />
         </div>
       </div>
@@ -35,10 +35,11 @@
 
   </div>
 
-<div class="w3-row">
+  <div class="w3-row">
+    <!-- Desktop -->
     <div class="w3-col w3-right s3 w3-hide-small">
-      <!-- Tags -->
-      <TagsBox title="Tags" tags={tags} on:filter="handleTagFilter(event, tag)"/>
+      <TagsBox tags={tags} on:filter="handleTagFilter(event, tag)"/>
+      <StarsBox tags={tags} on:filter="handleTagFilter(event, tag)"/>
     </div>
 
     <div class="w3-col m9 s12">
@@ -58,31 +59,33 @@
               </div>
             </div>
             <div class="w3-row">
-                <div class="w3-col l1 m2 s4">
-                  <div class="w3-small w3-text-teal">
-                    <i class="far fa-star"/>&nbsp;<span class="w3-text-grey">22</span><br/>
-                    <i class="far fa-eye"/>&nbsp;<span class="w3-text-grey">456</span><br/>
-                    <i class="far fa-comment-alt"/>&nbsp;<span class="w3-text-grey">3</span><br/>
-                  </div>
-                </div>
-                <div class="w3-col l7 m5 w3-hide-small">
-                  <TagsLine tags={post.tags} on:filter="handleTagFilter(event, tag)"/>
-                </div>
-                <div class="w3-col l4 m5 s8 w3-right">
-                  <div class="w3-small w3-right-align w3-text-grey">{post.timestamp}</div>
-                  <div class="w3-small w3-right-align">
-                    <a href="/user/{post.createdBy}" class="w3-text-blue">{post.createdBy.username}</a>
-                  </div>
-                  <div class="w3-tiny w3-right-align w3-text-grey">
-                      <i class="far fa-comment-alt"/>&nbsp;{post.comments}&nbsp;&nbsp;
-                    <i class="fas fa-trophy w3-text-amber"/>&nbsp;{post.timestamp}&nbsp;&nbsp;
-                    <i class="far fa-thumbs-up w3-text-light-green"/>&nbsp;22&nbsp;&nbsp;
-                    <i class="far fa-flag w3-text-purple"/>&nbsp;3
-                  </div>
+              <div class="w3-col l1 m2 s4">
+                <div class="w3-small w3-text-teal">
+                  <i class="far fa-star"/>&nbsp;<span class="w3-text-grey">22</span><br/>
+                  <i class="far fa-eye"/>&nbsp;<span class="w3-text-grey">456</span><br/>
+                  <i class="far fa-comment-alt"/>&nbsp;<span class="w3-text-grey">3</span><br/>
                 </div>
               </div>
-            <div class="w3-hide-large w3-hide-medium">
+              <!-- Desktop -->
+              <div class="w3-col l7 m5 w3-hide-small">
                 <TagsLine tags={post.tags} on:filter="handleTagFilter(event, tag)"/>
+              </div>
+              <div class="w3-col l4 m5 s8 w3-right">
+                <div class="w3-small w3-right-align w3-text-grey">{post.timestamp}</div>
+                <div class="w3-small w3-right-align">
+                  <a href="/user/{post.createdBy}" class="w3-text-blue">{post.createdBy.username}</a>
+                </div>
+                <div class="w3-tiny w3-right-align w3-text-grey">
+                    <i class="far fa-comment-alt"/>&nbsp;{post.comments}&nbsp;&nbsp;
+                  <i class="fas fa-trophy w3-text-amber"/>&nbsp;{post.timestamp}&nbsp;&nbsp;
+                  <i class="far fa-thumbs-up w3-text-light-green"/>&nbsp;22&nbsp;&nbsp;
+                  <i class="far fa-flag w3-text-purple"/>&nbsp;3
+                </div>
+              </div>
+            </div>
+            <!-- Mobile or tablet -->
+            <div class="w3-hide-large w3-hide-medium">
+              <TagsLine tags={post.tags} on:filter="handleTagFilter(event, tag)"/>
             </div>
             <hr/>
           {/each}
@@ -96,8 +99,6 @@
       </div>
     </div>
   </div>
-
-
 </div>
 
 <style>
@@ -115,6 +116,7 @@
 
   export default {
     components: {
+      StarsBox: '../../components/StarsBox.html',
 			TagsLine: '../../components/TagsLine.html',
 			TagsBox: '../../components/TagsBox.html'
     },
@@ -134,6 +136,9 @@
     
     async oncreate() {
       this.queryPostsAndTags()
+      // Use queryPostsAndTags fct above instead to reduce handshake with server
+      // this.queryPosts()
+      // this.queryTags()
     },
 
     methods: {
@@ -145,7 +150,6 @@
 			handleTagFilter({event, tag}) {
         event.preventDefault()
         event.stopPropagation()
-        console.log( 'handleTagFilter', event, tag)
 
         // find the selected tags
         let selectedTags = []
@@ -166,7 +170,7 @@
       },
 
       // toggle tag as selected/unselected
-			applySearchFilter(evt = null) {
+			handleSearchFilter(evt = null) {
         if( evt && evt.key !== 'Enter') {
           return
         }
@@ -188,17 +192,18 @@
         })
       },
 
-			async queryTags() {
-        let {forumTags} = await this.store.get().graphql
-          .query({
-            query: FORUM_TAGS
-          })
-          .then(result => result.data)
+      // keep this fct as an example for other queries
+			// async queryTags() {
+      //   let {forumTags} = await this.store.get().graphql
+      //     .query({
+      //       query: FORUM_TAGS
+      //     })
+      //     .then(result => result.data)
 
-        this.set({
-          tags: this.sortTags(forumTags)
-        })
-      },
+      //   this.set({
+      //     tags: this.sortTags(forumTags)
+      //   })
+      // },
 
       async queryPostsAndTags() {
         let {forumPostsPage, forumTags} = await this.store.get().graphql

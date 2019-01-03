@@ -1,6 +1,6 @@
 {#each tags as tag}
 	<span 
-		class="pointer w3-tag w3-round w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center"
+		class="pointer w3-tag w3-round w3-tiny {tag.selected ? 'w3-blue' : 'w3-light-grey'} w3-center w3-hover-orange"
 		on:click="fire('filter', {event, tag})"
 	>
 		{tag.name}
