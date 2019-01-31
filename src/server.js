@@ -71,7 +71,7 @@ const apollo = new ApolloServer({
   typeDefs,
   resolvers,
   debug: NODE_ENV === 'production' ? false : true,
-  context: async ({ req }) => {
+  context: ({ req }) => {
     if (!req.user) {
       throw new AuthenticationError('Auth required')
     }
