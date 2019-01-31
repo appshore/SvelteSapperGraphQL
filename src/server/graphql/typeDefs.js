@@ -5,7 +5,6 @@ import { gql } from 'apollo-server-express'
 const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
 
-  # This "Book" type can be used in other type declarations.
   type ForumPostsPage {
     totalCount: Int
     pageCount: Int

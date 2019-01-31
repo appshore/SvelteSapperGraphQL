@@ -8,7 +8,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 
 // Apollo GraphQL
-import { ApolloServer } from 'apollo-server-express'
+import { ApolloServer, AuthenticationError } from 'apollo-server-express'
 import typeDefs from './server/graphql/typeDefs'
 import resolvers from './server/graphql/resolvers'
 
@@ -69,7 +69,16 @@ app.use(withUser)
 const apollo = new ApolloServer({
   // These will be defined for both new or existing servers
   typeDefs,
-  resolvers
+  resolvers,
+  debug: NODE_ENV === 'production' ? false : true,
+  context: async ({ req }) => {
+    if (!req.user) {
+      throw new AuthenticationError('Auth required')
+    }
+
+    // add the user to the context
+    return { user: req.user }
+  },
 })
 apollo.applyMiddleware({ app })
 
