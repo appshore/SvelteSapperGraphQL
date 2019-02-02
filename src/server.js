@@ -62,7 +62,7 @@ mongoose.connect(
   }
 )
 
-// if user isAuth then retrieve profile
+// if user is Authentified then retrieve profile
 app.use(withUser)
 
 // Apollo preempt the /graphql route

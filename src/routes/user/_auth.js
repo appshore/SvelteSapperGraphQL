@@ -14,8 +14,6 @@ export const login = async (store, credentials) => {
       body: JSON.stringify(credentials)
     }).then(res => res.json())
 
-    console.log('user/_auth/login res', res)
-
     if (res.error) {
       throw res.error
     }
@@ -34,8 +32,6 @@ export const login = async (store, credentials) => {
       status: true
     }
   } catch (error) {
-    console.log('user/_auth/login error', error)
-
     store.set({
       isAuth: false,
       user: null

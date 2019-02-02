@@ -4,7 +4,7 @@ import { findUser, findUsers } from '../user/gql'
 
 const resolvers = {
   Query: {
-    user: (_, { _id }) => findUser({ _id: _id }),
+    user: (_, { _id }) => findUser({ _id }),
     users: () => findUsers(),
     forumPost: (_, { _id, slug }) => findForumPost({ _id, slug }),
     forumPostsPage: (_, { pageSize, cursor, search, tags }) => findForumPosts({ pageSize, cursor, search, tags }),
@@ -18,7 +18,7 @@ const resolvers = {
 
   ForumPost: {
     createdBy: forumPost => findUser({ _id: forumPost.createdBy }),
-    tags: forumPost => forumPost.tags.length ? findForumTags({ tags: forumPost.tags }) : []
+    tags: ({ tags }) => (tags.length ? findForumTags({ tags }) : [])
   }
 }
 

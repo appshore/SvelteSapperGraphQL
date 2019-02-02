@@ -74,10 +74,7 @@
 		<div id="content" resize="{$isResize}"/>
 	{:else}
 		<div class="w3-margin-bottom">
-			{#each post.tags as tag}
-				<span class="pointer w3-tag w3-round w3-margin-right w3-small w3-light-gray w3-center" 
-					on:click="addFilterByTag(event, tag)">{tag.name}</span>
-			{/each}
+			<TagsLine tags={post.tags}/>
 		</div>
 		<div id="content">
 				{@html post.html}
@@ -115,8 +112,9 @@
 
 	export default {
 		components: {
-			InputTags: '../../components/InputTags.html'
-		},
+			InputTags: '../../components/InputTags.html',
+			TagsLine: '../../components/TagsLine.html'
+    },
 
 		data() {
 			return {

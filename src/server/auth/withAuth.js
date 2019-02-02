@@ -1,5 +1,6 @@
 import { verifyToken } from './utils'
 
+// express middleware to check presence and validity of auth token
 const withAuth = (req, res, next) => {
   let token = req.cookies.token
   if (Boolean(token) === false) {
