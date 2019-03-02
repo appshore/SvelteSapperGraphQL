@@ -1,11 +1,15 @@
 sudo: false
 language: node_js
 node_js:
-  - "stable"
+  - 'stable'
 env:
   global:
     - BUILD_TIMEOUT=10000
 install:
   - npm install
   - npm install cypress
-
+services:
+  - mongodb
+# before_script:
+#   - sleep 15
+#   - mongo sapeur --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
