@@ -5,11 +5,11 @@ node_js:
 env:
   global:
     - BUILD_TIMEOUT=10000
+services:
+  - mongodb
 install:
   - npm install
   - npm install cypress
-services:
-  - mongodb
 # before_script:
 #   - sleep 15
 #   - mongo sapeur --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
