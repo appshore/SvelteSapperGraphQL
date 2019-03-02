@@ -16,7 +16,7 @@
     "-- TESTS --": "",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
-    "test": "run-p --race dev cy:run",
+    "test": "run-p dev cy:run",
     "-- DATABASE --": "",
     "mongo": "mongod --dbpath ./db",
     "mongoDump": "mongodump --db=sapeur --out=mongoDump/$npm_package_version",
