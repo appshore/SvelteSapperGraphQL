@@ -35,7 +35,6 @@
     "compression": "^1.7.1",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
-    "cypress": "^3.1.4",
     "date-fns": "^2.0.0-alpha.25",
     "express": "^4.16.4",
     "graphql": "^14.0.2",
@@ -50,6 +49,7 @@
   },
   "devDependencies": {
     "css-loader": "^1.0.1",
+    "cypress": "^3.1.5",
     "mini-css-extract-plugin": "^0.4.5",
     "npm-run-all": "^4.1.5",
     "sapper": "^0.22.1",
